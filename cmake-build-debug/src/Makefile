@@ -111,19 +111,46 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-src/CMakeFiles/animation.dir/rule:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/animation.dir/rule
-.PHONY : src/CMakeFiles/animation.dir/rule
+src/CMakeFiles/skinning.dir/rule:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/skinning.dir/rule
+.PHONY : src/CMakeFiles/skinning.dir/rule
 
 # Convenience name for target.
-animation: src/CMakeFiles/animation.dir/rule
+skinning: src/CMakeFiles/skinning.dir/rule
 
-.PHONY : animation
+.PHONY : skinning
 
 # fast build rule for target.
-animation/fast:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/build
-.PHONY : animation/fast
+skinning/fast:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/build
+.PHONY : skinning/fast
+
+Cylinder.o: Cylinder.cpp.o
+
+.PHONY : Cylinder.o
+
+# target to build an object file
+Cylinder.cpp.o:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/Cylinder.cpp.o
+.PHONY : Cylinder.cpp.o
+
+Cylinder.i: Cylinder.cpp.i
+
+.PHONY : Cylinder.i
+
+# target to preprocess a source file
+Cylinder.cpp.i:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/Cylinder.cpp.i
+.PHONY : Cylinder.cpp.i
+
+Cylinder.s: Cylinder.cpp.s
+
+.PHONY : Cylinder.s
+
+# target to generate assembly for a file
+Cylinder.cpp.s:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/Cylinder.cpp.s
+.PHONY : Cylinder.cpp.s
 
 animation_loader_saver.o: animation_loader_saver.cc.o
 
@@ -131,7 +158,7 @@ animation_loader_saver.o: animation_loader_saver.cc.o
 
 # target to build an object file
 animation_loader_saver.cc.o:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/animation_loader_saver.cc.o
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/animation_loader_saver.cc.o
 .PHONY : animation_loader_saver.cc.o
 
 animation_loader_saver.i: animation_loader_saver.cc.i
@@ -140,7 +167,7 @@ animation_loader_saver.i: animation_loader_saver.cc.i
 
 # target to preprocess a source file
 animation_loader_saver.cc.i:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/animation_loader_saver.cc.i
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/animation_loader_saver.cc.i
 .PHONY : animation_loader_saver.cc.i
 
 animation_loader_saver.s: animation_loader_saver.cc.s
@@ -149,7 +176,7 @@ animation_loader_saver.s: animation_loader_saver.cc.s
 
 # target to generate assembly for a file
 animation_loader_saver.cc.s:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/animation_loader_saver.cc.s
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/animation_loader_saver.cc.s
 .PHONY : animation_loader_saver.cc.s
 
 bone_geometry.o: bone_geometry.cc.o
@@ -158,7 +185,7 @@ bone_geometry.o: bone_geometry.cc.o
 
 # target to build an object file
 bone_geometry.cc.o:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/bone_geometry.cc.o
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/bone_geometry.cc.o
 .PHONY : bone_geometry.cc.o
 
 bone_geometry.i: bone_geometry.cc.i
@@ -167,7 +194,7 @@ bone_geometry.i: bone_geometry.cc.i
 
 # target to preprocess a source file
 bone_geometry.cc.i:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/bone_geometry.cc.i
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/bone_geometry.cc.i
 .PHONY : bone_geometry.cc.i
 
 bone_geometry.s: bone_geometry.cc.s
@@ -176,7 +203,7 @@ bone_geometry.s: bone_geometry.cc.s
 
 # target to generate assembly for a file
 bone_geometry.cc.s:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/bone_geometry.cc.s
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/bone_geometry.cc.s
 .PHONY : bone_geometry.cc.s
 
 gui.o: gui.cc.o
@@ -185,7 +212,7 @@ gui.o: gui.cc.o
 
 # target to build an object file
 gui.cc.o:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/gui.cc.o
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/gui.cc.o
 .PHONY : gui.cc.o
 
 gui.i: gui.cc.i
@@ -194,7 +221,7 @@ gui.i: gui.cc.i
 
 # target to preprocess a source file
 gui.cc.i:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/gui.cc.i
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/gui.cc.i
 .PHONY : gui.cc.i
 
 gui.s: gui.cc.s
@@ -203,7 +230,7 @@ gui.s: gui.cc.s
 
 # target to generate assembly for a file
 gui.cc.s:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/gui.cc.s
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/gui.cc.s
 .PHONY : gui.cc.s
 
 main.o: main.cc.o
@@ -212,7 +239,7 @@ main.o: main.cc.o
 
 # target to build an object file
 main.cc.o:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/main.cc.o
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/main.cc.o
 .PHONY : main.cc.o
 
 main.i: main.cc.i
@@ -221,7 +248,7 @@ main.i: main.cc.i
 
 # target to preprocess a source file
 main.cc.i:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/main.cc.i
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/main.cc.i
 .PHONY : main.cc.i
 
 main.s: main.cc.s
@@ -230,7 +257,7 @@ main.s: main.cc.s
 
 # target to generate assembly for a file
 main.cc.s:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/main.cc.s
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/main.cc.s
 .PHONY : main.cc.s
 
 procedure_geometry.o: procedure_geometry.cc.o
@@ -239,7 +266,7 @@ procedure_geometry.o: procedure_geometry.cc.o
 
 # target to build an object file
 procedure_geometry.cc.o:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/procedure_geometry.cc.o
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/procedure_geometry.cc.o
 .PHONY : procedure_geometry.cc.o
 
 procedure_geometry.i: procedure_geometry.cc.i
@@ -248,7 +275,7 @@ procedure_geometry.i: procedure_geometry.cc.i
 
 # target to preprocess a source file
 procedure_geometry.cc.i:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/procedure_geometry.cc.i
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/procedure_geometry.cc.i
 .PHONY : procedure_geometry.cc.i
 
 procedure_geometry.s: procedure_geometry.cc.s
@@ -257,8 +284,35 @@ procedure_geometry.s: procedure_geometry.cc.s
 
 # target to generate assembly for a file
 procedure_geometry.cc.s:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/procedure_geometry.cc.s
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/procedure_geometry.cc.s
 .PHONY : procedure_geometry.cc.s
+
+ray.o: ray.cpp.o
+
+.PHONY : ray.o
+
+# target to build an object file
+ray.cpp.o:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/ray.cpp.o
+.PHONY : ray.cpp.o
+
+ray.i: ray.cpp.i
+
+.PHONY : ray.i
+
+# target to preprocess a source file
+ray.cpp.i:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/ray.cpp.i
+.PHONY : ray.cpp.i
+
+ray.s: ray.cpp.s
+
+.PHONY : ray.s
+
+# target to generate assembly for a file
+ray.cpp.s:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/ray.cpp.s
+.PHONY : ray.cpp.s
 
 render_pass.o: render_pass.cc.o
 
@@ -266,7 +320,7 @@ render_pass.o: render_pass.cc.o
 
 # target to build an object file
 render_pass.cc.o:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/render_pass.cc.o
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/render_pass.cc.o
 .PHONY : render_pass.cc.o
 
 render_pass.i: render_pass.cc.i
@@ -275,7 +329,7 @@ render_pass.i: render_pass.cc.i
 
 # target to preprocess a source file
 render_pass.cc.i:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/render_pass.cc.i
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/render_pass.cc.i
 .PHONY : render_pass.cc.i
 
 render_pass.s: render_pass.cc.s
@@ -284,8 +338,35 @@ render_pass.s: render_pass.cc.s
 
 # target to generate assembly for a file
 render_pass.cc.s:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/render_pass.cc.s
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/render_pass.cc.s
 .PHONY : render_pass.cc.s
+
+scene.o: scene.cpp.o
+
+.PHONY : scene.o
+
+# target to build an object file
+scene.cpp.o:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/scene.cpp.o
+.PHONY : scene.cpp.o
+
+scene.i: scene.cpp.i
+
+.PHONY : scene.i
+
+# target to preprocess a source file
+scene.cpp.i:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/scene.cpp.i
+.PHONY : scene.cpp.i
+
+scene.s: scene.cpp.s
+
+.PHONY : scene.s
+
+# target to generate assembly for a file
+scene.cpp.s:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/scene.cpp.s
+.PHONY : scene.cpp.s
 
 shader_uniform.o: shader_uniform.cc.o
 
@@ -293,7 +374,7 @@ shader_uniform.o: shader_uniform.cc.o
 
 # target to build an object file
 shader_uniform.cc.o:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/shader_uniform.cc.o
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/shader_uniform.cc.o
 .PHONY : shader_uniform.cc.o
 
 shader_uniform.i: shader_uniform.cc.i
@@ -302,7 +383,7 @@ shader_uniform.i: shader_uniform.cc.i
 
 # target to preprocess a source file
 shader_uniform.cc.i:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/shader_uniform.cc.i
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/shader_uniform.cc.i
 .PHONY : shader_uniform.cc.i
 
 shader_uniform.s: shader_uniform.cc.s
@@ -311,35 +392,62 @@ shader_uniform.s: shader_uniform.cc.s
 
 # target to generate assembly for a file
 shader_uniform.cc.s:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/shader_uniform.cc.s
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/shader_uniform.cc.s
 .PHONY : shader_uniform.cc.s
 
-texture_to_render.o: texture_to_render.cc.o
+texture_to_render.o: texture_to_render.cpp.o
 
 .PHONY : texture_to_render.o
 
 # target to build an object file
-texture_to_render.cc.o:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/texture_to_render.cc.o
-.PHONY : texture_to_render.cc.o
+texture_to_render.cpp.o:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/texture_to_render.cpp.o
+.PHONY : texture_to_render.cpp.o
 
-texture_to_render.i: texture_to_render.cc.i
+texture_to_render.i: texture_to_render.cpp.i
 
 .PHONY : texture_to_render.i
 
 # target to preprocess a source file
-texture_to_render.cc.i:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/texture_to_render.cc.i
-.PHONY : texture_to_render.cc.i
+texture_to_render.cpp.i:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/texture_to_render.cpp.i
+.PHONY : texture_to_render.cpp.i
 
-texture_to_render.s: texture_to_render.cc.s
+texture_to_render.s: texture_to_render.cpp.s
 
 .PHONY : texture_to_render.s
 
 # target to generate assembly for a file
-texture_to_render.cc.s:
-	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/texture_to_render.cc.s
-.PHONY : texture_to_render.cc.s
+texture_to_render.cpp.s:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/texture_to_render.cpp.s
+.PHONY : texture_to_render.cpp.s
+
+tinyfiledialogs.o: tinyfiledialogs.c.o
+
+.PHONY : tinyfiledialogs.o
+
+# target to build an object file
+tinyfiledialogs.c.o:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/tinyfiledialogs.c.o
+.PHONY : tinyfiledialogs.c.o
+
+tinyfiledialogs.i: tinyfiledialogs.c.i
+
+.PHONY : tinyfiledialogs.i
+
+# target to preprocess a source file
+tinyfiledialogs.c.i:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/tinyfiledialogs.c.i
+.PHONY : tinyfiledialogs.c.i
+
+tinyfiledialogs.s: tinyfiledialogs.c.s
+
+.PHONY : tinyfiledialogs.s
+
+# target to generate assembly for a file
+tinyfiledialogs.c.s:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/tinyfiledialogs.c.s
+.PHONY : tinyfiledialogs.c.s
 
 # Help Target
 help:
@@ -349,7 +457,10 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... animation"
+	@echo "... skinning"
+	@echo "... Cylinder.o"
+	@echo "... Cylinder.i"
+	@echo "... Cylinder.s"
 	@echo "... animation_loader_saver.o"
 	@echo "... animation_loader_saver.i"
 	@echo "... animation_loader_saver.s"
@@ -365,15 +476,24 @@ help:
 	@echo "... procedure_geometry.o"
 	@echo "... procedure_geometry.i"
 	@echo "... procedure_geometry.s"
+	@echo "... ray.o"
+	@echo "... ray.i"
+	@echo "... ray.s"
 	@echo "... render_pass.o"
 	@echo "... render_pass.i"
 	@echo "... render_pass.s"
+	@echo "... scene.o"
+	@echo "... scene.i"
+	@echo "... scene.s"
 	@echo "... shader_uniform.o"
 	@echo "... shader_uniform.i"
 	@echo "... shader_uniform.s"
 	@echo "... texture_to_render.o"
 	@echo "... texture_to_render.i"
 	@echo "... texture_to_render.s"
+	@echo "... tinyfiledialogs.o"
+	@echo "... tinyfiledialogs.i"
+	@echo "... tinyfiledialogs.s"
 .PHONY : help
 
 

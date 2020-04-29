@@ -161,8 +161,8 @@
 					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="animation">
-				<Option output="/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/bin/animation" prefix_auto="0" extension_auto="0"/>
+			<Target title="skinning">
+				<Option output="/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/bin/skinning" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/bin"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -186,14 +186,14 @@
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 animation"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 skinning"/>
 					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j8 -f &quot;/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="animation/fast">
-				<Option output="/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/bin/animation" prefix_auto="0" extension_auto="0"/>
+			<Target title="skinning/fast">
+				<Option output="/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/bin/skinning" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/bin"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -217,7 +217,7 @@
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 animation/fast"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 skinning/fast"/>
 					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j8 -f &quot;/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
@@ -248,47 +248,71 @@
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/lib/utgraphicsutil/jpegio.h">
 			<Option target="utgraphicsutil"/>
 		</Unit>
+		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/Cylinder.cpp">
+			<Option target="skinning"/>
+		</Unit>
+		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/Cylinder.h">
+			<Option target="skinning"/>
+		</Unit>
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/animation_loader_saver.cc">
-			<Option target="animation"/>
+			<Option target="skinning"/>
 		</Unit>
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/bone_geometry.cc">
-			<Option target="animation"/>
+			<Option target="skinning"/>
 		</Unit>
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/bone_geometry.h">
-			<Option target="animation"/>
+			<Option target="skinning"/>
 		</Unit>
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/gui.cc">
-			<Option target="animation"/>
+			<Option target="skinning"/>
 		</Unit>
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/gui.h">
-			<Option target="animation"/>
+			<Option target="skinning"/>
 		</Unit>
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/main.cc">
-			<Option target="animation"/>
+			<Option target="skinning"/>
 		</Unit>
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/procedure_geometry.cc">
-			<Option target="animation"/>
+			<Option target="skinning"/>
 		</Unit>
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/procedure_geometry.h">
-			<Option target="animation"/>
+			<Option target="skinning"/>
+		</Unit>
+		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/ray.cpp">
+			<Option target="skinning"/>
+		</Unit>
+		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/ray.h">
+			<Option target="skinning"/>
 		</Unit>
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/render_pass.cc">
-			<Option target="animation"/>
+			<Option target="skinning"/>
 		</Unit>
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/render_pass.h">
-			<Option target="animation"/>
+			<Option target="skinning"/>
+		</Unit>
+		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/scene.cpp">
+			<Option target="skinning"/>
+		</Unit>
+		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/scene.h">
+			<Option target="skinning"/>
 		</Unit>
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/shader_uniform.cc">
-			<Option target="animation"/>
+			<Option target="skinning"/>
 		</Unit>
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/shader_uniform.h">
-			<Option target="animation"/>
+			<Option target="skinning"/>
 		</Unit>
-		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/texture_to_render.cc">
-			<Option target="animation"/>
+		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/texture_to_render.cpp">
+			<Option target="skinning"/>
 		</Unit>
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/texture_to_render.h">
-			<Option target="animation"/>
+			<Option target="skinning"/>
+		</Unit>
+		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/tinyfiledialogs.c">
+			<Option target="skinning"/>
+		</Unit>
+		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/tinyfiledialogs.h">
+			<Option target="skinning"/>
 		</Unit>
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>

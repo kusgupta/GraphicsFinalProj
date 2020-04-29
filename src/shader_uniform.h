@@ -62,9 +62,7 @@ struct ShaderUniform : public ShaderUniformBase {
 
 	virtual void bind(unsigned loc) override
 	{
-		auto data = this->data_source();
-		// std::cerr << "binding " << name << " to " << data << std::endl;
-		CHECK_GL_ERROR(bindUniform(loc, data));
+		CHECK_GL_ERROR(bindUniform(loc, this->data_source()));
 	};
 };
 

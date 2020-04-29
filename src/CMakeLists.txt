@@ -1,11 +1,11 @@
 SET(pwd ${CMAKE_CURRENT_LIST_DIR})
 
-SET(src "")
+SET(src "" texture_to_render.cpp)
 AUX_SOURCE_DIRECTORY(${pwd} src)
-add_executable(animation ${src})
-message(STATUS "animation added ${src}")
+add_executable(skinning ${src})
+message(STATUS "skinning added ${src}")
 
-target_link_libraries(animation ${stdgl_libraries})
+target_link_libraries(skinning ${stdgl_libraries})
 FIND_PACKAGE(JPEG REQUIRED)
-TARGET_LINK_LIBRARIES(animation ${JPEG_LIBRARIES})
-TARGET_LINK_LIBRARIES(animation pmdreader)
+TARGET_LINK_LIBRARIES(skinning ${JPEG_LIBRARIES})
+TARGET_LINK_LIBRARIES(skinning pmdreader)

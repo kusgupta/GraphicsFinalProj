@@ -126,6 +126,9 @@ void main() {
 
 
 		gl_Position = vec4(w0 * (qtransform(joint_rot[jid0], vector_from_joint0) + joint_trans[jid0]) + (1.0 - w0) * (qtransform(joint_rot[jid1], vector_from_joint1) + joint_trans[jid1]), 1);
+		
+
+		
 	}
 
 	else {
@@ -150,11 +153,11 @@ void main() {
 		//gl_Position = vec4(qe[1], qe[2], qe[3], 1.0); 
 		
 
-		gl_Position = vec4(qtransform(joint_rot[jid0], vector_from_joint0) + joint_trans[jid0], 1.0);
+		gl_Position =  vec4(qtransform(joint_rot[jid0], vector_from_joint0) + joint_trans[jid0], 1.0);
 	}
 
 
-	vs_normal = normal;
+	vs_normal = vec4(qtransform(joint_rot[jid0], vec3(normal)), 0);
 	vs_light_direction = light_position - gl_Position;
 	vs_camera_direction = vec4(camera_position, 1.0) - gl_Position;
 	vs_uv = uv;

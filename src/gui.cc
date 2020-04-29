@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 #include "gui.h"
 #include "config.h"
 #include <jpegio.h>
@@ -5,15 +6,22 @@
 #include <iostream>
 #include <algorithm>
 #include <debuggl.h>
+#include <cmath>
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/transform.hpp>
-
+//#include <bits/stdc++.h>
+#include "glm/ext.hpp"
+#include "ray.h"
+#include "scene.h"
+#include "Cylinder.h"
+#include "texture_to_render.h"
+#include "tinyfiledialogs.h"
 namespace {
-	// FIXME: Implement a function that performs proper
-	//        ray-cylinder intersection detection
-	// TIPS: The implement is provided by the ray-tracer starter code.
+    // FIXME: Implement a function that performs proper
+    //        ray-cylinder intersection detection
+    // TIPS: The implement is provided by the ray-tracer starter code.
 }
 
 class ray {
@@ -30,84 +38,300 @@ public:
 
 };
 
-GUI::GUI(GLFWwindow* window, int view_width, int view_height, int preview_height)
-	:window_(window), preview_height_(preview_height)
-{
-	glfwSetWindowUserPointer(window_, this);
-	glfwSetKeyCallback(window_, KeyCallback);
-	glfwSetCursorPosCallback(window_, MousePosCallback);
-	glfwSetMouseButtonCallback(window_, MouseButtonCallback);
-	glfwSetScrollCallback(window_, MouseScrollCallback);
 
-	glfwGetWindowSize(window_, &window_width_, &window_height_);
-	if (view_width < 0 || view_height < 0) {
-		view_width_ = window_width_;
-		view_height_ = window_height_;
-	} else {
-		view_width_ = view_width;
-		view_height_ = view_height;
-	}
-	float aspect_ = static_cast<float>(view_width_) / view_height_;
-	projection_matrix_ = glm::perspective((float)(kFov * (M_PI / 180.0f)), aspect_, kNear, kFar);
+GUI::GUI(GLFWwindow *window, int view_width, int view_height, int preview_height)
+        : window_(window), preview_height_(preview_height) {
+    glfwSetWindowUserPointer(window_, this);
+    glfwSetKeyCallback(window_, KeyCallback);
+    glfwSetCursorPosCallback(window_, MousePosCallback);
+    glfwSetMouseButtonCallback(window_, MouseButtonCallback);
+    glfwSetScrollCallback(window_, MouseScrollCallback);
+
+    glfwGetWindowSize(window_, &window_width_, &window_height_);
+    if (view_width < 0 || view_height < 0) {
+        view_width_ = window_width_;
+        view_height_ = window_height_;
+    } else {
+        view_width_ = view_width;
+        view_height_ = view_height;
+    }
+    float aspect_ = static_cast<float>(view_width_) / view_height_;
+    projection_matrix_ = glm::perspective((float) (kFov * (M_PI / 180.0f)), aspect_, kNear, kFar);
 }
 
-GUI::~GUI()
-{
+GUI::~GUI() {
 }
 
-void GUI::assignMesh(Mesh* mesh)
-{
-	mesh_ = mesh;
-	center_ = mesh_->getCenter();
+void GUI::assignMesh(Mesh *mesh) {
+    mesh_ = mesh;
+    center_ = mesh_->getCenter();
 }
 
-void GUI::keyCallback(int key, int scancode, int action, int mods)
-{
+void GUI::make_texture(KeyFrame& keyframe) {
+    glEnable( GL_MULTISAMPLE );
+    glGenFramebuffers(1, &mesh_->Panel);
+    glEnable( GL_MULTISAMPLE );
+
+//        glBindFramebuffer(GL_FRAMEBUFFER, mesh_->Panel);
+//	    printf("%d", mesh_->keyFrames.size());
+    TextureToRender textureToRender;
+    textureToRender.create(960, 720);
+//        // Set "renderedTexture" as our colour attachement #0
+    textureToRender.bind(mesh_->Panel);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureToRender.getTexture(), 0);
+
+    
+    GLuint multiTexture;
+    glGenTextures(1, &multiTexture);
+
+    // "Bind" the newly created texture : all future texture functions will modify this texture
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, multiTexture);
+
+    // Give an empty image to OpenGL ( the last "0" )
+    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, 960, 720, 0);
+
+    GLuint multifb;
+    glGenFramebuffers(1, &multifb);
+    glBindFramebuffer(GL_FRAMEBUFFER, multifb);
+    
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, multiTexture, 0);
+    
+    
+
+
+
+
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    floor->setup();
+    // Draw our triangles.
+    CHECK_GL_ERROR(glDrawElements(GL_TRIANGLES,
+                                  floor_faces->size() * 3,
+                                  GL_UNSIGNED_INT, 0));
+
+    // Draw the model
+    model->setup();
+    int mid = 0;
+    while (model->renderWithMaterial(mid))
+        mid++;
+//
+    GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+    glDrawBuffers(1, DrawBuffers);
+    
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "ERROROROROROOR" << std::endl;
+
+    
+    
+    
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mesh_->Panel);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, multifb);
+    glDrawBuffer(GL_COLOR_ATTACHMENT0);
+    glBlitFramebuffer(0, 0, 960, 720, 0, 0, 960, 720, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    
+    
+
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    keyframe.rendered = true;
+    keyframe.texture = textureToRender;
+    
+}
+void GUI::keyCallback(int key, int scancode, int action, int mods) {
 #if 0
-	if (action != 2)
-		std::cerr << "Key: " << key << " action: " << action << std::endl;
+    if (action != 2)
+        std::cerr << "Key: " << key << " action: " << action << std::endl;
 #endif
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window_, GL_TRUE);
-		return ;
-	}
-	if (key == GLFW_KEY_J && action == GLFW_RELEASE) {
-		//FIXME save out a screenshot using SaveJPEG
-	}
-	if (key == GLFW_KEY_S && (mods & GLFW_MOD_CONTROL)) {
-		if (action == GLFW_RELEASE)
-			mesh_->saveAnimationTo("animation.json");
-		return ;
-	}
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window_, GL_TRUE);
+        return;
+    }
+    if (key == GLFW_KEY_J && action == GLFW_RELEASE) {
 
-	if (mods == 0 && captureWASDUPDOWN(key, action))
-		return ;
-	if (key == GLFW_KEY_LEFT || key == GLFW_KEY_RIGHT) {
-		float roll_speed;
-		if (key == GLFW_KEY_RIGHT)
-			roll_speed = -roll_speed_;
-		else
-			roll_speed = roll_speed_;
-		// FIXME: actually roll the bone here
-	} else if (key == GLFW_KEY_C && action != GLFW_RELEASE) {
-		fps_mode_ = !fps_mode_;
-	} else if (key == GLFW_KEY_LEFT_BRACKET && action == GLFW_RELEASE) {
-		current_bone_--;
-		current_bone_ += mesh_->getNumberOfBones();
-		current_bone_ %= mesh_->getNumberOfBones();
-	} else if (key == GLFW_KEY_RIGHT_BRACKET && action == GLFW_RELEASE) {
-		current_bone_++;
-		current_bone_ += mesh_->getNumberOfBones();
-		current_bone_ %= mesh_->getNumberOfBones();
-	} else if (key == GLFW_KEY_T && action != GLFW_RELEASE) {
-		transparent_ = !transparent_;
-	}
+        GLint m_viewport[4];
+        glGetIntegerv( GL_VIEWPORT, m_viewport );
+        GLint width  = m_viewport[2];
+        GLint height =  m_viewport[3];
 
-	// FIXME: implement other controls here.
+
+        GLint id = mesh_->keyFrames[0].texture.getTexture();
+        glBindTexture(GL_TEXTURE_2D, id);
+
+// rgb image
+        glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGB,m_viewport[0],
+                         m_viewport[1], m_viewport[2], m_viewport[3],0);
+
+        glPixelStorei(GL_PACK_ALIGNMENT, 1);
+        char *raw_img = (char*) malloc(sizeof(char) * width * height * 3);
+        glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, raw_img);
+        SaveJPEG("output_pic.jpeg", width, height, reinterpret_cast<const unsigned char *>(raw_img));
+
+    }
+    if (key == GLFW_KEY_S && (mods & GLFW_MOD_CONTROL)) {
+        if (action == GLFW_RELEASE)
+            mesh_->saveAnimationTo("animation.json");
+        return;
+    }
+    if (key == GLFW_KEY_A && (mods & GLFW_MOD_CONTROL)) {
+        if (action == GLFW_RELEASE) {
+            char *title = "Filename";
+            char *message = "Enter the name of the file you wish to store keyframes in";
+            char *x = "filename.json";
+            mesh_->saveAnimationTo(tinyfd_inputBox(title, message, x));
+        }
+        return;
+    }
+
+    if (mods == 0 && captureWASDUPDOWN(key, action))
+        return;
+    if (key == GLFW_KEY_LEFT || key == GLFW_KEY_RIGHT) {
+        float roll_speed;
+        if (key == GLFW_KEY_RIGHT)
+            roll_speed = -roll_speed_;
+        else
+            roll_speed = roll_speed_;
+        // FIXME: actually roll the bone here
+        Bone *curBone = mesh_->skeleton.bones[current_bone_];
+        glm::mat4 rollMat = glm::rotate(roll_speed, curBone->direction());
+
+        curBone->child->applyTransformations(curBone->child, curBone->parent, rollMat);
+
+
+        curBone->child->transformRecursive(curBone->child);
+        mesh_->skeleton.refreshCache(const_cast<Configuration *>(mesh_->getCurrentQ()));
+    } else if (key == GLFW_KEY_C && action != GLFW_RELEASE) {
+        fps_mode_ = !fps_mode_;
+    } else if (key == GLFW_KEY_LEFT_BRACKET && action == GLFW_RELEASE) {
+        current_bone_--;
+        current_bone_ += mesh_->getNumberOfBones();
+        current_bone_ %= mesh_->getNumberOfBones();
+    } else if (key == GLFW_KEY_RIGHT_BRACKET && action == GLFW_RELEASE) {
+        current_bone_++;
+        current_bone_ += mesh_->getNumberOfBones();
+        current_bone_ %= mesh_->getNumberOfBones();
+    } else if (key == GLFW_KEY_T && action != GLFW_RELEASE) {
+        transparent_ = !transparent_;
+    } else if (key == GLFW_KEY_N || key == GLFW_KEY_8 || key == GLFW_KEY_C || key == GLFW_KEY_V) {
+        Bone *curBone = mesh_->skeleton.bones[current_bone_];
+//        curBone->parent
+        int forward = 0;
+        int up = 0;
+        if (key == GLFW_KEY_N) {
+            forward = 1;
+        }
+        if (key == GLFW_KEY_8) {
+            up = 1;
+        }
+        if (key == GLFW_KEY_C) {
+            up = -1;
+        }
+        if (key == GLFW_KEY_V) {
+            forward = -1;
+        }
+        if (curBone->parent->parent_index == -1) {
+            glm::mat4 tmat = glm::mat4({{1,       0, 0,  0},
+                                        {0,       1, 0,  0},
+                                        {0,       0, 1,  0},
+                                        {forward, 0, up, 1}});
+            curBone->parent->position = tmat * glm::vec4(curBone->parent->position, 1);
+            curBone->parent->applyTransformations(curBone->parent,
+                                                  nullptr, tmat);
+
+            curBone->parent->transformRecursive(curBone->parent);
+            mesh_->skeleton.refreshCache(const_cast<Configuration *>(mesh_->getCurrentQ()));
+        }
+    } else if (key == GLFW_KEY_F && action == GLFW_RELEASE) {
+        KeyFrame keyframe;
+       
+        for (int i = 0; i < mesh_->skeleton.joints.size(); i++) {
+            Joint *currentJoint = mesh_->skeleton.joints[i];
+            keyframe.rel_rot.push_back(currentJoint->rel_orientation);
+        }
+        
+        make_texture(keyframe);
+        mesh_->keyFrames.push_back(keyframe);
+    } else if (key == GLFW_KEY_P && action == GLFW_RELEASE) {
+        play_ = !play_;
+        if (play_) {//Pause to play
+            //When you first start
+            mesh_->previous = mesh_->clock->now();
+        } else {//Play to pause
+            std::chrono::time_point<std::chrono::steady_clock> current = mesh_->clock->now();
+            std::chrono::time_point<std::chrono::steady_clock> previous = mesh_->previous;
+
+            mesh_->updateAnimation((current - previous).count() / 1000000000);
+            mesh_->previous = current;
+        }
+    } else if (key == GLFW_KEY_R && action == GLFW_RELEASE) {
+        mesh_->totalRunTime = 0;
+        mesh_->previous = mesh_->clock->now();
+    } else if (key == GLFW_KEY_M && (mods == GLFW_MOD_CONTROL) && action==GLFW_RELEASE) {
+        recording = true;
+        mesh_->totalRunTime = 0;
+        mesh_->previous = mesh_->clock->now();
+    }
+    else if ((key == GLFW_KEY_PAGE_UP || key == GLFW_KEY_PAGE_DOWN) && action==GLFW_RELEASE ) {
+        int delta = 0;
+        if (key == GLFW_KEY_PAGE_UP) {
+            delta = -1;
+        } else if (key == GLFW_KEY_PAGE_DOWN) {
+            delta = 1;
+        }
+        if (currentSelectedKeyframe + delta >= 0 && currentSelectedKeyframe + delta < mesh_->keyFrames.size()) {
+            currentSelectedKeyframe += delta;
+        }
+    } else if (key == GLFW_KEY_U) {
+        if (mesh_->keyFrames.size() < 1)
+            return;
+        KeyFrame keyframe;
+        for (int i = 0; i < mesh_->skeleton.joints.size(); i++) {
+            Joint *currentJoint = mesh_->skeleton.joints[i];
+            keyframe.rel_rot.push_back(currentJoint->rel_orientation);
+        }
+        make_texture(keyframe);
+        mesh_->keyFrames[currentSelectedKeyframe] = keyframe;
+
+    } else if (key == GLFW_KEY_DELETE && action == GLFW_RELEASE) {
+        if (mesh_->keyFrames.size() < 1)
+            return;
+        mesh_->keyFrames.erase(mesh_->keyFrames.begin() + currentSelectedKeyframe);
+        currentSelectedKeyframe = 0;
+    } else if (key == GLFW_KEY_SPACE) {
+        if (mesh_->keyFrames.size() < 1)
+            return;
+        Skeleton skeleton = mesh_->skeleton;
+        KeyFrame target = mesh_->keyFrames[currentSelectedKeyframe];
+        for (int i = 0; i < skeleton.joints.size(); i++) {
+            //Re-initializes skeleton
+            Joint *current_joint = skeleton.joints[i];
+            current_joint->T_i = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
+            current_joint->D_i = current_joint->U_i;
+        }
+        for (int j = 0; j < skeleton.joints.size(); j++) {
+//        skeleton.joints[j]->orientation = k.rel_rot[j];
+            Joint *current_joint = skeleton.joints[j];
+            current_joint->orientation = target.rel_rot[j];
+            current_joint->rel_orientation = target.rel_rot[j];
+
+            if (current_joint->parent_index != -1) {
+                Joint *parent = skeleton.joints[current_joint->parent_index];
+                skeleton.joints[j]->applyTransformations(current_joint, parent, glm::toMat4(current_joint->orientation));
+                current_joint->transformRecursive(parent);
+            }
+            else {
+                skeleton.joints[j]->applyTransformations(current_joint, nullptr, glm::toMat4(current_joint->orientation));
+                current_joint->transformRecursive(current_joint);
+            }
+        }
+        skeleton.refreshCache(const_cast<Configuration *>(mesh_->getCurrentQ()));
+    }
+
+    // FIXME: implement other controls here.
 }
 
-void GUI::mousePosCallback(double mouse_x, double mouse_y)
-{
+void GUI::mousePosCallback(double mouse_x, double mouse_y) {
     last_x_ = current_x_;
     last_y_ = current_y_;
     current_x_ = mouse_x;
@@ -116,17 +340,24 @@ void GUI::mousePosCallback(double mouse_x, double mouse_y)
     float delta_y = current_y_ - last_y_;
     if (sqrt(delta_x * delta_x + delta_y * delta_y) < 1e-15)
         return;
-//    if (mouse_x > view_width_ && current_button_ == GLFW_MOUSE_BUTTON_LEFT) {
-//        KeyFrame k;
-//        // frame0
-//        if (mouse_y > 480 && mouse_y <= 720 && mesh_->keyFrames.size() > 2) {
-//            currentSelectedKeyframe = scrollBar + 2;
-//        } else if (mouse_y > 240 && mouse_y <= 480 && mesh_->keyFrames.size() > 1) {
-//            currentSelectedKeyframe = scrollBar + 1;
-//        } else if (mouse_y >=0 && mouse_y <= 240) {
-//            currentSelectedKeyframe = scrollBar;
-//        }
-//    }
+    if (mouse_x > view_width_ && current_button_ == GLFW_MOUSE_BUTTON_LEFT) {
+        float floor = int(scrollBar / 240.0);
+        float scroll = ((scrollBar - floor * 240.0 )) * 2.0 / 3.0;
+        KeyFrame k;
+
+
+        if (mouse_y >=720 -scroll&& mouse_y <= 960-scroll && mesh_->keyFrames.size() > 3) {
+            currentSelectedKeyframe = floor + 3;
+        } else if (mouse_y > 480 - scroll && mouse_y <= 720 - scroll && mesh_->keyFrames.size() > 2) {
+            currentSelectedKeyframe = floor + 2;
+        } else if (mouse_y > 240 - scroll&& mouse_y <= 480 -scroll&& mesh_->keyFrames.size() > 1) {
+            currentSelectedKeyframe = floor + 1;
+        } else if (mouse_y >=0 -scroll&& mouse_y <= 240-scroll) {
+            currentSelectedKeyframe = floor;
+        }
+        current_button_ = -1;
+
+    }
     glm::vec3 mouse_direction = glm::normalize(glm::vec3(delta_x, delta_y, 0.0f));
     glm::vec2 mouse_start = glm::vec2(last_x_, last_y_);
     glm::vec2 mouse_end = glm::vec2(current_x_, current_y_);
@@ -228,7 +459,6 @@ void GUI::mousePosCallback(double mouse_x, double mouse_y)
 
 
 
-        //std::cout << glm::to_string(transform) << std::endl;
 
         if (curBone->parent->parent_index != -1) {
             curBone->parent->applyTransformations(curBone->parent,
@@ -282,7 +512,7 @@ void GUI::mousePosCallback(double mouse_x, double mouse_y)
                                        glm::mat4({{1,                                  0, 0, 0},
                                                   {0,                                  1, 0, 0},
                                                   {0,                                  0, 1, 0},
-                                                  {currentBone->parent->position.x * -1, currentBone->parent->position.y * -1, currentBone->parent->position.z * -1, 1}});
+                                                  {-1 * currentBone->parent->position, 1}});
 
         glm::mat4 coordinate_transform = glm::inverse(glm::mat4({{xDirection, 0},
                                                                  {yDirection, 0},
@@ -341,7 +571,7 @@ void GUI::mousePosCallback(double mouse_x, double mouse_y)
                 float posT2 = (posY2 - local.position.y) / local.direction.y;
 
                 if (earliestT != fminf(earliestT, fminf(posT1, posT2))) {
-                    std::cout << "entered" << std::endl;
+                    
                     bone_index = i;
                     earliestT = fminf(earliestT, fminf(posT1, posT2));
                 }
@@ -383,7 +613,7 @@ void GUI::mousePosCallback(double mouse_x, double mouse_y)
                 float posT2 = (posY2 - local.position.y) / local.direction.y;
 
                 if (earliestT != fminf(earliestT, fminf(posT1, posT2))) {
-//                    std::cout << "entered" << std::endl;
+
                     bone_index = i;
                     earliestT = fminf(earliestT, fminf(posT1, posT2));
                 }
@@ -394,137 +624,129 @@ void GUI::mousePosCallback(double mouse_x, double mouse_y)
         }
 
     }
-//    if (bone_index != -1) {
-//        std::cout << glm::to_string(mesh_->skeleton.bones[bone_index]->parent->position) << std::endl;
-//        std::cout << bone_index << std::endl;}
-//    std::cout << glm::to_string(mouse_world) << std::endl;
+
 
     setCurrentBone(bone_index);
 
 
 }
 
-void GUI::mouseButtonCallback(int button, int action, int mods)
-{
-	if (current_x_ <= view_width_) {
-		drag_state_ = (action == GLFW_PRESS);
-		current_button_ = button;
-		return ;
-	}
-	// FIXME: Key Frame Selection
+void GUI::mouseButtonCallback(int button, int action, int mods) {
+    if (current_x_ <= window_width_) {
+        drag_state_ = (action == GLFW_PRESS);
+        current_button_ = button;
+        return;
+    }
+    // FIXME: Key Frame Selection
 }
 
-void GUI::mouseScrollCallback(double dx, double dy)
-{
-	if (current_x_ < view_width_)
-		return;
-	// FIXME: Mouse Scrolling
+void GUI::mouseScrollCallback(double dx, double dy) {
+    if (current_x_ < view_width_)
+        return;
+
+    if (dy < -.1 && scrollBar < mesh_->keyFrames.size() * 240.0){
+        scrollBar-= 2.0 * dy;
+    }else if (dy > .1 && scrollBar >= 0) {
+        scrollBar-= 2.0 * dy;
+    }
+
 }
 
-void GUI::updateMatrices()
-{
-	// Compute our view, and projection matrices.
-	if (fps_mode_)
-		center_ = eye_ + camera_distance_ * look_;
-	else
-		eye_ = center_ - camera_distance_ * look_;
+void GUI::updateMatrices() {
+    // Compute our view, and projection matrices.
+    if (fps_mode_)
+        center_ = eye_ + camera_distance_ * look_;
+    else
+        eye_ = center_ - camera_distance_ * look_;
 
-	view_matrix_ = glm::lookAt(eye_, center_, up_);
-	light_position_ = glm::vec4(eye_, 1.0f);
+    view_matrix_ = glm::lookAt(eye_, center_, up_);
+    light_position_ = glm::vec4(eye_, 1.0f);
 
-	aspect_ = static_cast<float>(view_width_) / view_height_;
-	projection_matrix_ =
-		glm::perspective((float)(kFov * (M_PI / 180.0f)), aspect_, kNear, kFar);
-	model_matrix_ = glm::mat4(1.0f);
+    aspect_ = static_cast<float>(view_width_) / view_height_;
+    projection_matrix_ =
+            glm::perspective((float) (kFov * (M_PI / 180.0f)), aspect_, kNear, kFar);
+    model_matrix_ = glm::mat4(1.0f);
 }
 
-MatrixPointers GUI::getMatrixPointers() const
-{
-	MatrixPointers ret;
-	ret.projection = &projection_matrix_;
-	ret.model= &model_matrix_;
-	ret.view = &view_matrix_;
-	return ret;
+MatrixPointers GUI::getMatrixPointers() const {
+    MatrixPointers ret;
+    ret.projection = &projection_matrix_;
+    ret.model = &model_matrix_;
+    ret.view = &view_matrix_;
+    return ret;
 }
 
-bool GUI::setCurrentBone(int i)
-{
-	if (i < 0 || i >= mesh_->getNumberOfBones())
-		return false;
-	current_bone_ = i;
-	return true;
+bool GUI::setCurrentBone(int i) {
+    if (i < 0 || i >= mesh_->getNumberOfBones())
+        return false;
+    current_bone_ = i;
+    return true;
 }
 
-float GUI::getCurrentPlayTime() const
-{
-	return 0.0f;
+float GUI::getCurrentPlayTime() const {
+    return 0.0f;
 }
 
 
-bool GUI::captureWASDUPDOWN(int key, int action)
-{
-	if (key == GLFW_KEY_W) {
-		if (fps_mode_)
-			eye_ += zoom_speed_ * look_;
-		else
-			camera_distance_ -= zoom_speed_;
-		return true;
-	} else if (key == GLFW_KEY_S) {
-		if (fps_mode_)
-			eye_ -= zoom_speed_ * look_;
-		else
-			camera_distance_ += zoom_speed_;
-		return true;
-	} else if (key == GLFW_KEY_A) {
-		if (fps_mode_)
-			eye_ -= pan_speed_ * tangent_;
-		else
-			center_ -= pan_speed_ * tangent_;
-		return true;
-	} else if (key == GLFW_KEY_D) {
-		if (fps_mode_)
-			eye_ += pan_speed_ * tangent_;
-		else
-			center_ += pan_speed_ * tangent_;
-		return true;
-	} else if (key == GLFW_KEY_DOWN) {
-		if (fps_mode_)
-			eye_ -= pan_speed_ * up_;
-		else
-			center_ -= pan_speed_ * up_;
-		return true;
-	} else if (key == GLFW_KEY_UP) {
-		if (fps_mode_)
-			eye_ += pan_speed_ * up_;
-		else
-			center_ += pan_speed_ * up_;
-		return true;
-	}
-	return false;
+bool GUI::captureWASDUPDOWN(int key, int action) {
+    if (key == GLFW_KEY_W) {
+        if (fps_mode_)
+            eye_ += zoom_speed_ * look_;
+        else
+            camera_distance_ -= zoom_speed_;
+        return true;
+    } else if (key == GLFW_KEY_S) {
+        if (fps_mode_)
+            eye_ -= zoom_speed_ * look_;
+        else
+            camera_distance_ += zoom_speed_;
+        return true;
+    } else if (key == GLFW_KEY_A) {
+        if (fps_mode_)
+            eye_ -= pan_speed_ * tangent_;
+        else
+            center_ -= pan_speed_ * tangent_;
+        return true;
+    } else if (key == GLFW_KEY_D) {
+        if (fps_mode_)
+            eye_ += pan_speed_ * tangent_;
+        else
+            center_ += pan_speed_ * tangent_;
+        return true;
+    } else if (key == GLFW_KEY_DOWN) {
+        if (fps_mode_)
+            eye_ -= pan_speed_ * up_;
+        else
+            center_ -= pan_speed_ * up_;
+        return true;
+    } else if (key == GLFW_KEY_UP) {
+        if (fps_mode_)
+            eye_ += pan_speed_ * up_;
+        else
+            center_ += pan_speed_ * up_;
+        return true;
+    }
+    return false;
 }
 
 
 // Delegrate to the actual GUI object.
-void GUI::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	GUI* gui = (GUI*)glfwGetWindowUserPointer(window);
-	gui->keyCallback(key, scancode, action, mods);
+void GUI::KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    GUI *gui = (GUI *) glfwGetWindowUserPointer(window);
+    gui->keyCallback(key, scancode, action, mods);
 }
 
-void GUI::MousePosCallback(GLFWwindow* window, double mouse_x, double mouse_y)
-{
-	GUI* gui = (GUI*)glfwGetWindowUserPointer(window);
-	gui->mousePosCallback(mouse_x, mouse_y);
+void GUI::MousePosCallback(GLFWwindow *window, double mouse_x, double mouse_y) {
+    GUI *gui = (GUI *) glfwGetWindowUserPointer(window);
+    gui->mousePosCallback(mouse_x, mouse_y);
 }
 
-void GUI::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
-{
-	GUI* gui = (GUI*)glfwGetWindowUserPointer(window);
-	gui->mouseButtonCallback(button, action, mods);
+void GUI::MouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
+    GUI *gui = (GUI *) glfwGetWindowUserPointer(window);
+    gui->mouseButtonCallback(button, action, mods);
 }
 
-void GUI::MouseScrollCallback(GLFWwindow* window, double dx, double dy)
-{
-	GUI* gui = (GUI*)glfwGetWindowUserPointer(window);
-	gui->mouseScrollCallback(dx, dy);
+void GUI::MouseScrollCallback(GLFWwindow *window, double dx, double dy) {
+    GUI *gui = (GUI *) glfwGetWindowUserPointer(window);
+    gui->mouseScrollCallback(dx, dy);
 }

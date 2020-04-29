@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
+#include "render_pass.h"
+#include "bone_geometry.h"
 
 struct Mesh;
 
@@ -44,8 +46,15 @@ public:
 
 	bool isTransparent() const { return transparent_; }
 	bool isPlaying() const { return play_; }
+	bool recording = false;
 	float getCurrentPlayTime() const;
+    void make_texture(KeyFrame &keyFrame);
 
+    RenderPass *floor;
+    RenderPass *model;
+    std::vector<glm::uvec3> *floor_faces;
+    float scrollBar = 0;
+    int currentSelectedKeyframe = 0;
 private:
 	GLFWwindow* window_;
 	Mesh* mesh_;
@@ -65,7 +74,7 @@ private:
 	float camera_distance_ = 30.0;
 	float pan_speed_ = 0.1f;
 	float rotation_speed_ = 0.02f;
-	float zoom_speed_ = 0.1f;
+	float zoom_speed_ = 0.5f;
 	float aspect_;
 
 	glm::vec3 eye_ = glm::vec3(0.0f, 0.1f, camera_distance_);
@@ -80,9 +89,13 @@ private:
 	glm::mat4 projection_matrix_;
 	glm::mat4 model_matrix_ = glm::mat4(1.0f);
 
+
+
 	bool captureWASDUPDOWN(int key, int action);
 
 	bool play_ = false;
+
+
 };
 
 #endif

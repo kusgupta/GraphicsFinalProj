@@ -78,7 +78,7 @@ preinstall: src/preinstall
 CMakeFiles/pmdreader.dir/all:
 	$(MAKE) -f CMakeFiles/pmdreader.dir/build.make CMakeFiles/pmdreader.dir/depend
 	$(MAKE) -f CMakeFiles/pmdreader.dir/build.make CMakeFiles/pmdreader.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=10,11,12 "Built target pmdreader"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=1,2,3 "Built target pmdreader"
 .PHONY : CMakeFiles/pmdreader.dir/all
 
 # Build rule for subdir invocation for target.
@@ -105,7 +105,7 @@ CMakeFiles/pmdreader.dir/clean:
 CMakeFiles/utgraphicsutil.dir/all:
 	$(MAKE) -f CMakeFiles/utgraphicsutil.dir/build.make CMakeFiles/utgraphicsutil.dir/depend
 	$(MAKE) -f CMakeFiles/utgraphicsutil.dir/build.make CMakeFiles/utgraphicsutil.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=13,14,15 "Built target utgraphicsutil"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=17,18,19 "Built target utgraphicsutil"
 .PHONY : CMakeFiles/utgraphicsutil.dir/all
 
 # Build rule for subdir invocation for target.
@@ -129,12 +129,12 @@ CMakeFiles/utgraphicsutil.dir/clean:
 # Directory level rules for directory src
 
 # Recursive "all" directory target.
-src/all: src/CMakeFiles/animation.dir/all
+src/all: src/CMakeFiles/skinning.dir/all
 
 .PHONY : src/all
 
 # Recursive "clean" directory target.
-src/clean: src/CMakeFiles/animation.dir/clean
+src/clean: src/CMakeFiles/skinning.dir/clean
 
 .PHONY : src/clean
 
@@ -144,32 +144,32 @@ src/preinstall:
 .PHONY : src/preinstall
 
 #=============================================================================
-# Target rules for target src/CMakeFiles/animation.dir
+# Target rules for target src/CMakeFiles/skinning.dir
 
 # All Build rule for target.
-src/CMakeFiles/animation.dir/all: CMakeFiles/pmdreader.dir/all
-src/CMakeFiles/animation.dir/all: CMakeFiles/utgraphicsutil.dir/all
-	$(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/depend
-	$(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9 "Built target animation"
-.PHONY : src/CMakeFiles/animation.dir/all
+src/CMakeFiles/skinning.dir/all: CMakeFiles/pmdreader.dir/all
+src/CMakeFiles/skinning.dir/all: CMakeFiles/utgraphicsutil.dir/all
+	$(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/depend
+	$(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=4,5,6,7,8,9,10,11,12,13,14,15,16 "Built target skinning"
+.PHONY : src/CMakeFiles/skinning.dir/all
 
 # Build rule for subdir invocation for target.
-src/CMakeFiles/animation.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles 15
-	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/animation.dir/all
+src/CMakeFiles/skinning.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles 19
+	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/skinning.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles 0
-.PHONY : src/CMakeFiles/animation.dir/rule
+.PHONY : src/CMakeFiles/skinning.dir/rule
 
 # Convenience name for target.
-animation: src/CMakeFiles/animation.dir/rule
+skinning: src/CMakeFiles/skinning.dir/rule
 
-.PHONY : animation
+.PHONY : skinning
 
 # clean rule for target.
-src/CMakeFiles/animation.dir/clean:
-	$(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/clean
-.PHONY : src/CMakeFiles/animation.dir/clean
+src/CMakeFiles/skinning.dir/clean:
+	$(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/clean
+.PHONY : src/CMakeFiles/skinning.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

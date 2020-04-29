@@ -15,6 +15,8 @@ out vec4 camera_direction;
 out vec4 world_position;
 out vec4 vertex_normal;
 out vec2 uv_coords;
+
+
 void main() {
 	int n = 0;
 	vec3 a = gl_in[0].gl_Position.xyz;

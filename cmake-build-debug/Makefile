@@ -137,17 +137,17 @@ utgraphicsutil/fast:
 .PHONY : utgraphicsutil/fast
 
 #=============================================================================
-# Target rules for targets named animation
+# Target rules for targets named skinning
 
 # Build rule for target.
-animation: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 animation
-.PHONY : animation
+skinning: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 skinning
+.PHONY : skinning
 
 # fast build rule for target.
-animation/fast:
-	$(MAKE) -f src/CMakeFiles/animation.dir/build.make src/CMakeFiles/animation.dir/build
-.PHONY : animation/fast
+skinning/fast:
+	$(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/build
+.PHONY : skinning/fast
 
 lib/pmdreader/bitmap.o: lib/pmdreader/bitmap.cpp.o
 
@@ -267,7 +267,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... pmdreader"
 	@echo "... utgraphicsutil"
-	@echo "... animation"
+	@echo "... skinning"
 	@echo "... lib/pmdreader/bitmap.o"
 	@echo "... lib/pmdreader/bitmap.i"
 	@echo "... lib/pmdreader/bitmap.s"
