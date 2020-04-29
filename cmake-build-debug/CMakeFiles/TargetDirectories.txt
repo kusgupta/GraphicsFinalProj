@@ -1,0 +1,7 @@
+/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles/pmdreader.dir
+/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles/utgraphicsutil.dir
+/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/CMakeFiles/rebuild_cache.dir
+/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/CMakeFiles/edit_cache.dir
+/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/CMakeFiles/animation.dir
