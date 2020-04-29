@@ -7,6 +7,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/skinning.dir/gui.cc.o"
   "CMakeFiles/skinning.dir/main.cc.o"
   "CMakeFiles/skinning.dir/procedure_geometry.cc.o"
+  "CMakeFiles/skinning.dir/radiosityScene.cpp.o"
   "CMakeFiles/skinning.dir/ray.cpp.o"
   "CMakeFiles/skinning.dir/render_pass.cc.o"
   "CMakeFiles/skinning.dir/scene.cpp.o"

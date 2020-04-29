@@ -34,6 +34,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/kushangupta/Documents/GraphicsFinalProj/src/gui.cc" "/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/CMakeFiles/skinning.dir/gui.cc.o"
   "/Users/kushangupta/Documents/GraphicsFinalProj/src/main.cc" "/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/CMakeFiles/skinning.dir/main.cc.o"
   "/Users/kushangupta/Documents/GraphicsFinalProj/src/procedure_geometry.cc" "/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/CMakeFiles/skinning.dir/procedure_geometry.cc.o"
+  "/Users/kushangupta/Documents/GraphicsFinalProj/src/radiosityScene.cpp" "/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/CMakeFiles/skinning.dir/radiosityScene.cpp.o"
   "/Users/kushangupta/Documents/GraphicsFinalProj/src/ray.cpp" "/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/CMakeFiles/skinning.dir/ray.cpp.o"
   "/Users/kushangupta/Documents/GraphicsFinalProj/src/render_pass.cc" "/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/CMakeFiles/skinning.dir/render_pass.cc.o"
   "/Users/kushangupta/Documents/GraphicsFinalProj/src/scene.cpp" "/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src/CMakeFiles/skinning.dir/scene.cpp.o"

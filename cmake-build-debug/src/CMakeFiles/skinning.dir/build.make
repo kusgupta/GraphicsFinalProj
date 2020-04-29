@@ -70,9 +70,22 @@ src/CMakeFiles/skinning.dir/texture_to_render.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/skinning.dir/texture_to_render.cpp.s"
 	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/kushangupta/Documents/GraphicsFinalProj/src/texture_to_render.cpp -o CMakeFiles/skinning.dir/texture_to_render.cpp.s
 
+src/CMakeFiles/skinning.dir/radiosityScene.cpp.o: src/CMakeFiles/skinning.dir/flags.make
+src/CMakeFiles/skinning.dir/radiosityScene.cpp.o: ../src/radiosityScene.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/CMakeFiles/skinning.dir/radiosityScene.cpp.o"
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && /Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/skinning.dir/radiosityScene.cpp.o -c /Users/kushangupta/Documents/GraphicsFinalProj/src/radiosityScene.cpp
+
+src/CMakeFiles/skinning.dir/radiosityScene.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/skinning.dir/radiosityScene.cpp.i"
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/kushangupta/Documents/GraphicsFinalProj/src/radiosityScene.cpp > CMakeFiles/skinning.dir/radiosityScene.cpp.i
+
+src/CMakeFiles/skinning.dir/radiosityScene.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/skinning.dir/radiosityScene.cpp.s"
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/kushangupta/Documents/GraphicsFinalProj/src/radiosityScene.cpp -o CMakeFiles/skinning.dir/radiosityScene.cpp.s
+
 src/CMakeFiles/skinning.dir/Cylinder.cpp.o: src/CMakeFiles/skinning.dir/flags.make
 src/CMakeFiles/skinning.dir/Cylinder.cpp.o: ../src/Cylinder.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/CMakeFiles/skinning.dir/Cylinder.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/CMakeFiles/skinning.dir/Cylinder.cpp.o"
 	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && /Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/skinning.dir/Cylinder.cpp.o -c /Users/kushangupta/Documents/GraphicsFinalProj/src/Cylinder.cpp
 
 src/CMakeFiles/skinning.dir/Cylinder.cpp.i: cmake_force
@@ -85,7 +98,7 @@ src/CMakeFiles/skinning.dir/Cylinder.cpp.s: cmake_force
 
 src/CMakeFiles/skinning.dir/animation_loader_saver.cc.o: src/CMakeFiles/skinning.dir/flags.make
 src/CMakeFiles/skinning.dir/animation_loader_saver.cc.o: ../src/animation_loader_saver.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/CMakeFiles/skinning.dir/animation_loader_saver.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object src/CMakeFiles/skinning.dir/animation_loader_saver.cc.o"
 	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && /Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/skinning.dir/animation_loader_saver.cc.o -c /Users/kushangupta/Documents/GraphicsFinalProj/src/animation_loader_saver.cc
 
 src/CMakeFiles/skinning.dir/animation_loader_saver.cc.i: cmake_force
@@ -98,7 +111,7 @@ src/CMakeFiles/skinning.dir/animation_loader_saver.cc.s: cmake_force
 
 src/CMakeFiles/skinning.dir/bone_geometry.cc.o: src/CMakeFiles/skinning.dir/flags.make
 src/CMakeFiles/skinning.dir/bone_geometry.cc.o: ../src/bone_geometry.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object src/CMakeFiles/skinning.dir/bone_geometry.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object src/CMakeFiles/skinning.dir/bone_geometry.cc.o"
 	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && /Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/skinning.dir/bone_geometry.cc.o -c /Users/kushangupta/Documents/GraphicsFinalProj/src/bone_geometry.cc
 
 src/CMakeFiles/skinning.dir/bone_geometry.cc.i: cmake_force
@@ -111,7 +124,7 @@ src/CMakeFiles/skinning.dir/bone_geometry.cc.s: cmake_force
 
 src/CMakeFiles/skinning.dir/gui.cc.o: src/CMakeFiles/skinning.dir/flags.make
 src/CMakeFiles/skinning.dir/gui.cc.o: ../src/gui.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object src/CMakeFiles/skinning.dir/gui.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object src/CMakeFiles/skinning.dir/gui.cc.o"
 	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && /Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/skinning.dir/gui.cc.o -c /Users/kushangupta/Documents/GraphicsFinalProj/src/gui.cc
 
 src/CMakeFiles/skinning.dir/gui.cc.i: cmake_force
@@ -124,7 +137,7 @@ src/CMakeFiles/skinning.dir/gui.cc.s: cmake_force
 
 src/CMakeFiles/skinning.dir/main.cc.o: src/CMakeFiles/skinning.dir/flags.make
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/main.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object src/CMakeFiles/skinning.dir/main.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object src/CMakeFiles/skinning.dir/main.cc.o"
 	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && /Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/skinning.dir/main.cc.o -c /Users/kushangupta/Documents/GraphicsFinalProj/src/main.cc
 
 src/CMakeFiles/skinning.dir/main.cc.i: cmake_force
@@ -137,7 +150,7 @@ src/CMakeFiles/skinning.dir/main.cc.s: cmake_force
 
 src/CMakeFiles/skinning.dir/procedure_geometry.cc.o: src/CMakeFiles/skinning.dir/flags.make
 src/CMakeFiles/skinning.dir/procedure_geometry.cc.o: ../src/procedure_geometry.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object src/CMakeFiles/skinning.dir/procedure_geometry.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object src/CMakeFiles/skinning.dir/procedure_geometry.cc.o"
 	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && /Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/skinning.dir/procedure_geometry.cc.o -c /Users/kushangupta/Documents/GraphicsFinalProj/src/procedure_geometry.cc
 
 src/CMakeFiles/skinning.dir/procedure_geometry.cc.i: cmake_force
@@ -150,7 +163,7 @@ src/CMakeFiles/skinning.dir/procedure_geometry.cc.s: cmake_force
 
 src/CMakeFiles/skinning.dir/ray.cpp.o: src/CMakeFiles/skinning.dir/flags.make
 src/CMakeFiles/skinning.dir/ray.cpp.o: ../src/ray.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object src/CMakeFiles/skinning.dir/ray.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object src/CMakeFiles/skinning.dir/ray.cpp.o"
 	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && /Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/skinning.dir/ray.cpp.o -c /Users/kushangupta/Documents/GraphicsFinalProj/src/ray.cpp
 
 src/CMakeFiles/skinning.dir/ray.cpp.i: cmake_force
@@ -163,7 +176,7 @@ src/CMakeFiles/skinning.dir/ray.cpp.s: cmake_force
 
 src/CMakeFiles/skinning.dir/render_pass.cc.o: src/CMakeFiles/skinning.dir/flags.make
 src/CMakeFiles/skinning.dir/render_pass.cc.o: ../src/render_pass.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object src/CMakeFiles/skinning.dir/render_pass.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object src/CMakeFiles/skinning.dir/render_pass.cc.o"
 	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && /Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/skinning.dir/render_pass.cc.o -c /Users/kushangupta/Documents/GraphicsFinalProj/src/render_pass.cc
 
 src/CMakeFiles/skinning.dir/render_pass.cc.i: cmake_force
@@ -176,7 +189,7 @@ src/CMakeFiles/skinning.dir/render_pass.cc.s: cmake_force
 
 src/CMakeFiles/skinning.dir/scene.cpp.o: src/CMakeFiles/skinning.dir/flags.make
 src/CMakeFiles/skinning.dir/scene.cpp.o: ../src/scene.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object src/CMakeFiles/skinning.dir/scene.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object src/CMakeFiles/skinning.dir/scene.cpp.o"
 	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && /Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/skinning.dir/scene.cpp.o -c /Users/kushangupta/Documents/GraphicsFinalProj/src/scene.cpp
 
 src/CMakeFiles/skinning.dir/scene.cpp.i: cmake_force
@@ -189,7 +202,7 @@ src/CMakeFiles/skinning.dir/scene.cpp.s: cmake_force
 
 src/CMakeFiles/skinning.dir/shader_uniform.cc.o: src/CMakeFiles/skinning.dir/flags.make
 src/CMakeFiles/skinning.dir/shader_uniform.cc.o: ../src/shader_uniform.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object src/CMakeFiles/skinning.dir/shader_uniform.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object src/CMakeFiles/skinning.dir/shader_uniform.cc.o"
 	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && /Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/skinning.dir/shader_uniform.cc.o -c /Users/kushangupta/Documents/GraphicsFinalProj/src/shader_uniform.cc
 
 src/CMakeFiles/skinning.dir/shader_uniform.cc.i: cmake_force
@@ -202,7 +215,7 @@ src/CMakeFiles/skinning.dir/shader_uniform.cc.s: cmake_force
 
 src/CMakeFiles/skinning.dir/tinyfiledialogs.c.o: src/CMakeFiles/skinning.dir/flags.make
 src/CMakeFiles/skinning.dir/tinyfiledialogs.c.o: ../src/tinyfiledialogs.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building C object src/CMakeFiles/skinning.dir/tinyfiledialogs.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building C object src/CMakeFiles/skinning.dir/tinyfiledialogs.c.o"
 	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && /Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/skinning.dir/tinyfiledialogs.c.o   -c /Users/kushangupta/Documents/GraphicsFinalProj/src/tinyfiledialogs.c
 
 src/CMakeFiles/skinning.dir/tinyfiledialogs.c.i: cmake_force
@@ -216,6 +229,7 @@ src/CMakeFiles/skinning.dir/tinyfiledialogs.c.s: cmake_force
 # Object files for target skinning
 skinning_OBJECTS = \
 "CMakeFiles/skinning.dir/texture_to_render.cpp.o" \
+"CMakeFiles/skinning.dir/radiosityScene.cpp.o" \
 "CMakeFiles/skinning.dir/Cylinder.cpp.o" \
 "CMakeFiles/skinning.dir/animation_loader_saver.cc.o" \
 "CMakeFiles/skinning.dir/bone_geometry.cc.o" \
@@ -232,6 +246,7 @@ skinning_OBJECTS = \
 skinning_EXTERNAL_OBJECTS =
 
 bin/skinning: src/CMakeFiles/skinning.dir/texture_to_render.cpp.o
+bin/skinning: src/CMakeFiles/skinning.dir/radiosityScene.cpp.o
 bin/skinning: src/CMakeFiles/skinning.dir/Cylinder.cpp.o
 bin/skinning: src/CMakeFiles/skinning.dir/animation_loader_saver.cc.o
 bin/skinning: src/CMakeFiles/skinning.dir/bone_geometry.cc.o
@@ -251,7 +266,7 @@ bin/skinning: /usr/local/lib/libjpeg.dylib
 bin/skinning: libpmdreader.a
 bin/skinning: /usr/local/Cellar/glew/2.1.0_1/lib/libGlEW.a
 bin/skinning: src/CMakeFiles/skinning.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable ../bin/skinning"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Linking CXX executable ../bin/skinning"
 	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/skinning.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

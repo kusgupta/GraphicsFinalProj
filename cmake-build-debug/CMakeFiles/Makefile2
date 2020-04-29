@@ -105,7 +105,7 @@ CMakeFiles/pmdreader.dir/clean:
 CMakeFiles/utgraphicsutil.dir/all:
 	$(MAKE) -f CMakeFiles/utgraphicsutil.dir/build.make CMakeFiles/utgraphicsutil.dir/depend
 	$(MAKE) -f CMakeFiles/utgraphicsutil.dir/build.make CMakeFiles/utgraphicsutil.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=17,18,19 "Built target utgraphicsutil"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=18,19,20 "Built target utgraphicsutil"
 .PHONY : CMakeFiles/utgraphicsutil.dir/all
 
 # Build rule for subdir invocation for target.
@@ -151,12 +151,12 @@ src/CMakeFiles/skinning.dir/all: CMakeFiles/pmdreader.dir/all
 src/CMakeFiles/skinning.dir/all: CMakeFiles/utgraphicsutil.dir/all
 	$(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/depend
 	$(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=4,5,6,7,8,9,10,11,12,13,14,15,16 "Built target skinning"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles --progress-num=4,5,6,7,8,9,10,11,12,13,14,15,16,17 "Built target skinning"
 .PHONY : src/CMakeFiles/skinning.dir/all
 
 # Build rule for subdir invocation for target.
 src/CMakeFiles/skinning.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles 19
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles 20
 	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/skinning.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug/CMakeFiles 0
 .PHONY : src/CMakeFiles/skinning.dir/rule

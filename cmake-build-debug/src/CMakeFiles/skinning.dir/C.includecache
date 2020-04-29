@@ -6,35 +6,3 @@
 
 #IncludeRegexTransform: 
 
-/Users/kushangupta/Documents/GraphicsFinalProj/src/tinyfiledialogs.c
-stdio.h
--
-stdlib.h
--
-string.h
--
-ctype.h
--
-sys/stat.h
--
-tinyfiledialogs.h
-/Users/kushangupta/Documents/GraphicsFinalProj/src/tinyfiledialogs.h
-windows.h
--
-shlobj.h
--
-conio.h
--
-limits.h
--
-unistd.h
--
-dirent.h
--
-termios.h
--
-sys/utsname.h
--
-
-/Users/kushangupta/Documents/GraphicsFinalProj/src/tinyfiledialogs.h
-

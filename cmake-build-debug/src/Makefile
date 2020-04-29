@@ -287,6 +287,33 @@ procedure_geometry.cc.s:
 	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/procedure_geometry.cc.s
 .PHONY : procedure_geometry.cc.s
 
+radiosityScene.o: radiosityScene.cpp.o
+
+.PHONY : radiosityScene.o
+
+# target to build an object file
+radiosityScene.cpp.o:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/radiosityScene.cpp.o
+.PHONY : radiosityScene.cpp.o
+
+radiosityScene.i: radiosityScene.cpp.i
+
+.PHONY : radiosityScene.i
+
+# target to preprocess a source file
+radiosityScene.cpp.i:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/radiosityScene.cpp.i
+.PHONY : radiosityScene.cpp.i
+
+radiosityScene.s: radiosityScene.cpp.s
+
+.PHONY : radiosityScene.s
+
+# target to generate assembly for a file
+radiosityScene.cpp.s:
+	cd /Users/kushangupta/Documents/GraphicsFinalProj/cmake-build-debug && $(MAKE) -f src/CMakeFiles/skinning.dir/build.make src/CMakeFiles/skinning.dir/radiosityScene.cpp.s
+.PHONY : radiosityScene.cpp.s
+
 ray.o: ray.cpp.o
 
 .PHONY : ray.o
@@ -476,6 +503,9 @@ help:
 	@echo "... procedure_geometry.o"
 	@echo "... procedure_geometry.i"
 	@echo "... procedure_geometry.s"
+	@echo "... radiosityScene.o"
+	@echo "... radiosityScene.i"
+	@echo "... radiosityScene.s"
 	@echo "... ray.o"
 	@echo "... ray.i"
 	@echo "... ray.s"

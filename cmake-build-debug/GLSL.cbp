@@ -278,6 +278,12 @@
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/procedure_geometry.h">
 			<Option target="skinning"/>
 		</Unit>
+		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/radiosityScene.cpp">
+			<Option target="skinning"/>
+		</Unit>
+		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/radiosityScene.h">
+			<Option target="skinning"/>
+		</Unit>
 		<Unit filename="/Users/kushangupta/Documents/GraphicsFinalProj/src/ray.cpp">
 			<Option target="skinning"/>
 		</Unit>
