@@ -287,28 +287,7 @@ int main(int argc, char* argv[])
 		glCullFace(GL_BACK);
 
         
-        glBindFramebuffer(GL_FRAMEBUFFER, depthfb);
-        
-        
-        for (int i = 0; i < 6; i++) {
-            glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTexture[i], 0);
 
-            glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-            CHECK_GL_ERROR(glDrawElements(GL_TRIANGLES, floor_faces.size() * 3, GL_UNSIGNED_INT, 0));
-        
-           
-        }
-        
-        
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        // "Bind" the newly created texture : all future texture functions will modify this texture
-        
-        glBindFramebuffer(GL_FRAMEBUFFER, multifb);
-
-        
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
 
         
@@ -331,14 +310,6 @@ int main(int argc, char* argv[])
 			                              floor_faces.size() * 3,
 			                              GL_UNSIGNED_INT, 0));
 		}
-
-		float floor = int(gui->scrollBar / 240.0);
-
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, multifb);
-        glBlitFramebuffer(0, 0, 960, 720, 0, 0, 960, 720, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        
         
 
 

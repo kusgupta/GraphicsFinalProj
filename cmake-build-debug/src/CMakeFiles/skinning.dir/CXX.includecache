@@ -2816,18 +2816,6 @@ vector
 glm/glm.hpp
 -
 
-/Users/kushangupta/Documents/GraphicsFinalProj/src/radiosityScene.cpp
-radiosityScene.h
-/Users/kushangupta/Documents/GraphicsFinalProj/src/radiosityScene.h
-
-/Users/kushangupta/Documents/GraphicsFinalProj/src/radiosityScene.h
-cstdlib
--
-vector
--
-glm/glm.hpp
--
-
 /Users/kushangupta/Documents/GraphicsFinalProj/src/render_pass.h
 vector
 -
