@@ -2783,32 +2783,10 @@ debuggl.h
 -
 shaders/default.vert
 /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/default.vert
-shaders/blending.vert
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/blending.vert
 shaders/default.geom
 /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/default.geom
-shaders/default.frag
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/default.frag
 shaders/floor.frag
 /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/floor.frag
-shaders/bone.vert
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/bone.vert
-shaders/bone.frag
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/bone.frag
-shaders/cylinder.vert
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/cylinder.vert
-shaders/cylinder.frag
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/cylinder.frag
-shaders/preview.vert
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/preview.vert
-shaders/preview.frag
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/preview.frag
-shaders/shadow.vert
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/shadow.vert
-shaders/shadow.geom
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/shadow.geom
-shaders/shadow.frag
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/shadow.frag
 
 /Users/kushangupta/Documents/GraphicsFinalProj/src/procedure_geometry.h
 vector
@@ -2850,33 +2828,11 @@ iostream
 glm/gtx/io.hpp
 -
 
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/blending.vert
-
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/bone.frag
-
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/bone.vert
-
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/cylinder.frag
-
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/cylinder.vert
-
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/default.frag
-
 /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/default.geom
 
 /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/default.vert
 
 /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/floor.frag
-
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/preview.frag
-
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/preview.vert
-
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/shadow.frag
-
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/shadow.geom
-
-/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/shadow.vert
 
 /Users/kushangupta/Documents/GraphicsFinalProj/src/texture_to_render.h
 

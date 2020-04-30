@@ -1411,20 +1411,9 @@ src/CMakeFiles/skinning.dir/main.cc.o
  /Users/kushangupta/Documents/GraphicsFinalProj/src/procedure_geometry.h
  /Users/kushangupta/Documents/GraphicsFinalProj/src/render_pass.h
  /Users/kushangupta/Documents/GraphicsFinalProj/src/shader_uniform.h
- /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/blending.vert
- /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/bone.frag
- /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/bone.vert
- /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/cylinder.frag
- /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/cylinder.vert
- /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/default.frag
  /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/default.geom
  /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/default.vert
  /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/floor.frag
- /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/preview.frag
- /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/preview.vert
- /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/shadow.frag
- /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/shadow.geom
- /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/shadow.vert
  /Users/kushangupta/Documents/GraphicsFinalProj/src/texture_to_render.h
  /usr/local/include/GL/glew.h
  /usr/local/include/GLFW/glfw3.h

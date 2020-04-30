@@ -37,57 +37,12 @@ const char* vertex_shader =
 #include "shaders/default.vert"
 ;
 
-const char* blending_shader =
-#include "shaders/blending.vert"
-;
-
 const char* geometry_shader =
 #include "shaders/default.geom"
 ;
-
-const char* fragment_shader =
-#include "shaders/default.frag"
-;
-
 const char* floor_fragment_shader =
 #include "shaders/floor.frag"
 ;
-
-const char* bone_vertex_shader =
-#include "shaders/bone.vert"
-;
-
-const char* bone_fragment_shader =
-#include "shaders/bone.frag"
-;
-
-const char* cylinder_vertex_shader =
-#include "shaders/cylinder.vert"
-		;
-
-const char* cylinder_fragment_shader =
-#include "shaders/cylinder.frag"
-        ;
-
-const char* preview_vertex_shader =
-#include "shaders/preview.vert"
-        ;
-
-const char* preview_fragment_shader =
-#include "shaders/preview.frag"
-        ;
-
-const char* shadow_vertex_shader =
-#include "shaders/shadow.vert"
-        ;
-
-const char* shadow_geom_shader =
-#include "shaders/shadow.geom"
-        ;
-
-const char* shadow_fragment_shader =
-#include "shaders/shadow.frag"
-        ;
 
 
 
