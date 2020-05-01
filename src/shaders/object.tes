@@ -1,0 +1,65 @@
+R"zzz(#version 400 core
+layout (quads) in;
+uniform float time_elapsed;
+uniform int total_waves;
+uniform vec4 waveT;
+uniform int ocean_mode;
+uniform mat4 view;
+uniform vec4 light_position;
+in vec4 vs_light_dir[];
+in vec4 world_coord[];
+out vec4 vs_light_direction;
+out vec4 world_coordi;
+out int numWaves;
+out float derivative;
+void main()
+{
+    float u = gl_TessCoord[0];
+    float v = gl_TessCoord[1];
+
+    vec4 coords[4];
+
+    vec4 minimum = min(world_coord[0], min(world_coord[1], min(world_coord[2], world_coord[3])));
+    vec4 maximum = max(world_coord[0], max(world_coord[1], max(world_coord[2], world_coord[3])));
+
+    coords[0] = minimum;
+    coords[1] = minimum;
+    coords[1][0] = maximum[0];
+    coords[2] = maximum;
+    coords[2][0] = minimum[0];
+    coords[3] = maximum;
+
+    vec4 v1 = (1.0 - u) * coords[1] + u * coords[0];
+    vec4 v2 = (1.0 - u) * coords[3] + u * coords[2];
+
+    world_coordi = (1.0 - v) * v2 + v * v1;
+    world_coordi[3] = 1.0;
+    world_coordi[1] = -2.0;
+
+    if (ocean_mode == 1) {
+        numWaves = 0;
+        derivative = 0.0;
+        for (int i = 0; i < total_waves; i++) {
+            float xPos = world_coordi[0] - waveT[i];
+            if (xPos >= -0.5 && xPos <= 0.5) {
+                numWaves++;
+                derivative += -32.0 * xPos * exp(-xPos * xPos);
+            }
+
+            float clampXPos = clamp(xPos, -0.5, 0.5);
+            float displacement = 16.0 * exp(-clampXPos * clampXPos) - 16.0 * exp(-0.5 * 0.5);
+            world_coordi[1] = world_coordi[1] + displacement;
+        }
+
+        float waveX = 2 * world_coordi[0] + world_coordi[2];
+        float regDisplace = cos((waveX + time_elapsed) / 3.0);
+        float waveY = 2 * world_coordi[2] + world_coordi[0];
+        float regDisplace2 = cos((waveY + time_elapsed) / 3.0);
+        world_coordi[1] += regDisplace + regDisplace2;
+
+    }
+
+    gl_Position = view * world_coordi;
+    vs_light_direction = -gl_Position + view * light_position;
+}
+)zzz";

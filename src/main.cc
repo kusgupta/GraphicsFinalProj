@@ -7,6 +7,7 @@
 #include "gui.h"
 #include "chrono"
 #include "texture_to_render.h"
+#include "radiosityScene.h"
 
 #include <memory>
 #include <algorithm>
@@ -44,6 +45,17 @@ const char* floor_fragment_shader =
 #include "shaders/floor.frag"
 ;
 
+const char* object_vertex_shader =
+#include "shaders/object.vert"
+;
+
+const char* object_geometry_shader =
+#include "shaders/object.geom"
+;
+
+const char* object_fragment_shader =
+#include "shaders/object.frag"
+;
 
 
 //const char* preview_geom_shader =
@@ -82,84 +94,73 @@ GLFWwindow* init_glefw()
     return ret;
 }
 
+SceneObject make_box() {
+    SceneObject obj;
+
+    obj.vertices.push_back(glm::vec4(-500, -500, -500, 1));
+    obj.vertices.push_back(glm::vec4(-500, -500, 500, 1));
+    obj.vertices.push_back(glm::vec4(500, 500, -500, 1));
+    obj.vertices.push_back(glm::vec4(500, 500, 500, 1));
+    obj.vertices.push_back(glm::vec4(-500, 500, -500, 1));
+    obj.vertices.push_back(glm::vec4(-500, 500, 500, 1));
+    obj.vertices.push_back(glm::vec4(500, -500, -500, 1));
+    obj.vertices.push_back(glm::vec4(500, -500, 500, 1));
+
+    for (int i = 0; i < obj.vertices.size(); i++) {
+        obj.vertices[i].x /= 1;
+        obj.vertices[i].y /= 1;
+        obj.vertices[i].z /= 1;
+    }
+
+    obj.faces.push_back(glm::vec3(0, 1, 4));
+    obj.faces.push_back(glm::vec3(5, 1, 4));
+    obj.faces.push_back(glm::vec3(4, 2, 5));
+    obj.faces.push_back(glm::vec3(3, 5, 2));
+    obj.faces.push_back(glm::vec3(2, 6, 3));
+    obj.faces.push_back(glm::vec3(7, 3, 6));
+    obj.faces.push_back(glm::vec3(0, 6, 1));
+    obj.faces.push_back(glm::vec3(7, 1, 6));
+    obj.faces.push_back(glm::vec3(1, 5, 7));
+    obj.faces.push_back(glm::vec3(3, 7, 5));
+    obj.faces.push_back(glm::vec3(0, 4, 6));
+    obj.faces.push_back(glm::vec3(2, 6, 4));
+
+
+    obj.diffuse.push_back(glm::vec4(1.0, 0.0, 0.0, 1.0));
+    obj.diffuse.push_back(glm::vec4(0, 1.0, 0.0, 1.0));
+    obj.diffuse.push_back(glm::vec4(0, 0.0, 1.0, 1.0));
+    obj.diffuse.push_back(glm::vec4(0, 0.0, 0.0, 1.0));
+    obj.diffuse.push_back(glm::vec4(1.0, 1.0, 0.0, 1.0));
+    obj.diffuse.push_back(glm::vec4(1.0, 0.0, 1.0, 1.0));
+    obj.diffuse.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
+    obj.diffuse.push_back(glm::vec4(0.0, 1.0, 1.0, 1.0));
+    return obj;
+}
+
 int main(int argc, char* argv[])
 {
-	if (argc < 2) {
-		std::cerr << "Input model file is missing" << std::endl;
-		std::cerr << "Usage: " << argv[0] << " <PMD file>" << std::endl;
-		return -1;
-	}
+//	if (argc < 2) {
+//		std::cerr << "Input model file is missing" << std::endl;
+//		std::cerr << "Usage: " << argv[0] << " <PMD file>" << std::endl;
+//		return -1;
+//	}
 	GLFWwindow *window = init_glefw();
     gui = new GUI(window, main_view_width, main_view_height, preview_height);
-
-    //Generates textures and initializes them
-    GLuint depthTexture[6];
-    glGenTextures(6, depthTexture);
-
-    for (int i = 0; i < 6; i++) {
-        glBindTexture(GL_TEXTURE_2D, depthTexture[i]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 960, 720, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-    }
-
-    //Generates buffers
-    GLuint depthfb;
-    glGenFramebuffers(1, &depthfb);
-
-    //Generates samplers and initializes them
-    GLuint depthsampler[6];
-    glGenSamplers(6, depthsampler);
-
-    for (int i = 0; i < 6; i++) {
-        CHECK_GL_ERROR(glSamplerParameteri(depthsampler[i], GL_TEXTURE_WRAP_S, GL_REPEAT));
-        CHECK_GL_ERROR(glSamplerParameteri(depthsampler[i], GL_TEXTURE_WRAP_T, GL_REPEAT));
-        CHECK_GL_ERROR(glSamplerParameteri(depthsampler[i], GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-        CHECK_GL_ERROR(glSamplerParameteri(depthsampler[i], GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-    }
-
-    //Lambda functions for accessing the sampler and depth texture
-    std::function<int()> depthsamplerdata0 = [depthsampler] {return depthsampler[0]; };
-    std::function<int()> depthsamplerdata1 = [depthsampler] {return depthsampler[1]; };
-    std::function<int()> depthsamplerdata2 = [depthsampler] {return depthsampler[2]; };
-    std::function<int()> depthsamplerdata3 = [depthsampler] {return depthsampler[3]; };
-    std::function<int()> depthsamplerdata4 = [depthsampler] {return depthsampler[4]; };
-    std::function<int()> depthsamplerdata5 = [depthsampler] {return depthsampler[5]; };
-
-    std::function<int()> depthtexturedata0 = [depthTexture] {return depthTexture[0]; };
-    std::function<int()> depthtexturedata1 = [depthTexture] {return depthTexture[1]; };
-    std::function<int()> depthtexturedata2 = [depthTexture] {return depthTexture[2]; };
-    std::function<int()> depthtexturedata3 = [depthTexture] {return depthTexture[3]; };
-    std::function<int()> depthtexturedata4 = [depthTexture] {return depthTexture[4]; };
-    std::function<int()> depthtexturedata5 = [depthTexture] {return depthTexture[5]; };
-
-    auto shadow0 = make_texture("sampler0", depthsamplerdata0, 0, depthtexturedata0);
-    auto shadow1 = make_texture("sampler1", depthsamplerdata1, 1, depthtexturedata1);
-    auto shadow2 = make_texture("sampler2", depthsamplerdata2, 2, depthtexturedata2);
-    auto shadow3 = make_texture("sampler3", depthsamplerdata3, 3, depthtexturedata3);
-    auto shadow4 = make_texture("sampler4", depthsamplerdata4, 4, depthtexturedata4);
-    auto shadow5 = make_texture("sampler5", depthsamplerdata5, 5, depthtexturedata5);
-    
-    
-    
-    
-    
-    std::vector<glm::vec4> floor_vertices;
-	std::vector<glm::uvec3> floor_faces;
-	create_floor(floor_vertices, floor_faces);
 
 	Mesh mesh;
 
     std::chrono::time_point<std::chrono::steady_clock> previous = mesh.clock->now();
-    glGenFramebuffers(1, &mesh.Panel);
-    glBindFramebuffer(GL_FRAMEBUFFER, mesh.Panel);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-
-
+    SceneObject box = make_box();
+    LightSource light1;
+    light1.position = glm::vec4(-499, -499, -499, 1);
+    light1.color = glm::vec4(1, 1, 1, 1);
+//    light1.intensity =
 	/*
 	 * GUI object needs the mesh object for bone manipulation.
 	 */
 	gui->assignMesh(&mesh);
-    mesh.skeleton.refreshCache(const_cast<Configuration *>(mesh.getCurrentQ()));
+//    mesh.skeleton.refreshCache(const_cast<Configuration *>(mesh.getCurrentQ()));
     MatrixPointers mats; // Define MatrixPointers here for lambda to capture
 
 
@@ -186,44 +187,25 @@ int main(int argc, char* argv[])
 	auto std_proj = make_uniform("projection", proj_data);
 	auto std_radius = make_uniform("radius", radius_data);
 
+//	auto diffuse = std::make_shared<ShaderUniform<const glm::vec3*>>("diffuse", diffuse)
 
-	// Floor render pass
-	RenderDataInput floor_pass_input;
-	floor_pass_input.assign(0, "vertex_position", floor_vertices.data(), floor_vertices.size(), 4, GL_FLOAT);
-	floor_pass_input.assignIndex(floor_faces.data(), floor_faces.size(), 3);
-	RenderPass floor_pass(-1,
-			floor_pass_input,
-			{ vertex_shader, geometry_shader, floor_fragment_shader},
-             { floor_model, std_view, std_proj},
-			{ "fragment_color" }
-			);
+	// Object render pass
+	RenderDataInput object_pass_input;
+	object_pass_input.assign(0, "vertex_position", box.vertices.data(), box.vertices.size(), 4, GL_FLOAT);
+	object_pass_input.assign(1, "diffuse", box.diffuse.data(), box.diffuse.size(), 4, GL_FLOAT);
+	object_pass_input.assignIndex(box.faces.data(), box.faces.size(), 3);
+    RenderPass object_pass(-1,
+                          object_pass_input,
+                          { object_vertex_shader, nullptr, nullptr, object_geometry_shader, object_fragment_shader},
+                          {std_view, std_proj},
+                          { "fragment_color" }
+    );
 
 
 	float aspect = 0.0f;
 	std::cout << "center = " << mesh.getCenter() << "\n";
 
-	bool draw_floor = true;
-	bool draw_skeleton = true;
-	bool draw_object = true;
-	bool draw_cylinder = true;
-    gui->floor = &floor_pass;
-    gui->floor_faces = &floor_faces;
-    if (argc >= 3) {
-        mesh.loadAnimationFrom(argv[2]);
-    }
-
-   
-    GLuint multiTexture;
-    glGenTextures(1, &multiTexture);
-
-    // "Bind" the newly created texture : all future texture functions will modify this texture
-    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, multiTexture);
-    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, 960, 720, 0);
-
-    GLuint multifb;
-    glGenFramebuffers(1, &multifb);
-    glBindFramebuffer(GL_FRAMEBUFFER, multifb);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, multiTexture, 0);
+	bool draw_objects = true;
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -235,18 +217,11 @@ int main(int argc, char* argv[])
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_MULTISAMPLE);
 		glEnable(GL_BLEND);
-		glEnable(GL_CULL_FACE);
+//		glEnable(GL_CULL_FACE);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glCullFace(GL_BACK);
-
-        
-
-        
-
-        
-        
 
         gui->updateMatrices();
         mats = gui->getMatrixPointers();
@@ -257,13 +232,11 @@ int main(int argc, char* argv[])
 
         glfwSetWindowTitle(window, title.str().data());
 
-		// Then draw floor.
-		if (draw_floor) {
-			floor_pass.setup();
-			// Draw our triangles.
-			CHECK_GL_ERROR(glDrawElements(GL_TRIANGLES,
-			                              floor_faces.size() * 3,
-			                              GL_UNSIGNED_INT, 0));
+		if (draw_objects) {
+		    object_pass.setup();
+            CHECK_GL_ERROR(glDrawElements(GL_TRIANGLES,
+                                          box.faces.size() * 3,
+                                          GL_UNSIGNED_INT, 0));
 		}
         
 
@@ -271,7 +244,6 @@ int main(int argc, char* argv[])
 		// Poll and swap.
         // FIXME: Draw previews here, note you need to call glViewport
         
-        glViewport(main_view_width, 0, preview_bar_width, preview_bar_height);
 
 
         

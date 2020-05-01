@@ -1,0 +1,41 @@
+R"zzz(#version 400 core
+layout (vertices = 4) out;
+uniform int ocean_mode;
+uniform int total_waves;
+uniform vec4 waveT;
+uniform float inner;
+uniform float outer;
+in vec4 vs_light_direction[];
+in vec4 world_coordi[];
+out vec4 vs_light_dir[];
+out vec4 world_coord[];
+void main()
+{
+
+	 int i = 0;
+     float tessFactor = 1.0;
+     float distance = 0.0;
+     for (int i = 0; i < 4; i++) {
+         if (i < total_waves) {
+            for (int j = 0; j < 4; j++) {
+                distance += clamp(2.0 - abs(waveT[i] - world_coordi[j][0]), 0.0, 1.0);
+            };
+         }
+     }
+
+     tessFactor = clamp(distance, 1.0, 4.0);
+
+
+	 for (i = 0; i < 2; i++) {
+		gl_TessLevelInner[i] = floor(inner) * tessFactor * tessFactor;
+	 }
+
+	 for (i = 0; i < 4; i++) {
+		gl_TessLevelOuter[i] = floor(outer) * tessFactor * tessFactor;
+
+	 }
+	 vs_light_dir[gl_InvocationID] = vs_light_direction[gl_InvocationID];
+	 world_coord [gl_InvocationID] = world_coordi[gl_InvocationID];
+
+}
+)zzz";

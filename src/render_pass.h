@@ -74,7 +74,7 @@ class RenderPass {
 public:
     /*
      * Constructor
-     *      vao: the Vertex Array Object, pass -1 to create new
+     *      vao: the Vertex Array SceneObject, pass -1 to create new
      *      input: RenderDataInput object
      *      shaders: array of shaders, leave the second as nullptr if no GS present
      *      uniforms: array of ShaderUniform objects
@@ -118,7 +118,7 @@ private:
     std::vector<unsigned> glbuffers_, unilocs_, malocs_;
     std::vector<unsigned> gltextures_, matexids_;
     unsigned sampler2d_;
-    unsigned vs_ = 0, gs_ = 0, fs_ = 0;
+    unsigned vs_ = 0, tcs_ = 0, tes_ = 0, gs_ = 0, fs_ = 0;
     unsigned sp_ = 0;
 
     static unsigned compileShader(const char*, int type);

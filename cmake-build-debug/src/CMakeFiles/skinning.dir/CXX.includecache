@@ -20,6 +20,12 @@ string
 vector
 -
 
+../lib/utgraphicsutil/jpegio.h
+string
+-
+image.h
+../lib/utgraphicsutil/image.h
+
 ../lib/utgraphicsutil/material.h
 image.h
 ../lib/utgraphicsutil/image.h
@@ -2266,6 +2272,12 @@ projection.inl
 quaternion.inl
 ../third-party/glm/glm/gtx/quaternion.inl
 
+../third-party/glm/glm/gtx/quaternion.inl
+limits
+-
+../gtc/constants.hpp
+../third-party/glm/glm/gtc/constants.hpp
+
 ../third-party/glm/glm/gtx/range.hpp
 ../detail/setup.hpp
 ../third-party/glm/glm/detail/setup.hpp
@@ -2696,6 +2708,8 @@ detail/setup.hpp
 detail/func_vector_relational.inl
 ../third-party/glm/glm/detail/func_vector_relational.inl
 
+/Users/kushangupta/Documents/GraphicsFinalProj/src/Cylinder.h
+
 /Users/kushangupta/Documents/GraphicsFinalProj/src/bone_geometry.h
 GL/glew.h
 -
@@ -2728,6 +2742,46 @@ texture_to_render.h
 
 /Users/kushangupta/Documents/GraphicsFinalProj/src/config.h
 
+/Users/kushangupta/Documents/GraphicsFinalProj/src/gui.cc
+GL/glew.h
+-
+gui.h
+/Users/kushangupta/Documents/GraphicsFinalProj/src/gui.h
+config.h
+/Users/kushangupta/Documents/GraphicsFinalProj/src/config.h
+jpegio.h
+-
+bone_geometry.h
+/Users/kushangupta/Documents/GraphicsFinalProj/src/bone_geometry.h
+iostream
+-
+algorithm
+-
+debuggl.h
+-
+cmath
+-
+glm/gtc/matrix_access.hpp
+-
+glm/gtc/matrix_transform.hpp
+-
+glm/gtx/quaternion.hpp
+-
+glm/gtx/transform.hpp
+-
+glm/ext.hpp
+/Users/kushangupta/Documents/GraphicsFinalProj/src/glm/ext.hpp
+ray.h
+/Users/kushangupta/Documents/GraphicsFinalProj/src/ray.h
+scene.h
+/Users/kushangupta/Documents/GraphicsFinalProj/src/scene.h
+Cylinder.h
+/Users/kushangupta/Documents/GraphicsFinalProj/src/Cylinder.h
+texture_to_render.h
+/Users/kushangupta/Documents/GraphicsFinalProj/src/texture_to_render.h
+tinyfiledialogs.h
+/Users/kushangupta/Documents/GraphicsFinalProj/src/tinyfiledialogs.h
+
 /Users/kushangupta/Documents/GraphicsFinalProj/src/gui.h
 glm/glm.hpp
 -
@@ -2757,6 +2811,8 @@ chrono
 /Users/kushangupta/Documents/GraphicsFinalProj/src/chrono
 texture_to_render.h
 /Users/kushangupta/Documents/GraphicsFinalProj/src/texture_to_render.h
+radiosityScene.h
+/Users/kushangupta/Documents/GraphicsFinalProj/src/radiosityScene.h
 memory
 -
 algorithm
@@ -2787,11 +2843,39 @@ shaders/default.geom
 /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/default.geom
 shaders/floor.frag
 /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/floor.frag
+shaders/object.vert
+/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/object.vert
+shaders/object.geom
+/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/object.geom
+shaders/object.frag
+/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/object.frag
 
 /Users/kushangupta/Documents/GraphicsFinalProj/src/procedure_geometry.h
 vector
 -
 glm/glm.hpp
+-
+
+/Users/kushangupta/Documents/GraphicsFinalProj/src/radiosityScene.h
+cstdlib
+-
+vector
+-
+glm/glm.hpp
+-
+
+/Users/kushangupta/Documents/GraphicsFinalProj/src/ray.h
+
+/Users/kushangupta/Documents/GraphicsFinalProj/src/render_pass.cc
+GL/glew.h
+-
+render_pass.h
+/Users/kushangupta/Documents/GraphicsFinalProj/src/render_pass.h
+iostream
+-
+debuggl.h
+-
+map
 -
 
 /Users/kushangupta/Documents/GraphicsFinalProj/src/render_pass.h
@@ -2805,6 +2889,8 @@ material.h
 -
 shader_uniform.h
 /Users/kushangupta/Documents/GraphicsFinalProj/src/shader_uniform.h
+
+/Users/kushangupta/Documents/GraphicsFinalProj/src/scene.h
 
 /Users/kushangupta/Documents/GraphicsFinalProj/src/shader_uniform.h
 GL/glew.h
@@ -2834,7 +2920,15 @@ glm/gtx/io.hpp
 
 /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/floor.frag
 
+/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/object.frag
+
+/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/object.geom
+
+/Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/object.vert
+
 /Users/kushangupta/Documents/GraphicsFinalProj/src/texture_to_render.h
+
+/Users/kushangupta/Documents/GraphicsFinalProj/src/tinyfiledialogs.h
 
 /usr/local/include/GL/glew.h
 stddef.h

@@ -1409,11 +1409,15 @@ src/CMakeFiles/skinning.dir/main.cc.o
  /Users/kushangupta/Documents/GraphicsFinalProj/src/gui.h
  /Users/kushangupta/Documents/GraphicsFinalProj/src/main.cc
  /Users/kushangupta/Documents/GraphicsFinalProj/src/procedure_geometry.h
+ /Users/kushangupta/Documents/GraphicsFinalProj/src/radiosityScene.h
  /Users/kushangupta/Documents/GraphicsFinalProj/src/render_pass.h
  /Users/kushangupta/Documents/GraphicsFinalProj/src/shader_uniform.h
  /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/default.geom
  /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/default.vert
  /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/floor.frag
+ /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/object.frag
+ /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/object.geom
+ /Users/kushangupta/Documents/GraphicsFinalProj/src/shaders/object.vert
  /Users/kushangupta/Documents/GraphicsFinalProj/src/texture_to_render.h
  /usr/local/include/GL/glew.h
  /usr/local/include/GLFW/glfw3.h

@@ -12,6 +12,17 @@ void create_floor(std::vector<glm::vec4>& floor_vertices, std::vector<glm::uvec3
 	floor_faces.push_back(glm::uvec3(2, 3, 0));
 }
 
+void create_more_floors(std::vector<glm::vec4>& floor_vertices, std::vector<glm::uvec3>& floor_faces, int add_face, int add_x, int add_y, int add_z)
+{
+//    floor_vertices.push_back(glm::vec4(kFloorXMin + add_x, kFloorY + add_y, kFloorZMax + add_z, 1.0f));
+//    floor_vertices.push_back(glm::vec4(kFloorXMax + add_x, kFloorY + add_y, kFloorZMax + add_z, 1.0f));
+//    floor_vertices.push_back(glm::vec4(kFloorXMax + add_x, kFloorY + add_y, kFloorZMin + add_z, 1.0f));
+//    floor_vertices.push_back(glm::vec4(kFloorXMin + add_x, kFloorY + add_y, kFloorZMin + add_z, 1.0f));
+    floor_faces.push_back(glm::uvec3(0 + add_face, 1 + add_face, 2 + add_face));
+    floor_faces.push_back(glm::uvec3(2 + add_face, 3 + add_face, 0 + add_face));
+}
+
+
 void create_bone_mesh(LineMesh& bone_mesh)
 {
 	bone_mesh.vertices.push_back(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));

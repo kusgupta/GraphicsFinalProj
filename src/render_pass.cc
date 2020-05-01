@@ -80,12 +80,18 @@ RenderPass::RenderPass(int vao, // -1: create new VAO, otherwise use given VAO
 
     // Program first
     vs_ = compileShader(shaders[0], GL_VERTEX_SHADER);
-    gs_ = compileShader(shaders[1], GL_GEOMETRY_SHADER);
-    fs_ = compileShader(shaders[2], GL_FRAGMENT_SHADER);
+    tcs_ = compileShader(shaders[1], GL_TESS_CONTROL_SHADER);
+    tes_ = compileShader(shaders[2], GL_TESS_EVALUATION_SHADER);
+    gs_ = compileShader(shaders[3], GL_GEOMETRY_SHADER);
+    fs_ = compileShader(shaders[4], GL_FRAGMENT_SHADER);
     CHECK_GL_ERROR(sp_ = glCreateProgram());
     glAttachShader(sp_, vs_);
     glAttachShader(sp_, fs_);
     if (shaders[1])
+        glAttachShader(sp_, tcs_);
+    if (shaders[2])
+        glAttachShader(sp_, tes_);
+    if (shaders[3])
         glAttachShader(sp_, gs_);
 
     // ... and then buffers

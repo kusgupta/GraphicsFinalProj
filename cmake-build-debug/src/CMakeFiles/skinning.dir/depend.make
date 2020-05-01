@@ -1408,11 +1408,15 @@ src/CMakeFiles/skinning.dir/main.cc.o: ../src/config.h
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/gui.h
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/main.cc
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/procedure_geometry.h
+src/CMakeFiles/skinning.dir/main.cc.o: ../src/radiosityScene.h
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/render_pass.h
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/shader_uniform.h
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/shaders/default.geom
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/shaders/default.vert
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/shaders/floor.frag
+src/CMakeFiles/skinning.dir/main.cc.o: ../src/shaders/object.frag
+src/CMakeFiles/skinning.dir/main.cc.o: ../src/shaders/object.geom
+src/CMakeFiles/skinning.dir/main.cc.o: ../src/shaders/object.vert
 src/CMakeFiles/skinning.dir/main.cc.o: ../src/texture_to_render.h
 src/CMakeFiles/skinning.dir/main.cc.o: /usr/local/include/GL/glew.h
 src/CMakeFiles/skinning.dir/main.cc.o: /usr/local/include/GLFW/glfw3.h
