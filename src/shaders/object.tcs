@@ -34,6 +34,7 @@ void main()
 		gl_TessLevelOuter[i] = floor(outer) * tessFactor * tessFactor;
 
 	 }
+
 	 vs_light_dir[gl_InvocationID] = vs_light_direction[gl_InvocationID];
 	 world_coord [gl_InvocationID] = world_coordi[gl_InvocationID];
 
