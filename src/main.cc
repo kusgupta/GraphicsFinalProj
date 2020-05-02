@@ -188,7 +188,7 @@ int main(int argc, char* argv[])
 	auto std_radius = make_uniform("radius", radius_data);
 
 //	auto diffuse = std::make_shared<ShaderUniform<const glm::vec3*>>("diffuse", diffuse)
-
+//    box.makeTriangles(5);
 	// Object render pass
 	RenderDataInput object_pass_input;
 	object_pass_input.assign(0, "vertex_position", box.vertices.data(), box.vertices.size(), 4, GL_FLOAT);
