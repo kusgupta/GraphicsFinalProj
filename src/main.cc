@@ -8,6 +8,7 @@
 #include "chrono"
 #include "texture_to_render.h"
 #include "radiosityScene.h"
+#include "OBJ_Loader.h"
 
 #include <memory>
 #include <algorithm>
@@ -126,14 +127,14 @@ SceneObject make_box() {
     obj.faces.push_back(glm::vec3(2, 6, 4));
 
 
-    obj.diffuse.push_back(glm::vec4(1.0, 0.0, 0.0, 1.0));
-    obj.diffuse.push_back(glm::vec4(0, 1.0, 0.0, 1.0));
-    obj.diffuse.push_back(glm::vec4(0, 0.0, 1.0, 1.0));
-    obj.diffuse.push_back(glm::vec4(0, 0.0, 0.0, 1.0));
-    obj.diffuse.push_back(glm::vec4(1.0, 1.0, 0.0, 1.0));
-    obj.diffuse.push_back(glm::vec4(1.0, 0.0, 1.0, 1.0));
-    obj.diffuse.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
-    obj.diffuse.push_back(glm::vec4(0.0, 1.0, 1.0, 1.0));
+    obj.colors.push_back(glm::vec4(1.0, 0.0, 0.0, 1.0));
+    obj.colors.push_back(glm::vec4(0, 1.0, 0.0, 1.0));
+    obj.colors.push_back(glm::vec4(0, 0.0, 1.0, 1.0));
+    obj.colors.push_back(glm::vec4(0, 0.0, 0.0, 1.0));
+    obj.colors.push_back(glm::vec4(1.0, 1.0, 0.0, 1.0));
+    obj.colors.push_back(glm::vec4(1.0, 0.0, 1.0, 1.0));
+    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
+    obj.colors.push_back(glm::vec4(0.0, 1.0, 1.0, 1.0));
     return obj;
 }
 
@@ -144,16 +145,20 @@ int main(int argc, char* argv[])
 //		std::cerr << "Usage: " << argv[0] << " <PMD file>" << std::endl;
 //		return -1;
 //	}
+
 	GLFWwindow *window = init_glefw();
     gui = new GUI(window, main_view_width, main_view_height, preview_height);
 
 	Mesh mesh;
 
+    objl::Loader loader;
+    loader.LoadFile("../../green_interior.obj");
+
     std::chrono::time_point<std::chrono::steady_clock> previous = mesh.clock->now();
 
     SceneObject box = make_box();
     LightSource light1;
-    light1.position = glm::vec4(-499, -499, -499, 1);
+    light1.position = glm::vec4(0, 0, 0, 1);
     light1.color = glm::vec4(1, 1, 1, 1);
 //    light1.intensity =
 	/*
@@ -188,11 +193,21 @@ int main(int argc, char* argv[])
 	auto std_radius = make_uniform("radius", radius_data);
 
 //	auto diffuse = std::make_shared<ShaderUniform<const glm::vec3*>>("diffuse", diffuse)
-//    box.makeTriangles(5);
+    box.makeTriangles(7);
+    for (int passes = 0; passes < 8; passes++) {
+        box.calculate_light(light1);
+    }
+    box.updateColors();
+    for (int i = 0; i < box.triangles.size(); i++) {
+        Triangle tri1 = box.triangles[i];
+        if (!(box.triangles[i].color.x > 0 && box.triangles[i].color.y > 0 && box.triangles[i].color.z > 0))
+            std::cout << "ERROR" << std::endl;
+    }
+    std::cout << "DONE" << std::endl;
 	// Object render pass
 	RenderDataInput object_pass_input;
 	object_pass_input.assign(0, "vertex_position", box.vertices.data(), box.vertices.size(), 4, GL_FLOAT);
-	object_pass_input.assign(1, "diffuse", box.diffuse.data(), box.diffuse.size(), 4, GL_FLOAT);
+	object_pass_input.assign(1, "diffuse", box.colors.data(), box.colors.size(), 4, GL_FLOAT);
 	object_pass_input.assignIndex(box.faces.data(), box.faces.size(), 3);
     RenderPass object_pass(-1,
                           object_pass_input,
@@ -200,7 +215,7 @@ int main(int argc, char* argv[])
                           {std_view, std_proj},
                           { "fragment_color" }
     );
-
+//each triangle emits 1/num_triangles light, curtri = sum(light emitted per triangle, up to 1)
 
 	float aspect = 0.0f;
 	std::cout << "center = " << mesh.getCenter() << "\n";
@@ -221,7 +236,7 @@ int main(int argc, char* argv[])
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_LESS);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glCullFace(GL_BACK);
+//		glCullFace(GL_BACK);
 
         gui->updateMatrices();
         mats = gui->getMatrixPointers();

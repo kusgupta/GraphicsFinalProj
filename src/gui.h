@@ -74,7 +74,7 @@ private:
 	float camera_distance_ = 30.0;
 	float pan_speed_ = 5.0f;
 	float rotation_speed_ = 0.05f;
-	float zoom_speed_ = 20.0f;
+	float zoom_speed_ = 100.0f;
 	float aspect_;
 
 	glm::vec3 eye_ = glm::vec3(0.0f, 0.1f, camera_distance_);
