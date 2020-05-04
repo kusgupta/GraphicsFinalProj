@@ -152,13 +152,13 @@ int main(int argc, char* argv[])
 	Mesh mesh;
 
     objl::Loader loader;
-    loader.LoadFile("../../green_interior.obj");
+//    loader.LoadFile("../../desk.obj");
 
     std::chrono::time_point<std::chrono::steady_clock> previous = mesh.clock->now();
 
     SceneObject box = make_box();
     LightSource light1;
-    light1.position = glm::vec4(0, 0, 0, 1);
+    light1.position = glm::vec4(-400, -400, -400, 1);
     light1.color = glm::vec4(1, 1, 1, 1);
 //    light1.intensity =
 	/*

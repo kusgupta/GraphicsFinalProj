@@ -198,6 +198,7 @@ public:
                 unobstructed.push_back(tri2);
             }
         }
+        return unobstructed;
     }
 
     void calculate_light(LightSource lightSource) {
