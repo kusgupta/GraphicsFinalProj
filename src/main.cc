@@ -7,7 +7,7 @@
 #include "gui.h"
 #include "chrono"
 #include "texture_to_render.h"
-#include "radiosityScene.h"
+#include "RadiosityScene.h"
 #include "OBJ_Loader.h"
 
 #include <memory>
@@ -107,6 +107,7 @@ SceneObject make_box() {
     obj.vertices.push_back(glm::vec4(500, -500, -500, 1));
     obj.vertices.push_back(glm::vec4(500, -500, 500, 1));
 
+
     for (int i = 0; i < obj.vertices.size(); i++) {
         obj.vertices[i].x /= 1;
         obj.vertices[i].y /= 1;
@@ -135,7 +136,52 @@ SceneObject make_box() {
     obj.colors.push_back(glm::vec4(1.0, 0.0, 1.0, 1.0));
     obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
     obj.colors.push_back(glm::vec4(0.0, 1.0, 1.0, 1.0));
+
     return obj;
+}
+
+void add_box(float size, float scale, int box_num, SceneObject &obj) {
+    obj.vertices.push_back(glm::vec4(-size, -size, -size, 1));
+    obj.vertices.push_back(glm::vec4(-size, -size, size, 1));
+    obj.vertices.push_back(glm::vec4(size, size, -size, 1));
+    obj.vertices.push_back(glm::vec4(size, size, size, 1));
+    obj.vertices.push_back(glm::vec4(-size, size, -size, 1));
+    obj.vertices.push_back(glm::vec4(-size, size, size, 1));
+    obj.vertices.push_back(glm::vec4(size, -size, -size, 1));
+    obj.vertices.push_back(glm::vec4(size, -size, size, 1));
+
+
+    for (int i = 0; i < obj.vertices.size(); i++) {
+        obj.vertices[i].x /= scale;
+        obj.vertices[i].y /= scale;
+        obj.vertices[i].z /= scale;
+    }
+
+    int num_faces = box_num * 12;
+    obj.faces.push_back(glm::vec3(0 + num_faces, 1 + num_faces, 4 + num_faces));
+    obj.faces.push_back(glm::vec3(5 + num_faces, 1 + num_faces, 4 + num_faces));
+    obj.faces.push_back(glm::vec3(4 + num_faces, 2 + num_faces, 5 + num_faces));
+    obj.faces.push_back(glm::vec3(3 + num_faces, 5 + num_faces, 2 + num_faces));
+    obj.faces.push_back(glm::vec3(2 + num_faces, 6 + num_faces, 3 + num_faces));
+    obj.faces.push_back(glm::vec3(7 + num_faces, 3 + num_faces, 6 + num_faces));
+    obj.faces.push_back(glm::vec3(0 + num_faces, 6 + num_faces, 1 + num_faces));
+    obj.faces.push_back(glm::vec3(7 + num_faces, 1 + num_faces, 6 + num_faces));
+    obj.faces.push_back(glm::vec3(1 + num_faces, 5 + num_faces, 7 + num_faces));
+    obj.faces.push_back(glm::vec3(3 + num_faces, 7 + num_faces, 5 + num_faces));
+    obj.faces.push_back(glm::vec3(0 + num_faces, 4 + num_faces, 6 + num_faces));
+    obj.faces.push_back(glm::vec3(2 + num_faces, 6 + num_faces, 4 + num_faces));
+
+
+    obj.colors.push_back(glm::vec4(1.0, 0.0, 0.0, 1.0));
+    obj.colors.push_back(glm::vec4(0, 1.0, 0.0, 1.0));
+    obj.colors.push_back(glm::vec4(0, 0.0, 1.0, 1.0));
+    obj.colors.push_back(glm::vec4(0, 0.0, 0.0, 1.0));
+    obj.colors.push_back(glm::vec4(1.0, 1.0, 0.0, 1.0));
+    obj.colors.push_back(glm::vec4(1.0, 0.0, 1.0, 1.0));
+    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
+    obj.colors.push_back(glm::vec4(0.0, 1.0, 1.0, 1.0));
+
+//    return obj;
 }
 
 int main(int argc, char* argv[])
@@ -152,15 +198,22 @@ int main(int argc, char* argv[])
 	Mesh mesh;
 
     objl::Loader loader;
-//    loader.LoadFile("../../desk.obj");
+//    loader.LoadFile("../../Low-Poly_Models.obj");
+
+
 
     std::chrono::time_point<std::chrono::steady_clock> previous = mesh.clock->now();
 
     SceneObject box = make_box();
+//    SceneObject box;
+//    add_box(500, 1, 0, box);
+//    add_box(100, 1, 1, box);
+    box.loadScene(loader);
     LightSource light1;
     light1.position = glm::vec4(-400, -400, -400, 1);
+//    light1.position = glm::vec4(100, 100, 100, 1);
     light1.color = glm::vec4(1, 1, 1, 1);
-//    light1.intensity =
+    light1.intensity = glm::vec4(0.3, .3, .3, 1);
 	/*
 	 * GUI object needs the mesh object for bone manipulation.
 	 */
@@ -193,8 +246,13 @@ int main(int argc, char* argv[])
 	auto std_radius = make_uniform("radius", radius_data);
 
 //	auto diffuse = std::make_shared<ShaderUniform<const glm::vec3*>>("diffuse", diffuse)
-    box.makeTriangles(7);
-    for (int passes = 0; passes < 8; passes++) {
+    std::cout << box.vertices.size() << std::endl;
+    box.makeTriangles(1);
+//    std::cout << box.triangles.size() << std::endl;
+    box.make_form_factors();
+    std::cout << "Made form factors" << std::endl;
+    for (int passes = 0; passes < 3; passes++) {
+        std::cout << "pass " << passes << std::endl;
         box.calculate_light(light1);
     }
     box.updateColors();
@@ -253,15 +311,15 @@ int main(int argc, char* argv[])
                                           box.faces.size() * 3,
                                           GL_UNSIGNED_INT, 0));
 		}
-        
+
 
 
 		// Poll and swap.
         // FIXME: Draw previews here, note you need to call glViewport
-        
 
 
-        
+
+
         glfwPollEvents();
 		glfwSwapBuffers(window);
 	}

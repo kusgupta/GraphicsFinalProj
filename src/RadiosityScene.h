@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <vector>
 #include <glm/glm.hpp>
+#include "OBJ_Loader.h"
 
 
 class LightSource {
@@ -25,6 +26,7 @@ public:
     glm::vec4 diffuse_lighting;
     glm::vec4 accum = glm::vec4(0.0, 0.0, 0.0, 0.0);
     glm::vec4 color = glm::vec4(0.0, 0.0, 0.0, 0.0);
+    float *form_factors;
 
     Triangle(glm::vec4 pos1, glm::vec4 pos2, glm::vec4 pos3) {
         position[0] = pos1;
@@ -51,27 +53,58 @@ public:
     }
 
     bool intersects(glm::vec3 direction, glm::vec3 pos) {
-        glm::vec3 n = normal();
+//        glm::vec3 n = normal();
+//
+//        if (glm::dot(direction, n) == 0) {
+//            return false;
+//        }
+//
+//        float t = glm::dot(glm::vec3(position[0]) - pos, n) / glm::dot(direction, n);
+//
+//        if (t < 0.0001) {
+//            return false;
+//        }
+//
+//
+//        glm::vec3 intersection = pos + direction * t;
+//
+//        for (int i = 0; i < 3; i++) {
+//            glm::vec3 s1 = position[(i + 1) % 3] - position[i];
+//            glm::vec3 s2 = position[(i + 2) % 3] - position[i];
+//
+//            if (glm::dot(glm::cross(s1, s2), glm::cross(intersection - glm::vec3(position[i]), s2)) < 0) {
+//                return false;
+//            }
+//        }
+//
+//        return true;
+        glm::vec3 a_coords = position[0];
+        glm::vec3 b_coords = position[1];
+        glm::vec3 c_coords = position[2];
 
-        float t = glm::dot(glm::vec3(position[0]) - pos, n) / glm::dot(direction, n);
 
-        if (t < 0) {
+
+        glm::vec3 vab = (b_coords - a_coords);
+        glm::vec3 vbc = (c_coords - b_coords);
+        glm::vec3 vca = (a_coords - c_coords);
+
+        glm::vec3 n = glm::cross(vab, -vca);
+        double denominator = glm::dot(direction, n);
+        double t = glm::dot(a_coords - glm::vec3(pos), n)/denominator;
+        if( t <= .0001 ) {
             return false;
         }
 
+        glm::vec3 p = pos + t * direction;
+        glm::vec3 pa = (p - a_coords);
+        glm::vec3 pb = (p - b_coords);
+        glm::vec3 pc = (p - c_coords);
 
-        glm::vec3 intersection = pos + direction * t;
 
-        for (int i = 0; i < 3; i++) {
-            glm::vec3 s1 = position[(i + 1) % 3] - position[i];
-            glm::vec3 s2 = position[(i + 2) % 3] - position[i];
-
-            if (glm::dot(glm::cross(s1, s2), glm::cross(intersection - glm::vec3(position[i]), s2)) < 0) {
-                return false;
-            }
-        }
-
-        return true;
+        bool doesIntersect = glm::dot(glm::cross(vab, pa),n) >= 0;
+        doesIntersect = doesIntersect && (glm::dot(glm::cross(vbc, pb),n) >= 0);
+        doesIntersect = doesIntersect && (glm::dot(glm::cross(vca, pc),n) >= 0);
+        return doesIntersect;
     }
 };
 
@@ -83,6 +116,7 @@ public:
     std::vector<glm::vec4> vertices;
     std::vector<glm::uvec3> faces;
     std::vector<Triangle> triangles;
+    float *matrix;
 
     void makeTriangles(int level) {
         std::vector<glm::vec4> vertices_copy;
@@ -173,25 +207,72 @@ public:
         }
     }
 
+    void make_form_factors() {
+//        matrix = new float[triangles.size * triangles.size()];
+        for (int i = 0; i < triangles.size(); i++) {
+            Triangle *tri1 = &triangles[i];
+            tri1->form_factors = new float[triangles.size()];
+            for (int j = 0; j < triangles.size(); j++) {
+                if (j == i) {
+                    continue;
+                }
+
+                Triangle *tri2 = &triangles[j];
+
+                glm::vec3 c1 = tri1->centroid();
+                glm::vec3 c2 = tri2->centroid();
+
+                glm::vec3 n1 = tri1->normal();
+                glm::vec3 n2 = tri2->normal();
+
+
+                glm::vec3 cDist = c2 - c1;
+                float distance = glm::length(cDist) / 30;
+                cDist = glm::normalize(cDist);
+                float angle1 = glm::acos(glm::dot(n1, cDist));
+                float angle2 = glm::acos(glm::dot(n2, cDist));
+
+
+
+                float form_factor = glm::abs(glm::cos(angle1) * glm::cos(angle2) / (3.14 * distance * distance));
+                tri1->form_factors[j] = form_factor;
+            }
+
+        }
+    }
+
     float attenuation(float distance) {
         float c = .10f;
         return 1 / (c + c * distance);// + c * distance * distance);
 //        return 1.0f;
     }
 
-    std::vector<Triangle> unobstructed_triangles(Triangle *tri1) {
+    std::vector<Triangle> unobstructed_triangles(int tri1_index) {
         std::vector<Triangle> unobstructed;
-        for (int i = 0; i < triangles.size(); i++) {
-            Triangle tri2 = triangles[i];
-            glm::vec3 direction = glm::normalize(tri2.centroid() - tri1->centroid());
-            float distance = glm::distance(tri1->centroid(), tri2.centroid());
+        std::vector<Triangle> rand_list;
+        rand_list = triangles;
+        auto tri1 = rand_list[tri1_index];
+        //TODO: DON'T USE RAND
+//        for (int i = 0; i < 100; i++) {
+//            int index = rand() % triangles.size();
+//            rand_list.push_back(triangles[index]);
+//        }
+
+        for (int i = 0; i < rand_list.size(); i++) {
+            Triangle tri2 = rand_list[i];
+            if (i == tri1_index) {
+                continue;
+            }
+            glm::vec3 direction = glm::normalize(tri2.centroid() - tri1.centroid());
+            float distance = glm::distance(tri1.centroid(), tri2.centroid());
             bool intersected = false;
-            for (int j = 0; j < triangles.size(); j++) {
+            for (int j = 0; j < rand_list.size(); j++) {
                 if (j == i) {
                     continue;
                 }
-                if (triangles[j].intersects(tri1->centroid(), direction)){
+                if (rand_list[j].intersects(tri1.centroid(), direction)){
                     intersected = true;
+                    break;
                 }
             }
             if (!intersected) {
@@ -201,7 +282,7 @@ public:
         return unobstructed;
     }
 
-    void calculate_light(LightSource lightSource) {
+    void calculate_light(LightSource &lightSource) {
         //Leftover light is initially 0
         //Leftover accumulates as it gets light
         //Diffuse is the amount of light to diffuse currently
@@ -220,8 +301,31 @@ public:
                 centroid /= 3.0;
 
                 glm::vec3 lightDir = glm::normalize(lightSource.position - centroid);
-                float distance = glm::distance(lightSource.position, centroid) / 80;
-                tri->diffuse_lighting = tri->diffuse_constant * attenuation(distance) * lightSource.intensity * glm::abs(glm::dot(lightDir, normal));
+
+                bool intersected = false;
+                for (int j = 0; j < triangles.size(); j++) {
+                    if (i == j) {
+                        continue;
+                    }
+
+                    if (triangles[j].intersects(lightDir, centroid)) {
+                        intersected = true;
+                        break;
+                    }
+
+
+                }
+
+                if (intersected) {
+                    tri->diffuse_lighting = glm::vec4(0.0, 0.0, 0.0, 1);
+                }
+
+                else {
+                    float distance = glm::distance(lightSource.position, centroid) / 30;
+                    tri->diffuse_lighting = tri->diffuse_constant * attenuation(distance) * lightSource.intensity *
+                                            glm::abs(glm::dot(lightDir, normal));
+                }
+
                 tri->color = tri->diffuse_lighting;
 
 //                tri->color = glm::vec4(1.0f,1.0f, 1.0f, 1.0f);
@@ -232,36 +336,24 @@ public:
             for (int i = 0; i < triangles.size(); i++) {
                 Triangle *tri1 = &triangles[i];
                 // TODO: Create unobstructed triangle list for the next for loop
-                std::vector<Triangle> unobstructed = unobstructed_triangles(tri1);
-                for (int j = 0; j < unobstructed.size(); j++) {
+//                std::vector<Triangle> unobstructed = triangles;
+                std::vector<Triangle> unobstructed = unobstructed_triangles(i);
+                if (i % 1000 == 0) {
+                    std::cout << i << std::endl;
+                }
+                for (int j = 0; j < triangles.size(); j++) {
                     if (j == i) {
                         continue;
                     }
-
-                    Triangle *tri2 = &unobstructed[i];
-
-                    glm::vec3 c1 = tri1->centroid();
-                    glm::vec3 c2 = tri2->centroid();
-
-                    glm::vec3 n1 = tri1->normal();
-                    glm::vec3 n2 = tri2->normal();
-
-
-                    glm::vec3 cDist = c2 - c1;
-                    float distance = glm::length(cDist) / 80;
-                    cDist = glm::normalize(cDist);
-                    float angle1 = glm::acos(glm::dot(n1, cDist));
-                    float angle2 = glm::acos(glm::dot(n2, cDist));
-
-
-
-                    float form_factor = glm::abs(glm::cos(angle1) * glm::cos(angle2) / (3.14 * distance * distance));
+                    Triangle *tri2 = &triangles[j];
+                    float form_factor = tri1->form_factors[j];
                     tri1->accum += (form_factor * tri2->diffuse_lighting) / (triangles.size() * 1.0f);
                 }
 
             }
 
             for (int i = 0; i < triangles.size(); i++) {
+                Triangle tri = triangles[i];
                 triangles[i].diffuse_lighting = triangles[i].diffuse_constant * triangles[i].accum;
                 triangles[i].color += triangles[i].diffuse_lighting;
                 triangles[i].accum = glm::vec4(0.0, 0.0, 0.0, 0.0);
@@ -269,10 +361,50 @@ public:
         }
     }
 
+    void loadScene(objl::Loader loader) {
+        // THIS IS FOR PER OBJECT LOADING
+//        int total_size = 0;
+//        int face_size = 0;
+//        for (int i = 0; i < loader.LoadedMeshes.size(); i++) {
+//            auto mesh = loader.LoadedMeshes[i];
+//            SceneObject object;
+//            total_size += mesh.Vertices.size();
+//            face_size += mesh.Indices.size();
+//            for (int j = 0; j < mesh.Vertices.size(); j++) {
+//                auto vert = mesh.Vertices[j];
+//                object.vertices.push_back(glm::vec4(vert.Position.X, vert.Position.Y, vert.Position.Z, 1));
+//            }
+//            for (int j = 0; j < mesh.Indices.size(); j+=3) {
+//                auto index1 = mesh.Indices[j];
+//                auto index2 = mesh.Indices[j];
+//                auto index3 = mesh.Indices[j];
+//                object.faces.push_back(glm::vec3(index1, index2, index3));
+//                Triangle tri(object.vertices[index1], object.vertices[index2], object.vertices[index3]);
+//            }
+//        }
+
+        for (int i = 0; i < loader.LoadedVertices.size(); i++) {
+            auto vert = loader.LoadedVertices[i];
+            vertices.push_back(glm::vec4(vert.Position.X, vert.Position.Y, vert.Position.Z, 1));
+        }
+        for (int i = 0; i < loader.LoadedIndices.size(); i += 3) {
+            auto index1 = loader.LoadedIndices[i];
+            auto index2 = loader.LoadedIndices[i + 1];
+            auto index3 = loader.LoadedIndices[i + 2];
+            faces.push_back(glm::vec3(index1, index2, index3));
+            Triangle tri(vertices[index1], vertices[index2], vertices[index3]);
+        }
+
+
+        //
+    }
+
 };
 
-class radiosityScene {
+class RadiosityScene {
     std::vector<SceneObject> objects;
+
+
 };
 
 #endif //GLSL_RADIOSITYSCENE_H
