@@ -65,7 +65,7 @@ const char* object_fragment_shader =
 // FIXME: Add more shaders here.
 
 void ErrorCallback(int error, const char* description) {
-	std::cerr << "GLFW Error: " << description << "\n";
+    std::cerr << "GLFW Error: " << description << "\n";
 }
 
 
@@ -95,17 +95,17 @@ GLFWwindow* init_glefw()
     return ret;
 }
 
-SceneObject make_box() {
+SceneObject make_box(float size) {
     SceneObject obj;
 
-    obj.vertices.push_back(glm::vec4(-500, -500, -500, 1));
-    obj.vertices.push_back(glm::vec4(-500, -500, 500, 1));
-    obj.vertices.push_back(glm::vec4(500, 500, -500, 1));
-    obj.vertices.push_back(glm::vec4(500, 500, 500, 1));
-    obj.vertices.push_back(glm::vec4(-500, 500, -500, 1));
-    obj.vertices.push_back(glm::vec4(-500, 500, 500, 1));
-    obj.vertices.push_back(glm::vec4(500, -500, -500, 1));
-    obj.vertices.push_back(glm::vec4(500, -500, 500, 1));
+    obj.vertices.push_back(glm::vec4(-size, -size, -size, 1));
+    obj.vertices.push_back(glm::vec4(-size, -size, size, 1));
+    obj.vertices.push_back(glm::vec4(size, size, -size, 1));
+    obj.vertices.push_back(glm::vec4(size, size, size, 1));
+    obj.vertices.push_back(glm::vec4(-size, size, -size, 1));
+    obj.vertices.push_back(glm::vec4(-size, size, size, 1));
+    obj.vertices.push_back(glm::vec4(size, -size, -size, 1));
+    obj.vertices.push_back(glm::vec4(size, -size, size, 1));
 
 
     for (int i = 0; i < obj.vertices.size(); i++) {
@@ -157,7 +157,7 @@ void add_box(float size, float scale, int box_num, SceneObject &obj) {
         obj.vertices[i].z /= scale;
     }
 
-    int num_faces = box_num * 12;
+    int num_faces = box_num * 8;
     obj.faces.push_back(glm::vec3(0 + num_faces, 1 + num_faces, 4 + num_faces));
     obj.faces.push_back(glm::vec3(5 + num_faces, 1 + num_faces, 4 + num_faces));
     obj.faces.push_back(glm::vec3(4 + num_faces, 2 + num_faces, 5 + num_faces));
@@ -192,10 +192,10 @@ int main(int argc, char* argv[])
 //		return -1;
 //	}
 
-	GLFWwindow *window = init_glefw();
+    GLFWwindow *window = init_glefw();
     gui = new GUI(window, main_view_width, main_view_height, preview_height);
 
-	Mesh mesh;
+    Mesh mesh;
 
     objl::Loader loader;
 //    loader.LoadFile("../../Low-Poly_Models.obj");
@@ -204,46 +204,46 @@ int main(int argc, char* argv[])
 
     std::chrono::time_point<std::chrono::steady_clock> previous = mesh.clock->now();
 
-    SceneObject box = make_box();
+    SceneObject box = make_box(500.0);
 //    SceneObject box;
 //    add_box(500, 1, 0, box);
-//    add_box(100, 1, 1, box);
-    box.loadScene(loader);
+    add_box(100, 1, 1, box);
+    //box.loadScene(loader);
     LightSource light1;
     light1.position = glm::vec4(-400, -400, -400, 1);
 //    light1.position = glm::vec4(100, 100, 100, 1);
     light1.color = glm::vec4(1, 1, 1, 1);
-    light1.intensity = glm::vec4(0.3, .3, .3, 1);
-	/*
-	 * GUI object needs the mesh object for bone manipulation.
-	 */
-	gui->assignMesh(&mesh);
+    light1.intensity = glm::vec4(1, 1, 1, 1);
+    /*
+     * GUI object needs the mesh object for bone manipulation.
+     */
+    gui->assignMesh(&mesh);
 //    mesh.skeleton.refreshCache(const_cast<Configuration *>(mesh.getCurrentQ()));
     MatrixPointers mats; // Define MatrixPointers here for lambda to capture
 
 
     GUI gui2 = *gui;
-	// FIXME: add more lambdas for data_source if you want to use RenderPass.
-	//        Otherwise, do whatever you like here
-	std::function<const glm::mat4*()> model_data = [&mats]() {
-		return mats.model;
-	};
+    // FIXME: add more lambdas for data_source if you want to use RenderPass.
+    //        Otherwise, do whatever you like here
+    std::function<const glm::mat4*()> model_data = [&mats]() {
+        return mats.model;
+    };
 
-	std::function<glm::mat4()> view_data = [&mats]() { return *mats.view; };
-	std::function<glm::mat4()> proj_data = [&mats]() { return *mats.projection; };
-	std::function<glm::mat4()> identity_mat = [](){ return glm::mat4(1.0f); };
-	std::function<glm::vec3()> cam_data = [&gui2](){ return gui->getCamera(); };
+    std::function<glm::mat4()> view_data = [&mats]() { return *mats.view; };
+    std::function<glm::mat4()> proj_data = [&mats]() { return *mats.projection; };
+    std::function<glm::mat4()> identity_mat = [](){ return glm::mat4(1.0f); };
+    std::function<glm::vec3()> cam_data = [&gui2](){ return gui->getCamera(); };
     float cylinder_rad = kCylinderRadius;
     std::function<float()> radius_data = [&cylinder_rad] () {
         return cylinder_rad;
     };
 
-	auto std_model = std::make_shared<ShaderUniform<const glm::mat4*>>("model", model_data);
+    auto std_model = std::make_shared<ShaderUniform<const glm::mat4*>>("model", model_data);
     auto floor_model = make_uniform("model", identity_mat);
-	auto std_view = make_uniform("view", view_data);
-	auto std_camera = make_uniform("camera_position", cam_data);
-	auto std_proj = make_uniform("projection", proj_data);
-	auto std_radius = make_uniform("radius", radius_data);
+    auto std_view = make_uniform("view", view_data);
+    auto std_camera = make_uniform("camera_position", cam_data);
+    auto std_proj = make_uniform("projection", proj_data);
+    auto std_radius = make_uniform("radius", radius_data);
 
 //	auto diffuse = std::make_shared<ShaderUniform<const glm::vec3*>>("diffuse", diffuse)
     std::cout << box.vertices.size() << std::endl;
@@ -262,23 +262,23 @@ int main(int argc, char* argv[])
             std::cout << "ERROR" << std::endl;
     }
     std::cout << "DONE" << std::endl;
-	// Object render pass
-	RenderDataInput object_pass_input;
-	object_pass_input.assign(0, "vertex_position", box.vertices.data(), box.vertices.size(), 4, GL_FLOAT);
-	object_pass_input.assign(1, "diffuse", box.colors.data(), box.colors.size(), 4, GL_FLOAT);
-	object_pass_input.assignIndex(box.faces.data(), box.faces.size(), 3);
+    // Object render pass
+    RenderDataInput object_pass_input;
+    object_pass_input.assign(0, "vertex_position", box.vertices.data(), box.vertices.size(), 4, GL_FLOAT);
+    object_pass_input.assign(1, "diffuse", box.colors.data(), box.colors.size(), 4, GL_FLOAT);
+    object_pass_input.assignIndex(box.faces.data(), box.faces.size(), 3);
     RenderPass object_pass(-1,
-                          object_pass_input,
-                          { object_vertex_shader, nullptr, nullptr, object_geometry_shader, object_fragment_shader},
-                          {std_view, std_proj},
-                          { "fragment_color" }
+                           object_pass_input,
+                           { object_vertex_shader, nullptr, nullptr, object_geometry_shader, object_fragment_shader},
+                           {std_view, std_proj},
+                           { "fragment_color" }
     );
 //each triangle emits 1/num_triangles light, curtri = sum(light emitted per triangle, up to 1)
 
-	float aspect = 0.0f;
-	std::cout << "center = " << mesh.getCenter() << "\n";
+    float aspect = 0.0f;
+    std::cout << "center = " << mesh.getCenter() << "\n";
 
-	bool draw_objects = true;
+    bool draw_objects = true;
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -286,14 +286,14 @@ int main(int argc, char* argv[])
         // Setup some basic window stuff.
         glfwGetFramebufferSize(window, &window_width, &window_height);
         glViewport(0, 0, main_view_width, main_view_height);
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_BLEND);
-//		glEnable(GL_CULL_FACE);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glDepthFunc(GL_LESS);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_MULTISAMPLE);
+        glEnable(GL_BLEND);
+        //glEnable(GL_CULL_FACE);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glDepthFunc(GL_LESS);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //		glCullFace(GL_BACK);
 
         gui->updateMatrices();
@@ -305,25 +305,25 @@ int main(int argc, char* argv[])
 
         glfwSetWindowTitle(window, title.str().data());
 
-		if (draw_objects) {
-		    object_pass.setup();
+        if (draw_objects) {
+            object_pass.setup();
             CHECK_GL_ERROR(glDrawElements(GL_TRIANGLES,
                                           box.faces.size() * 3,
                                           GL_UNSIGNED_INT, 0));
-		}
+        }
 
 
 
-		// Poll and swap.
+        // Poll and swap.
         // FIXME: Draw previews here, note you need to call glViewport
 
 
 
 
         glfwPollEvents();
-		glfwSwapBuffers(window);
-	}
-	glfwDestroyWindow(window);
-	glfwTerminate();
-	exit(EXIT_SUCCESS);
+        glfwSwapBuffers(window);
+    }
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    exit(EXIT_SUCCESS);
 }

@@ -52,32 +52,36 @@ public:
         return (position[0] + position[1] + position[2]) / 3.0f;
     }
 
-    bool intersects(glm::vec3 direction, glm::vec3 pos) {
-//        glm::vec3 n = normal();
-//
-//        if (glm::dot(direction, n) == 0) {
-//            return false;
-//        }
-//
-//        float t = glm::dot(glm::vec3(position[0]) - pos, n) / glm::dot(direction, n);
-//
-//        if (t < 0.0001) {
-//            return false;
-//        }
-//
-//
-//        glm::vec3 intersection = pos + direction * t;
-//
-//        for (int i = 0; i < 3; i++) {
-//            glm::vec3 s1 = position[(i + 1) % 3] - position[i];
-//            glm::vec3 s2 = position[(i + 2) % 3] - position[i];
-//
-//            if (glm::dot(glm::cross(s1, s2), glm::cross(intersection - glm::vec3(position[i]), s2)) < 0) {
-//                return false;
-//            }
-//        }
-//
-//        return true;
+    bool intersects(glm::vec3 direction, glm::vec3 pos, float& t) {
+        glm::vec3 n = normal();
+
+        if (glm::dot(direction, n) == 0) {
+            return false;
+        }
+
+        t = glm::dot(glm::vec3(position[0]) - pos, n) / glm::dot(direction, n);
+
+        if (t < 0) {
+            return false;
+        }
+
+
+        glm::vec3 intersection = pos + direction * t;
+
+        for (int i = 0; i < 3; i++) {
+            //First side and second side
+            glm::vec3 s1 = position[(i + 1) % 3] - position[i];
+            glm::vec3 s2 = position[(i + 2) % 3] - position[i];
+
+            //If it's outside the triangle, then the side made by the intersection - position should be in same dir
+            if (glm::dot(glm::cross(s1, s2), glm::cross(intersection - glm::vec3(position[i]), s2)) < 0) {
+                return false;
+            }
+        }
+
+        return true;
+
+        /*
         glm::vec3 a_coords = position[0];
         glm::vec3 b_coords = position[1];
         glm::vec3 c_coords = position[2];
@@ -105,6 +109,7 @@ public:
         doesIntersect = doesIntersect && (glm::dot(glm::cross(vbc, pb),n) >= 0);
         doesIntersect = doesIntersect && (glm::dot(glm::cross(vca, pc),n) >= 0);
         return doesIntersect;
+        */
     }
 };
 
@@ -167,7 +172,7 @@ public:
             }
             for (int i = 0; i < 12; i++) {
 //                if (i % 2 == 0)
-                    colors.push_back(glm::vec4(1.0, 1.0, 0.0, 1.0));
+                colors.push_back(glm::vec4(1.0, 1.0, 0.0, 1.0));
 //                else
 //                    diffuse.push_back(glm::vec4(1.0, 0.0, 0.0, 1.0));
             }
@@ -227,7 +232,7 @@ public:
 
 
                 glm::vec3 cDist = c2 - c1;
-                float distance = glm::length(cDist) / 30;
+                float distance = glm::length(cDist) / 10;
                 cDist = glm::normalize(cDist);
                 float angle1 = glm::acos(glm::dot(n1, cDist));
                 float angle2 = glm::acos(glm::dot(n2, cDist));
@@ -235,6 +240,12 @@ public:
 
 
                 float form_factor = glm::abs(glm::cos(angle1) * glm::cos(angle2) / (3.14 * distance * distance));
+                /*
+                if (form_factor >= 0.01) {
+                    std::cout << "lol" << std::endl;
+                }
+                */
+
                 tri1->form_factors[j] = form_factor;
             }
 
@@ -250,31 +261,35 @@ public:
     std::vector<Triangle> unobstructed_triangles(int tri1_index) {
         std::vector<Triangle> unobstructed;
         std::vector<Triangle> rand_list;
-        rand_list = triangles;
-        auto tri1 = rand_list[tri1_index];
+
+        auto tri1 = triangles[tri1_index];
         //TODO: DON'T USE RAND
 //        for (int i = 0; i < 100; i++) {
 //            int index = rand() % triangles.size();
 //            rand_list.push_back(triangles[index]);
 //        }
 
-        for (int i = 0; i < rand_list.size(); i++) {
-            Triangle tri2 = rand_list[i];
+        for (int i = 0; i < triangles.size(); i++) {
+            Triangle tri2 = triangles[i];
             if (i == tri1_index) {
                 continue;
             }
+
             glm::vec3 direction = glm::normalize(tri2.centroid() - tri1.centroid());
-            float distance = glm::distance(tri1.centroid(), tri2.centroid());
             bool intersected = false;
-            for (int j = 0; j < rand_list.size(); j++) {
-                if (j == i) {
+            float earliestT = glm::length(tri2.centroid() - tri1.centroid());
+            for (int j = 0; j < triangles.size(); j++) {
+                if (j == i || j == tri1_index) {
                     continue;
                 }
-                if (rand_list[j].intersects(tri1.centroid(), direction)){
+
+                float possibleT;
+                if (triangles[j].intersects(direction, tri1.centroid(), possibleT) && possibleT < earliestT){
                     intersected = true;
                     break;
                 }
             }
+
             if (!intersected) {
                 unobstructed.push_back(tri2);
             }
@@ -289,9 +304,11 @@ public:
         //Vertices will contain the accumulated light
         if (!lightSource.used) {
             for (int i = 0; i < triangles.size(); i++) {
+                //For each triangle
                 Triangle *tri = &triangles[i];
                 glm::vec3 normal = tri->normal();
 
+                //Calculates centroid and light direction
                 glm::vec4 centroid(0.0, 0.0, 0.0, 0.0);
 
                 for (int i = 0; i < 3; i++) {
@@ -300,15 +317,21 @@ public:
 
                 centroid /= 3.0;
 
-                glm::vec3 lightDir = glm::normalize(lightSource.position - centroid);
+
+                glm::vec3 lightDir = glm::normalize(centroid - lightSource.position);
 
                 bool intersected = false;
+                //Multiplying this with lightDir + lightSource gets the centroid
+                float earliestT = glm::length(centroid - lightSource.position);
                 for (int j = 0; j < triangles.size(); j++) {
+                    //If there is a single triangle blocking the light, then return true
                     if (i == j) {
                         continue;
                     }
 
-                    if (triangles[j].intersects(lightDir, centroid)) {
+                    float possibleT;
+                    if (triangles[j].intersects(lightDir, lightSource.position, possibleT) && earliestT > possibleT) {
+                        //The ray must intersect the triangle and must do so earlier than the triangle we are computing light for
                         intersected = true;
                         break;
                     }
@@ -321,7 +344,7 @@ public:
                 }
 
                 else {
-                    float distance = glm::distance(lightSource.position, centroid) / 30;
+                    float distance = glm::distance(lightSource.position, centroid) / 40;
                     tri->diffuse_lighting = tri->diffuse_constant * attenuation(distance) * lightSource.intensity *
                                             glm::abs(glm::dot(lightDir, normal));
                 }
@@ -338,16 +361,15 @@ public:
                 // TODO: Create unobstructed triangle list for the next for loop
 //                std::vector<Triangle> unobstructed = triangles;
                 std::vector<Triangle> unobstructed = unobstructed_triangles(i);
-                if (i % 1000 == 0) {
-                    std::cout << i << std::endl;
-                }
-                for (int j = 0; j < triangles.size(); j++) {
+
+
+                for (int j = 0; j < unobstructed.size(); j++) {
                     if (j == i) {
                         continue;
                     }
-                    Triangle *tri2 = &triangles[j];
+                    Triangle tri2 = unobstructed[j];
                     float form_factor = tri1->form_factors[j];
-                    tri1->accum += (form_factor * tri2->diffuse_lighting) / (triangles.size() * 1.0f);
+                    tri1->accum += (form_factor * tri2.diffuse_lighting);
                 }
 
             }
