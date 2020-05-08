@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <vector>
 #include <glm/glm.hpp>
+#include <thread>
 #include "OBJ_Loader.h"
 
 
@@ -22,24 +23,32 @@ class Triangle {
 
 public:
     glm::vec4 position[3];
+    glm::vec4 vertex_color[3];
     glm::vec4 diffuse_constant = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+//    glm::vec4
     glm::vec4 diffuse_lighting;
     glm::vec4 accum = glm::vec4(0.0, 0.0, 0.0, 0.0);
     glm::vec4 color = glm::vec4(0.0, 0.0, 0.0, 0.0);
     float *form_factors;
 
-    Triangle(glm::vec4 pos1, glm::vec4 pos2, glm::vec4 pos3) {
+    Triangle(glm::vec4 pos1, glm::vec4 pos2, glm::vec4 pos3, glm::vec4 color1, glm::vec4 color2, glm::vec4 color3) {
         position[0] = pos1;
         position[1] = pos2;
         position[2] = pos3;
+        vertex_color[0] = color1;
+        vertex_color[1] = color2;
+        vertex_color[2] = color3;
+        diffuse_constant = (color1 + color2 + color3) / 3.0f;
     }
 
     Triangle mdptTri() {
         glm::vec4 m1 = (position[0] + position[1]) / 2.0f;
         glm::vec4 m2 = (position[1] + position[2]) / 2.0f;
         glm::vec4 m3 = (position[2] + position[0]) / 2.0f;
-
-        return Triangle(m1, m2, m3);
+        glm::vec4 color1 = (vertex_color[0] + vertex_color[1]) / 2.0f;
+        glm::vec4 color2 = (vertex_color[1] + vertex_color[2]) / 2.0f;
+        glm::vec4 color3 = (vertex_color[2] + vertex_color[0]) / 2.0f;
+        return Triangle(m1, m2, m3, color1, color2, color3);
     }
 
     glm::vec3 normal() {
@@ -126,6 +135,7 @@ public:
     void makeTriangles(int level) {
         std::vector<glm::vec4> vertices_copy;
         std::vector<glm::uvec3> faces_copy;
+        std::vector<glm::vec4> colors_copy;
 
         for (int i = 0; i < vertices.size(); i++) {
             vertices_copy.push_back(vertices[i]);
@@ -133,12 +143,16 @@ public:
         for (int i = 0; i < faces.size(); i++) {
             faces_copy.push_back(faces[i]);
         }
+        for (int i = 0; i < colors.size(); i++) {
+            colors_copy.push_back(colors[i]);
+        }
         vertices.clear();
         faces.clear();
         colors.clear();
         for (int i = 0; i < faces_copy.size(); i++) {
+//            glm::vec4 color = glm::vec4()
             Triangle tri(vertices_copy[faces_copy[i].x], vertices_copy[faces_copy[i].y],
-                         vertices_copy[faces_copy[i].z]);
+                         vertices_copy[faces_copy[i].z], colors_copy[faces_copy[i].x], colors_copy[faces_copy[i].y], colors_copy[faces_copy[i].z]);
             recursiveTris(level, tri);
         }
 
@@ -153,23 +167,23 @@ public:
             vertices.push_back(tri.position[0]);
             vertices.push_back(mid.position[0]);
             vertices.push_back(mid.position[2]);
-            triangles.push_back(Triangle(tri.position[0], mid.position[0], mid.position[2]));
+            triangles.push_back(Triangle(tri.position[0], mid.position[0], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]));
             vertices.push_back(tri.position[1]);
             vertices.push_back(mid.position[0]);
             vertices.push_back(mid.position[1]);
-            triangles.push_back(Triangle(tri.position[1], mid.position[0], mid.position[1]));
+            triangles.push_back(Triangle(tri.position[1], mid.position[0], mid.position[1], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]));
             vertices.push_back(tri.position[2]);
             vertices.push_back(mid.position[1]);
             vertices.push_back(mid.position[2]);
-            triangles.push_back(Triangle(tri.position[2], mid.position[1], mid.position[2]));
+            triangles.push_back(Triangle(tri.position[2], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]));
             vertices.push_back(mid.position[0]);
             vertices.push_back(mid.position[1]);
             vertices.push_back(mid.position[2]);
-            triangles.push_back(Triangle(mid.position[0], mid.position[1], mid.position[2]));
+            triangles.push_back(Triangle(mid.position[0], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]));
 
-            for (int i = 0; i < 4; i++) {
-                triangles[triangles.size() - 4 + i].diffuse_constant = glm::vec4(1.0, 1.0, 1.0, 1.0);
-            }
+//            for (int i = 0; i < 4; i++) {
+//                triangles[triangles.size() - 4 + i].diffuse_constant = glm::vec4(1.0, 1.0, 1.0, 1.0);
+//            }
             for (int i = 0; i < 12; i++) {
 //                if (i % 2 == 0)
                 colors.push_back(glm::vec4(1.0, 1.0, 0.0, 1.0));
@@ -184,10 +198,10 @@ public:
         }
 
         else {
-            Triangle tri1(tri.position[0], mid.position[0], mid.position[2]);
-            Triangle tri2(tri.position[1], mid.position[0], mid.position[1]);
-            Triangle tri3(tri.position[2], mid.position[1], mid.position[2]);
-            Triangle tri4(mid.position[0], mid.position[1], mid.position[2]);
+            Triangle tri1(tri.position[0], mid.position[0], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]);
+            Triangle tri2(tri.position[1], mid.position[0], mid.position[1], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]);
+            Triangle tri3(tri.position[2], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]);
+            Triangle tri4(mid.position[0], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]);
 
             recursiveTris(level - 1, tri1);
             recursiveTris(level - 1, tri2);
@@ -209,6 +223,61 @@ public:
                 colors[3 * i + pos].y = triangles[i].color.y;
                 colors[3 * i + pos].z = triangles[i].color.z;
             }
+        }
+    }
+
+    void make_form_factors_threads(int numThreads) {
+//        matrix = new float[triangles.size * triangles.size()];
+        int triangles_per_thread = triangles.size() / numThreads;
+
+        if (triangles.size() % numThreads != 0) {
+            numThreads++;
+        }
+
+
+        std::thread *drawThreads[numThreads];
+        for (int i = 0, k = 0; i < triangles.size(), k < numThreads; i+=triangles_per_thread, k++) {
+            int max = i + triangles_per_thread < triangles.size() ? i + triangles_per_thread : triangles.size();
+            drawThreads[k] = new std::thread([&] {
+
+                for (int l = i; l < max; l++) {
+                    Triangle *tri1 = &triangles[l];
+                    tri1->form_factors = new float[triangles.size()];
+                    for (int j = 0; j < triangles.size(); j++) {
+                        if (j == i) {
+                            continue;
+                        }
+
+                        Triangle *tri2 = &triangles[j];
+
+                        glm::vec3 c1 = tri1->centroid();
+                        glm::vec3 c2 = tri2->centroid();
+
+                        glm::vec3 n1 = tri1->normal();
+                        glm::vec3 n2 = tri2->normal();
+
+
+                        glm::vec3 cDist = c2 - c1;
+                        float distance = glm::length(cDist) / 10;
+                        cDist = glm::normalize(cDist);
+                        float angle1 = glm::acos(glm::dot(n1, cDist));
+                        float angle2 = glm::acos(glm::dot(n2, cDist));
+
+
+                        float form_factor = glm::abs(glm::cos(angle1) * glm::cos(angle2) / (3.14 * distance * distance));
+                        /*
+                        if (form_factor >= 0.01) {
+                            std::cout << "lol" << std::endl;
+                        }
+                        */
+
+                        tri1->form_factors[j] = form_factor;
+                    }
+                }
+            });
+        }
+        for (int i = 0; i < numThreads; i++) {
+            drawThreads[i]->join();
         }
     }
 
@@ -259,6 +328,7 @@ public:
     }
 
     std::vector<Triangle> unobstructed_triangles(int tri1_index) {
+//        return triangles;
         std::vector<Triangle> unobstructed;
         std::vector<Triangle> rand_list;
 
@@ -368,6 +438,31 @@ public:
                         continue;
                     }
                     Triangle tri2 = unobstructed[j];
+                    if (tri1->form_factors[j] == 0.f) {
+                        glm::vec3 c1 = tri1->centroid();
+                        glm::vec3 c2 = tri2.centroid();
+
+                        glm::vec3 n1 = tri1->normal();
+                        glm::vec3 n2 = tri2.normal();
+
+
+                        glm::vec3 cDist = c2 - c1;
+                        float distance = glm::length(cDist) / 10;
+                        cDist = glm::normalize(cDist);
+                        float angle1 = glm::acos(glm::dot(n1, cDist));
+                        float angle2 = glm::acos(glm::dot(n2, cDist));
+
+
+
+                        float form_factor = glm::abs(glm::cos(angle1) * glm::cos(angle2) / (3.14 * distance * distance));
+                        /*
+                        if (form_factor >= 0.01) {
+                            std::cout << "lol" << std::endl;
+                        }
+                        */
+
+                        tri1->form_factors[j] = form_factor;
+                    }
                     float form_factor = tri1->form_factors[j];
                     tri1->accum += (form_factor * tri2.diffuse_lighting);
                 }
@@ -404,7 +499,12 @@ public:
 //                Triangle tri(object.vertices[index1], object.vertices[index2], object.vertices[index3]);
 //            }
 //        }
-
+        for (int i = 0; i < loader.LoadedMeshes.size(); i++) {
+            auto mesh = loader.LoadedMeshes[i];
+            for (int j = 0; j < mesh.Vertices.size(); i++) {
+                colors.push_back(glm::vec4(mesh.MeshMaterial.Kd.X, mesh.MeshMaterial.Kd.Y, mesh.MeshMaterial.Kd.Z, 1));
+            }
+        }
         for (int i = 0; i < loader.LoadedVertices.size(); i++) {
             auto vert = loader.LoadedVertices[i];
             vertices.push_back(glm::vec4(vert.Position.X, vert.Position.Y, vert.Position.Z, 1));
@@ -414,7 +514,7 @@ public:
             auto index2 = loader.LoadedIndices[i + 1];
             auto index3 = loader.LoadedIndices[i + 2];
             faces.push_back(glm::vec3(index1, index2, index3));
-            Triangle tri(vertices[index1], vertices[index2], vertices[index3]);
+            Triangle tri(vertices[index1], vertices[index2], vertices[index3], colors[index1], colors[index2], colors[index3]);
         }
 
 

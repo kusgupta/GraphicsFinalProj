@@ -204,11 +204,11 @@ int main(int argc, char* argv[])
 
     std::chrono::time_point<std::chrono::steady_clock> previous = mesh.clock->now();
 
-    SceneObject box = make_box(500.0);
-//    SceneObject box;
-//    add_box(500, 1, 0, box);
+//    SceneObject box = make_box(500.0);
+    SceneObject box;
+    add_box(500, 1, 0, box);
     add_box(100, 1, 1, box);
-    //box.loadScene(loader);
+//    box.loadScene(loader);
     LightSource light1;
     light1.position = glm::vec4(-400, -400, -400, 1);
 //    light1.position = glm::vec4(100, 100, 100, 1);
@@ -247,9 +247,10 @@ int main(int argc, char* argv[])
 
 //	auto diffuse = std::make_shared<ShaderUniform<const glm::vec3*>>("diffuse", diffuse)
     std::cout << box.vertices.size() << std::endl;
-    box.makeTriangles(1);
+    box.makeTriangles(4);
 //    std::cout << box.triangles.size() << std::endl;
-    box.make_form_factors();
+//    box.make_form_factors_threads(8);
+//    box.make_form_factors();
     std::cout << "Made form factors" << std::endl;
     for (int passes = 0; passes < 3; passes++) {
         std::cout << "pass " << passes << std::endl;
