@@ -29,7 +29,8 @@ public:
     glm::vec4 diffuse_lighting;
     glm::vec4 accum = glm::vec4(0.0, 0.0, 0.0, 0.0);
     glm::vec4 color = glm::vec4(0.0, 0.0, 0.0, 0.0);
-    float *form_factors;
+//    float *form_factors;
+    std::map<int, float> form_factors;
 
     Triangle(glm::vec4 pos1, glm::vec4 pos2, glm::vec4 pos3, glm::vec4 color1, glm::vec4 color2, glm::vec4 color3) {
         position[0] = pos1;
@@ -121,6 +122,27 @@ public:
         */
     }
 };
+
+float make_single_factor(Triangle *tri1, Triangle *tri2) {
+//        matrix = new float[triangles.size * triangles.size()];
+//    Triangle *tri1 = &triangles[tri1_index];
+//    Triangle *tri2 = &triangles[tri2_index];
+
+    glm::vec3 c1 = tri1->centroid();
+    glm::vec3 c2 = tri2->centroid();
+
+    glm::vec3 n1 = tri1->normal();
+    glm::vec3 n2 = tri2->normal();
+
+
+    glm::vec3 cDist = c2 - c1;
+    float distance = glm::length(cDist) / 40;
+    cDist = glm::normalize(cDist);
+    float angle1 = glm::acos(glm::dot(n1, cDist));
+    float angle2 = glm::acos(glm::dot(n2, cDist));
+
+    return glm::abs(glm::cos(angle1) * glm::cos(angle2) / (3.14 * distance * distance));
+}
 
 class SceneObject {
 public:
@@ -226,8 +248,123 @@ public:
         }
     }
 
-    void make_form_factors_threads(int numThreads) {
-//        matrix = new float[triangles.size * triangles.size()];
+//    void make_form_factors_threads(int numThreads) {
+////        matrix = new float[triangles.size * triangles.size()];
+//        int triangles_per_thread = triangles.size() / numThreads;
+//
+//        if (triangles.size() % numThreads != 0) {
+//            numThreads++;
+//        }
+//
+//
+//        std::thread *drawThreads[numThreads];
+//        for (int i = 0, k = 0; i < triangles.size(), k < numThreads; i+=triangles_per_thread, k++) {
+//            int max = i + triangles_per_thread < triangles.size() ? i + triangles_per_thread : triangles.size();
+//            drawThreads[k] = new std::thread([&] {
+//
+//                for (int l = i; l < max; l++) {
+//                    Triangle *tri1 = &triangles[l];
+//                    tri1->form_factors = new float[triangles.size()];
+//                    for (int j = 0; j < triangles.size(); j++) {
+//                        if (j == i) {
+//                            continue;
+//                        }
+//
+//                        Triangle *tri2 = &triangles[j];
+//
+//                        glm::vec3 c1 = tri1->centroid();
+//                        glm::vec3 c2 = tri2->centroid();
+//
+//                        glm::vec3 n1 = tri1->normal();
+//                        glm::vec3 n2 = tri2->normal();
+//
+//
+//                        glm::vec3 cDist = c2 - c1;
+//                        float distance = glm::length(cDist) / 10;
+//                        cDist = glm::normalize(cDist);
+//                        float angle1 = glm::acos(glm::dot(n1, cDist));
+//                        float angle2 = glm::acos(glm::dot(n2, cDist));
+//
+//
+//                        float form_factor = glm::abs(glm::cos(angle1) * glm::cos(angle2) / (3.14 * distance * distance));
+//                        /*
+//                        if (form_factor >= 0.01) {
+//                            std::cout << "lol" << std::endl;
+//                        }
+//                        */
+//
+//                        tri1->form_factors[j] = form_factor;
+//                    }
+//                }
+//            });
+//        }
+//        for (int i = 0; i < numThreads; i++) {
+//            drawThreads[i]->join();
+//        }
+//    }
+
+//    void make_form_factors() {
+////        matrix = new float[triangles.size * triangles.size()];
+//        for (int i = 0; i < triangles.size(); i++) {
+//            Triangle *tri1 = &triangles[i];
+//            tri1->form_factors = new float[triangles.size()];
+//            for (int j = 0; j < triangles.size(); j++) {
+//                if (j == i) {
+//                    continue;
+//                }
+//
+//                Triangle *tri2 = &triangles[j];
+//
+//                glm::vec3 c1 = tri1->centroid();
+//                glm::vec3 c2 = tri2->centroid();
+//
+//                glm::vec3 n1 = tri1->normal();
+//                glm::vec3 n2 = tri2->normal();
+//
+//
+//                glm::vec3 cDist = c2 - c1;
+//                float distance = glm::length(cDist) / 10;
+//                cDist = glm::normalize(cDist);
+//                float angle1 = glm::acos(glm::dot(n1, cDist));
+//                float angle2 = glm::acos(glm::dot(n2, cDist));
+//
+//
+//
+//                float form_factor = glm::abs(glm::cos(angle1) * glm::cos(angle2) / (3.14 * distance * distance));
+//                /*
+//                if (form_factor >= 0.01) {
+//                    std::cout << "lol" << std::endl;
+//                }
+//                */
+//
+//                tri1->form_factors[j] = form_factor;
+//            }
+//
+//        }
+//    }
+
+//    float make_single_factor(int tri1_index, int tri2_index) {
+////        matrix = new float[triangles.size * triangles.size()];
+//        Triangle *tri1 = &triangles[tri1_index];
+//        Triangle *tri2 = &triangles[tri2_index];
+//
+//        glm::vec3 c1 = tri1->centroid();
+//        glm::vec3 c2 = tri2->centroid();
+//
+//        glm::vec3 n1 = tri1->normal();
+//        glm::vec3 n2 = tri2->normal();
+//
+//
+//        glm::vec3 cDist = c2 - c1;
+//        float distance = glm::length(cDist) / 10;
+//        cDist = glm::normalize(cDist);
+//        float angle1 = glm::acos(glm::dot(n1, cDist));
+//        float angle2 = glm::acos(glm::dot(n2, cDist));
+//
+//        return glm::abs(glm::cos(angle1) * glm::cos(angle2) / (3.14 * distance * distance));
+//    }
+
+    void pre_process(int numThreads) {
         int triangles_per_thread = triangles.size() / numThreads;
 
         if (triangles.size() % numThreads != 0) {
@@ -236,89 +373,55 @@ public:
 
 
         std::thread *drawThreads[numThreads];
-        for (int i = 0, k = 0; i < triangles.size(), k < numThreads; i+=triangles_per_thread, k++) {
+        for (int i = 0, k = 0; i < triangles.size(), k < numThreads; i += triangles_per_thread, k++) {
             int max = i + triangles_per_thread < triangles.size() ? i + triangles_per_thread : triangles.size();
-            drawThreads[k] = new std::thread([&] {
-
-                for (int l = i; l < max; l++) {
-                    Triangle *tri1 = &triangles[l];
-                    tri1->form_factors = new float[triangles.size()];
-                    for (int j = 0; j < triangles.size(); j++) {
-                        if (j == i) {
+            std::vector<Triangle> *t = &triangles;
+//            auto *func = make_single_factor;
+            drawThreads[k] = new std::thread([t, max, i] {
+                std::vector <Triangle> triangles = *t;
+                std::cout << triangles.size() << std::endl;
+                std::cout << "started thread" << std::endl;
+                for (int tri1_index = i; tri1_index < max; tri1_index++) {
+                    auto tri1 = (*t)[tri1_index];
+                    for (int tri2_index = 0; tri2_index < triangles.size(); tri2_index++) {
+                        Triangle tri2 = (*t)[tri2_index];
+                        float factor = make_single_factor(&tri1, &tri2);
+                        if (factor < .0005) {
+                            continue;
+                        }
+                        if (tri1_index == tri2_index) {
                             continue;
                         }
 
-                        Triangle *tri2 = &triangles[j];
+                        glm::vec3 direction = glm::normalize(tri2.centroid() - tri1.centroid());
+                        bool intersected = false;
+                        float earliestT = glm::length(tri2.centroid() - tri1.centroid());
+                        for (int j = 0; j < triangles.size(); j++) {
+                            if (j == tri2_index || j == tri1_index) {
+                                continue;
+                            }
 
-                        glm::vec3 c1 = tri1->centroid();
-                        glm::vec3 c2 = tri2->centroid();
-
-                        glm::vec3 n1 = tri1->normal();
-                        glm::vec3 n2 = tri2->normal();
-
-
-                        glm::vec3 cDist = c2 - c1;
-                        float distance = glm::length(cDist) / 10;
-                        cDist = glm::normalize(cDist);
-                        float angle1 = glm::acos(glm::dot(n1, cDist));
-                        float angle2 = glm::acos(glm::dot(n2, cDist));
-
-
-                        float form_factor = glm::abs(glm::cos(angle1) * glm::cos(angle2) / (3.14 * distance * distance));
-                        /*
-                        if (form_factor >= 0.01) {
-                            std::cout << "lol" << std::endl;
+                            float possibleT;
+                            if (triangles[j].intersects(direction, tri1.centroid(), possibleT) &&
+                                possibleT < earliestT) {
+                                intersected = true;
+                                break;
+                            }
                         }
-                        */
 
-                        tri1->form_factors[j] = form_factor;
+                        if (!intersected) {
+                            (*t)[tri1_index].form_factors[tri2_index] = factor;
+                        }
                     }
                 }
             });
         }
-        for (int i = 0; i < numThreads; i++) {
-            drawThreads[i]->join();
+
+        for (int l = 0; l < numThreads; l++) {
+            drawThreads[l]->join();
         }
-    }
-
-    void make_form_factors() {
-//        matrix = new float[triangles.size * triangles.size()];
-        for (int i = 0; i < triangles.size(); i++) {
-            Triangle *tri1 = &triangles[i];
-            tri1->form_factors = new float[triangles.size()];
-            for (int j = 0; j < triangles.size(); j++) {
-                if (j == i) {
-                    continue;
-                }
-
-                Triangle *tri2 = &triangles[j];
-
-                glm::vec3 c1 = tri1->centroid();
-                glm::vec3 c2 = tri2->centroid();
-
-                glm::vec3 n1 = tri1->normal();
-                glm::vec3 n2 = tri2->normal();
 
 
-                glm::vec3 cDist = c2 - c1;
-                float distance = glm::length(cDist) / 10;
-                cDist = glm::normalize(cDist);
-                float angle1 = glm::acos(glm::dot(n1, cDist));
-                float angle2 = glm::acos(glm::dot(n2, cDist));
-
-
-
-                float form_factor = glm::abs(glm::cos(angle1) * glm::cos(angle2) / (3.14 * distance * distance));
-                /*
-                if (form_factor >= 0.01) {
-                    std::cout << "lol" << std::endl;
-                }
-                */
-
-                tri1->form_factors[j] = form_factor;
-            }
-
-        }
     }
 
     float attenuation(float distance) {
@@ -328,43 +431,43 @@ public:
     }
 
     std::vector<Triangle> unobstructed_triangles(int tri1_index) {
-//        return triangles;
-        std::vector<Triangle> unobstructed;
-        std::vector<Triangle> rand_list;
-
-        auto tri1 = triangles[tri1_index];
-        //TODO: DON'T USE RAND
-//        for (int i = 0; i < 100; i++) {
-//            int index = rand() % triangles.size();
-//            rand_list.push_back(triangles[index]);
+        return triangles;
+//        std::vector<int> unobstructed;
+//        std::vector<Triangle> rand_list;
+//
+//        auto tri1 = triangles[tri1_index];
+//        //TODO: DON'T USE RAND
+////        for (int i = 0; i < 100; i++) {
+////            int index = rand() % triangles.size();
+////            rand_list.push_back(triangles[index]);
+////        }
+//
+//        for (int i = 0; i < triangles.size(); i++) {
+//            Triangle tri2 = triangles[i];
+//            if (i == tri1_index) {
+//                continue;
+//            }
+//
+//            glm::vec3 direction = glm::normalize(tri2.centroid() - tri1.centroid());
+//            bool intersected = false;
+//            float earliestT = glm::length(tri2.centroid() - tri1.centroid());
+//            for (int j = 0; j < triangles.size(); j++) {
+//                if (j == i || j == tri1_index) {
+//                    continue;
+//                }
+//
+//                float possibleT;
+//                if (triangles[j].intersects(direction, tri1.centroid(), possibleT) && possibleT < earliestT){
+//                    intersected = true;
+//                    break;
+//                }
+//            }
+//
+//            if (!intersected) {
+//                unobstructed.push_back(i);
+//            }
 //        }
-
-        for (int i = 0; i < triangles.size(); i++) {
-            Triangle tri2 = triangles[i];
-            if (i == tri1_index) {
-                continue;
-            }
-
-            glm::vec3 direction = glm::normalize(tri2.centroid() - tri1.centroid());
-            bool intersected = false;
-            float earliestT = glm::length(tri2.centroid() - tri1.centroid());
-            for (int j = 0; j < triangles.size(); j++) {
-                if (j == i || j == tri1_index) {
-                    continue;
-                }
-
-                float possibleT;
-                if (triangles[j].intersects(direction, tri1.centroid(), possibleT) && possibleT < earliestT){
-                    intersected = true;
-                    break;
-                }
-            }
-
-            if (!intersected) {
-                unobstructed.push_back(tri2);
-            }
-        }
-        return unobstructed;
+//        return unobstructed;
     }
 
     void calculate_light(LightSource &lightSource) {
@@ -426,44 +529,18 @@ public:
 
             lightSource.used = true;
         } else {
+
             for (int i = 0; i < triangles.size(); i++) {
                 Triangle *tri1 = &triangles[i];
-                // TODO: Create unobstructed triangle list for the next for loop
 //                std::vector<Triangle> unobstructed = triangles;
-                std::vector<Triangle> unobstructed = unobstructed_triangles(i);
-
-
-                for (int j = 0; j < unobstructed.size(); j++) {
-                    if (j == i) {
+                // TODO: CHANGE TO USE INDICES NOT TRIANGLES
+                for (std::map<int, float>::iterator it = tri1->form_factors.begin(); it != tri1->form_factors.end(); it++) {
+                    if (it->first == i) {
                         continue;
                     }
-                    Triangle tri2 = unobstructed[j];
-                    if (tri1->form_factors[j] == 0.f) {
-                        glm::vec3 c1 = tri1->centroid();
-                        glm::vec3 c2 = tri2.centroid();
 
-                        glm::vec3 n1 = tri1->normal();
-                        glm::vec3 n2 = tri2.normal();
-
-
-                        glm::vec3 cDist = c2 - c1;
-                        float distance = glm::length(cDist) / 10;
-                        cDist = glm::normalize(cDist);
-                        float angle1 = glm::acos(glm::dot(n1, cDist));
-                        float angle2 = glm::acos(glm::dot(n2, cDist));
-
-
-
-                        float form_factor = glm::abs(glm::cos(angle1) * glm::cos(angle2) / (3.14 * distance * distance));
-                        /*
-                        if (form_factor >= 0.01) {
-                            std::cout << "lol" << std::endl;
-                        }
-                        */
-
-                        tri1->form_factors[j] = form_factor;
-                    }
-                    float form_factor = tri1->form_factors[j];
+                    Triangle tri2 = triangles[it->first];
+                    float form_factor = tri1->form_factors[it->first];
                     tri1->accum += (form_factor * tri2.diffuse_lighting);
                 }
 
@@ -501,7 +578,7 @@ public:
 //        }
         for (int i = 0; i < loader.LoadedMeshes.size(); i++) {
             auto mesh = loader.LoadedMeshes[i];
-            for (int j = 0; j < mesh.Vertices.size(); i++) {
+            for (int j = 0; j < mesh.Vertices.size(); j++) {
                 colors.push_back(glm::vec4(mesh.MeshMaterial.Kd.X, mesh.MeshMaterial.Kd.Y, mesh.MeshMaterial.Kd.Z, 1));
             }
         }

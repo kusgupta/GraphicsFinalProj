@@ -198,7 +198,7 @@ int main(int argc, char* argv[])
     Mesh mesh;
 
     objl::Loader loader;
-//    loader.LoadFile("../../Low-Poly_Models.obj");
+//    loader.LoadFile("../../Test.obj");
 
 
 
@@ -247,18 +247,30 @@ int main(int argc, char* argv[])
 
 //	auto diffuse = std::make_shared<ShaderUniform<const glm::vec3*>>("diffuse", diffuse)
     std::cout << box.vertices.size() << std::endl;
-    box.makeTriangles(4);
+    using namespace std::chrono;
+    auto start = high_resolution_clock::now();
+    box.makeTriangles(2);
 //    std::cout << box.triangles.size() << std::endl;
 //    box.make_form_factors_threads(8);
-//    box.make_form_factors();
+    box.pre_process(4);
+    std::cout << box.triangles[1].form_factors.size() << std::endl;
+
     std::cout << "Made form factors" << std::endl;
-    for (int passes = 0; passes < 3; passes++) {
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+
+// To get the value of duration use the count()
+// member function on the duration object
+    std::cout << duration.count() / 100000 << std::endl;
+    for (int passes = 0; passes < 4; passes++) {
         std::cout << "pass " << passes << std::endl;
         box.calculate_light(light1);
     }
+
     box.updateColors();
     for (int i = 0; i < box.triangles.size(); i++) {
         Triangle tri1 = box.triangles[i];
+//        std::cout << box.triangles[i].form_factors.size() << std::endl;
         if (!(box.triangles[i].color.x > 0 && box.triangles[i].color.y > 0 && box.triangles[i].color.z > 0))
             std::cout << "ERROR" << std::endl;
     }
