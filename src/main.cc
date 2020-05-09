@@ -198,7 +198,7 @@ int main(int argc, char* argv[])
     Mesh mesh;
 
     objl::Loader loader;
-//    loader.LoadFile("../../Test.obj");
+    loader.LoadFile("../../Test.obj");
 
 
 
@@ -249,7 +249,13 @@ int main(int argc, char* argv[])
     std::cout << box.vertices.size() << std::endl;
     using namespace std::chrono;
     auto start = high_resolution_clock::now();
-    box.makeTriangles(2);
+    box.makeTriangles(0);
+    std::cout << "L" << std::endl;
+    std::cout << box.vertices.size() << std::endl;
+    std::cout << box.triangles.size() << std::endl;
+    std::cout << box.faces.size() << std::endl;
+    std:: cout << box.colors.size() << std::endl;
+    std::cout << "L" << std::endl;
 //    std::cout << box.triangles.size() << std::endl;
 //    box.make_form_factors_threads(8);
     box.pre_process(4);
@@ -275,6 +281,7 @@ int main(int argc, char* argv[])
             std::cout << "ERROR" << std::endl;
     }
     std::cout << "DONE" << std::endl;
+
     // Object render pass
     RenderDataInput object_pass_input;
     object_pass_input.assign(0, "vertex_position", box.vertices.data(), box.vertices.size(), 4, GL_FLOAT);

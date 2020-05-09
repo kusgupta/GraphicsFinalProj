@@ -136,7 +136,7 @@ float make_single_factor(Triangle *tri1, Triangle *tri2) {
 
 
     glm::vec3 cDist = c2 - c1;
-    float distance = glm::length(cDist) / 40;
+    float distance = glm::length(cDist) / 12;
     cDist = glm::normalize(cDist);
     float angle1 = glm::acos(glm::dot(n1, cDist));
     float angle2 = glm::acos(glm::dot(n2, cDist));
@@ -155,6 +155,13 @@ public:
     float *matrix;
 
     void makeTriangles(int level) {
+        if (level == 0) {
+            for (int i = 0; i < faces.size(); i++) {
+                triangles.push_back(Triangle(vertices[faces[i].x], vertices[faces[i].y], vertices[faces[i].z], colors[faces[i].x],
+                                        colors[faces[i].y], colors[faces[i].z]));
+            }
+            return;
+        }
         std::vector<glm::vec4> vertices_copy;
         std::vector<glm::uvec3> faces_copy;
         std::vector<glm::vec4> colors_copy;
@@ -248,122 +255,6 @@ public:
         }
     }
 
-//    void make_form_factors_threads(int numThreads) {
-////        matrix = new float[triangles.size * triangles.size()];
-//        int triangles_per_thread = triangles.size() / numThreads;
-//
-//        if (triangles.size() % numThreads != 0) {
-//            numThreads++;
-//        }
-//
-//
-//        std::thread *drawThreads[numThreads];
-//        for (int i = 0, k = 0; i < triangles.size(), k < numThreads; i+=triangles_per_thread, k++) {
-//            int max = i + triangles_per_thread < triangles.size() ? i + triangles_per_thread : triangles.size();
-//            drawThreads[k] = new std::thread([&] {
-//
-//                for (int l = i; l < max; l++) {
-//                    Triangle *tri1 = &triangles[l];
-//                    tri1->form_factors = new float[triangles.size()];
-//                    for (int j = 0; j < triangles.size(); j++) {
-//                        if (j == i) {
-//                            continue;
-//                        }
-//
-//                        Triangle *tri2 = &triangles[j];
-//
-//                        glm::vec3 c1 = tri1->centroid();
-//                        glm::vec3 c2 = tri2->centroid();
-//
-//                        glm::vec3 n1 = tri1->normal();
-//                        glm::vec3 n2 = tri2->normal();
-//
-//
-//                        glm::vec3 cDist = c2 - c1;
-//                        float distance = glm::length(cDist) / 10;
-//                        cDist = glm::normalize(cDist);
-//                        float angle1 = glm::acos(glm::dot(n1, cDist));
-//                        float angle2 = glm::acos(glm::dot(n2, cDist));
-//
-//
-//                        float form_factor = glm::abs(glm::cos(angle1) * glm::cos(angle2) / (3.14 * distance * distance));
-//                        /*
-//                        if (form_factor >= 0.01) {
-//                            std::cout << "lol" << std::endl;
-//                        }
-//                        */
-//
-//                        tri1->form_factors[j] = form_factor;
-//                    }
-//                }
-//            });
-//        }
-//        for (int i = 0; i < numThreads; i++) {
-//            drawThreads[i]->join();
-//        }
-//    }
-
-//    void make_form_factors() {
-////        matrix = new float[triangles.size * triangles.size()];
-//        for (int i = 0; i < triangles.size(); i++) {
-//            Triangle *tri1 = &triangles[i];
-//            tri1->form_factors = new float[triangles.size()];
-//            for (int j = 0; j < triangles.size(); j++) {
-//                if (j == i) {
-//                    continue;
-//                }
-//
-//                Triangle *tri2 = &triangles[j];
-//
-//                glm::vec3 c1 = tri1->centroid();
-//                glm::vec3 c2 = tri2->centroid();
-//
-//                glm::vec3 n1 = tri1->normal();
-//                glm::vec3 n2 = tri2->normal();
-//
-//
-//                glm::vec3 cDist = c2 - c1;
-//                float distance = glm::length(cDist) / 10;
-//                cDist = glm::normalize(cDist);
-//                float angle1 = glm::acos(glm::dot(n1, cDist));
-//                float angle2 = glm::acos(glm::dot(n2, cDist));
-//
-//
-//
-//                float form_factor = glm::abs(glm::cos(angle1) * glm::cos(angle2) / (3.14 * distance * distance));
-//                /*
-//                if (form_factor >= 0.01) {
-//                    std::cout << "lol" << std::endl;
-//                }
-//                */
-//
-//                tri1->form_factors[j] = form_factor;
-//            }
-//
-//        }
-//    }
-
-//    float make_single_factor(int tri1_index, int tri2_index) {
-////        matrix = new float[triangles.size * triangles.size()];
-//        Triangle *tri1 = &triangles[tri1_index];
-//        Triangle *tri2 = &triangles[tri2_index];
-//
-//        glm::vec3 c1 = tri1->centroid();
-//        glm::vec3 c2 = tri2->centroid();
-//
-//        glm::vec3 n1 = tri1->normal();
-//        glm::vec3 n2 = tri2->normal();
-//
-//
-//        glm::vec3 cDist = c2 - c1;
-//        float distance = glm::length(cDist) / 10;
-//        cDist = glm::normalize(cDist);
-//        float angle1 = glm::acos(glm::dot(n1, cDist));
-//        float angle2 = glm::acos(glm::dot(n2, cDist));
-//
-//        return glm::abs(glm::cos(angle1) * glm::cos(angle2) / (3.14 * distance * distance));
-//    }
-
     void pre_process(int numThreads) {
         int triangles_per_thread = triangles.size() / numThreads;
 
@@ -379,14 +270,14 @@ public:
 //            auto *func = make_single_factor;
             drawThreads[k] = new std::thread([t, max, i] {
                 std::vector <Triangle> triangles = *t;
-                std::cout << triangles.size() << std::endl;
-                std::cout << "started thread" << std::endl;
+//                std::cout << triangles.size() << std::endl;
+//                std::cout << "started thread" << std::endl;
                 for (int tri1_index = i; tri1_index < max; tri1_index++) {
                     auto tri1 = (*t)[tri1_index];
                     for (int tri2_index = 0; tri2_index < triangles.size(); tri2_index++) {
                         Triangle tri2 = (*t)[tri2_index];
                         float factor = make_single_factor(&tri1, &tri2);
-                        if (factor < .0005) {
+                        if (factor < .001) {
                             continue;
                         }
                         if (tri1_index == tri2_index) {
