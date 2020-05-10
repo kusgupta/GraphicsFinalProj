@@ -15,9 +15,9 @@
 //	virtual bool intersectLocal(ray& r, isect& i ) const;
 //	virtual bool hasBoundingBoxCapability() const { return true; }
 //
-//    virtual BoundingBox ComputeLocalBoundingBox()
+//    virtual kdBox ComputeLocalBoundingBox()
 //    {
-//        BoundingBox localbounds;
+//        kdBox localbounds;
 //		localbounds.setMin(glm::dvec3(-1.0f, -1.0f, 0.0f));
 //		localbounds.setMax(glm::dvec3(1.0f, 1.0f, 1.0f));
 //        return localbounds;

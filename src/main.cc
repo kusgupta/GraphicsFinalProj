@@ -7,8 +7,9 @@
 #include "gui.h"
 #include "chrono"
 #include "texture_to_render.h"
-#include "RadiosityScene.h"
 #include "OBJ_Loader.h"
+#include "RadiosityScene.h"
+//#include "kdTree.h"
 
 #include <memory>
 #include <algorithm>
@@ -23,6 +24,9 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtx/io.hpp>
 #include <debuggl.h>
+
+
+
 
 int window_width = 1280;
 int window_height = 720;
@@ -206,12 +210,12 @@ int main(int argc, char* argv[])
 
 //    SceneObject box = make_box(500.0);
     SceneObject box;
-    add_box(500, 1, 0, box);
-    add_box(100, 1, 1, box);
-//    box.loadScene(loader);
+//    add_box(500, 1, 0, box);
+//    add_box(100, 1, 1, box);
+    box.loadScene(loader);
     LightSource light1;
-    light1.position = glm::vec4(-400, -400, -400, 1);
-//    light1.position = glm::vec4(100, 100, 100, 1);
+//    light1.position = glm::vec4(-400, -400, -400, 1);
+    light1.position = glm::vec4(100, 100, 100, 1);
     light1.color = glm::vec4(1, 1, 1, 1);
     light1.intensity = glm::vec4(1, 1, 1, 1);
     /*
@@ -231,7 +235,7 @@ int main(int argc, char* argv[])
 
     std::function<glm::mat4()> view_data = [&mats]() { return *mats.view; };
     std::function<glm::mat4()> proj_data = [&mats]() { return *mats.projection; };
-    std::function<glm::mat4()> identity_mat = [](){ return glm::mat4(1.0f); };
+//    std::function<glm::mat4()> identity_mat = [](){ return glm::mat4(1.0f); };
     std::function<glm::vec3()> cam_data = [&gui2](){ return gui->getCamera(); };
     float cylinder_rad = kCylinderRadius;
     std::function<float()> radius_data = [&cylinder_rad] () {
@@ -239,7 +243,7 @@ int main(int argc, char* argv[])
     };
 
     auto std_model = std::make_shared<ShaderUniform<const glm::mat4*>>("model", model_data);
-    auto floor_model = make_uniform("model", identity_mat);
+//    auto floor_model = make_uniform("model", identity_mat);
     auto std_view = make_uniform("view", view_data);
     auto std_camera = make_uniform("camera_position", cam_data);
     auto std_proj = make_uniform("projection", proj_data);
@@ -250,6 +254,10 @@ int main(int argc, char* argv[])
     using namespace std::chrono;
     auto start = high_resolution_clock::now();
     box.makeTriangles(0);
+    box.tree = new kdTree(&(box.triangles));
+    //Create bounding box
+    box.box = box.tree->createMergedBoundingBox(&(box.triangles), 0, box.triangles.size());
+    box.tree->buildTree(*(box.box));
     std::cout << "L" << std::endl;
     std::cout << box.vertices.size() << std::endl;
     std::cout << box.triangles.size() << std::endl;
@@ -267,16 +275,18 @@ int main(int argc, char* argv[])
 
 // To get the value of duration use the count()
 // member function on the duration object
-    std::cout << duration.count() / 100000 << std::endl;
-    for (int passes = 0; passes < 4; passes++) {
+
+    std::cout << duration.count() / 1000000 << std::endl;
+    for (int passes = 0; passes < 3; passes++) {
         std::cout << "pass " << passes << std::endl;
+//        std::cout << "pass " << passes << std::endl;
         box.calculate_light(light1);
     }
 
-    box.updateColors();
+    box.updateColors(1);
     for (int i = 0; i < box.triangles.size(); i++) {
         Triangle tri1 = box.triangles[i];
-//        std::cout << box.triangles[i].form_factors.size() << std::endl;
+        std::cout << box.triangles[i].form_factors.size() << std::endl;
         if (!(box.triangles[i].color.x > 0 && box.triangles[i].color.y > 0 && box.triangles[i].color.z > 0))
             std::cout << "ERROR" << std::endl;
     }

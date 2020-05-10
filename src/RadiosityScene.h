@@ -1,3 +1,4 @@
+#pragma once
 //
 // Created by Kushan Gupta on 4/29/20.
 //
@@ -8,7 +9,12 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <thread>
+#include <map>
 #include "OBJ_Loader.h"
+//#include "kdTree.h"
+#include "bbox.h"
+
+//class kdTre
 
 
 class LightSource {
@@ -25,14 +31,16 @@ public:
     glm::vec4 position[3];
     glm::vec4 vertex_color[3];
     glm::vec4 diffuse_constant = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    int index;
 //    glm::vec4
     glm::vec4 diffuse_lighting;
     glm::vec4 accum = glm::vec4(0.0, 0.0, 0.0, 0.0);
     glm::vec4 color = glm::vec4(0.0, 0.0, 0.0, 0.0);
 //    float *form_factors;
-    std::map<int, float> form_factors;
+    std::map<int, float>form_factors;
+    kdBox box;
 
-    Triangle(glm::vec4 pos1, glm::vec4 pos2, glm::vec4 pos3, glm::vec4 color1, glm::vec4 color2, glm::vec4 color3) {
+    Triangle(glm::vec4 pos1, glm::vec4 pos2, glm::vec4 pos3, glm::vec4 color1, glm::vec4 color2, glm::vec4 color3, int face_index) {
         position[0] = pos1;
         position[1] = pos2;
         position[2] = pos3;
@@ -40,6 +48,28 @@ public:
         vertex_color[1] = color2;
         vertex_color[2] = color3;
         diffuse_constant = (color1 + color2 + color3) / 3.0f;
+        index = face_index;
+        glm::vec3 min_box(10000000.0, 10000000.0, 10000000.0);
+        glm::vec3 max_box(-10000000.0, -10000000.0, -100000000.0);
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (position[i][j] < min_box[j]) {
+                    min_box[j] = position[i][j];
+                }
+
+                if (position[i][j] > max_box[j]) {
+                    max_box[j] = position[i][j];
+                }
+            }
+        }
+
+        kdBox tempbox(min_box, max_box);
+        box = tempbox;
+    }
+
+    const kdBox getBoundingBox() {
+        return box;
     }
 
     Triangle mdptTri() {
@@ -49,7 +79,7 @@ public:
         glm::vec4 color1 = (vertex_color[0] + vertex_color[1]) / 2.0f;
         glm::vec4 color2 = (vertex_color[1] + vertex_color[2]) / 2.0f;
         glm::vec4 color3 = (vertex_color[2] + vertex_color[0]) / 2.0f;
-        return Triangle(m1, m2, m3, color1, color2, color3);
+        return Triangle(m1, m2, m3, color1, color2, color3, -1);
     }
 
     glm::vec3 normal() {
@@ -122,6 +152,159 @@ public:
         */
     }
 };
+class kdTree {
+public:
+    class Node {
+    public:
+        Node(Node *left, Node *right, kdBox *box,
+             std::vector<Triangle> *sceneObject): left(left), right(right),
+                                                  box(box), sceneObject(sceneObject){};
+
+        Node *left;
+        Node *right;
+        kdBox *box;
+        std::vector<Triangle> *sceneObject;
+
+        bool isLeaf() {
+            return sceneObject->size() == 1;
+        }
+
+    };
+    Node *root;
+    int num = 0;
+    int scene = 0;
+
+    kdTree(std::vector<Triangle> *objects){
+        this->root = new Node(NULL, NULL, NULL, objects);
+    };
+
+
+//    void buildTree(kdBox box);
+
+//    void intersectedObjects(glm::vec3 position, glm::vec3 direction, kdTree::Node *curNode, std::vector<Triangle> &v);
+
+//    kdTree subBuildTree(Node *parent, int depth);
+
+    kdBox *createMergedBoundingBox(std::vector<Triangle> *sortedObjects, int start, int end) {
+        kdBox *box = new kdBox();
+        for (int i = start; i < end; i++) {
+            box->merge((*sortedObjects)[i].getBoundingBox());
+        }
+        return box;
+    }
+
+    std::vector<Triangle> *copyVector(std::vector<Triangle> *v) {
+        std::vector<Triangle> *newV = new std::vector<Triangle>;
+        for (int i = 0; i < v->size(); i++) {
+            newV->push_back((*v)[i]);
+        }
+        return newV;
+    }
+
+    void intersectedObjects(glm::vec3 position, glm::vec3 direction, kdTree::Node *curNode, std::vector<Triangle> &v) {
+        const double z = 0.0;
+        if (curNode->box->intersect(position, direction, const_cast<double &>(z), const_cast<double &>(z))) {
+            if (curNode->isLeaf()) {
+                v.push_back((*(curNode->sceneObject))[0]);
+            }
+            else {
+                intersectedObjects(position, direction, curNode->left, v);
+                intersectedObjects(position, direction, curNode->right, v);
+            }
+        }
+    }
+
+    void buildTree(kdBox box) {
+        root->box = new kdBox(box.getMin(), box.getMax());
+        subBuildTree(root, 0);
+    }
+
+    kdTree subBuildTree(kdTree::Node *parent, int depth) {
+
+        std::vector<Triangle> *objects = parent->sceneObject;
+
+        if (parent->sceneObject->size() != 1) { //&& depth == 10
+            // X DIMENSION
+
+            int size = objects->size();
+
+            std::vector<Triangle> *sortedXObjects = copyVector(objects);
+            std::sort(sortedXObjects->begin(),
+                      sortedXObjects->end(),
+                      [](Triangle lhs, Triangle rhs) {
+                          return lhs.getBoundingBox().getMin()[0] < rhs.getBoundingBox().getMin()[0];
+                      });
+            kdBox *totalXBox = createMergedBoundingBox(sortedXObjects, 0, sortedXObjects->size());
+            kdBox *leftXHalf = createMergedBoundingBox(sortedXObjects, 0, sortedXObjects->size() / 2);
+            kdBox *rightXHalf = createMergedBoundingBox(sortedXObjects, sortedXObjects->size() / 2,
+                                                        sortedXObjects->size());
+            double sumOfX = leftXHalf->area() + rightXHalf->area();
+            //double sumOfX = *sortedXObjects[size - 1]->getBoundingBox().getMax[0] - *sortedXObjects[0]->getBoundingBox().getMin[0];
+
+            // Y DIMENSION
+            std::vector<Triangle> *sortedYObjects = copyVector(objects);
+            std::sort(sortedYObjects->begin(),
+                      sortedYObjects->end(),
+                      [](Triangle lhs, Triangle rhs) {
+                          return lhs.getBoundingBox().getMin()[1] < rhs.getBoundingBox().getMin()[1];
+                      });
+            kdBox *totalYBox = createMergedBoundingBox(sortedYObjects, 0, sortedYObjects->size());
+            kdBox *leftYHalf = createMergedBoundingBox(sortedYObjects, 0, sortedYObjects->size() / 2);
+            kdBox *rightYHalf = createMergedBoundingBox(sortedYObjects, sortedYObjects->size() / 2,
+                                                        sortedYObjects->size());
+            double sumOfY = leftYHalf->area() + rightYHalf->area();
+
+            // Z DIMENSION
+            std::vector<Triangle> *sortedZObjects = copyVector(objects);
+            std::sort(sortedZObjects->begin(),
+                      sortedZObjects->end(),
+                      [](Triangle lhs, Triangle rhs) {
+                          return lhs.getBoundingBox().getMin()[2] < rhs.getBoundingBox().getMin()[2];
+                      });
+            kdBox *totalZBox = createMergedBoundingBox(sortedZObjects, 0, sortedZObjects->size());
+            kdBox *leftZHalf = createMergedBoundingBox(sortedZObjects, 0, sortedZObjects->size() / 2);
+            kdBox *rightZHalf = createMergedBoundingBox(sortedZObjects, sortedZObjects->size() / 2,
+                                                        sortedZObjects->size());
+            double sumOfZ = leftZHalf->area() + rightZHalf->area();
+
+            // Pick best dimension
+            kdBox *bestLeft;
+            kdBox *bestRight;
+            std::vector<Triangle> *bestList;
+
+            if (sumOfX < sumOfY && sumOfX < sumOfZ) {
+                bestLeft = leftXHalf;
+                bestRight = rightXHalf;
+                bestList = sortedXObjects;
+            } else if (sumOfY < sumOfX && sumOfY < sumOfZ) {
+                bestLeft = leftYHalf;
+                bestRight = rightYHalf;
+                bestList = sortedYObjects;
+            } else {
+                bestLeft = leftZHalf;
+                bestRight = rightZHalf;
+                bestList = sortedZObjects;
+            }
+
+            //for (int i = 0; i < bestLeft.size() / 2)
+            std::vector<Triangle> *vLeft = new std::vector<Triangle>;
+            for (int i = 0; i < bestList->size() / 2; i++) {
+                vLeft->push_back((*bestList)[i]);
+            }
+            parent->left = new kdTree::Node(NULL, NULL, bestLeft, vLeft);
+            subBuildTree(parent->left, depth + 1);
+
+            std::vector<Triangle> *vRight = new std::vector<Triangle>;
+            for (int i = bestList->size() / 2; i < bestList->size(); i++) {
+                vRight->push_back((*bestList)[i]);
+            }
+            parent->right = new kdTree::Node(NULL, NULL, bestRight, vRight);
+            subBuildTree(parent->right, depth + 1);
+        }
+    }
+
+
+};
 
 float make_single_factor(Triangle *tri1, Triangle *tri2) {
 //        matrix = new float[triangles.size * triangles.size()];
@@ -152,39 +335,42 @@ public:
     std::vector<glm::vec4> vertices;
     std::vector<glm::uvec3> faces;
     std::vector<Triangle> triangles;
-    float *matrix;
+    kdTree *tree;
+    kdBox *box;
+    //    float *matrix;
 
     void makeTriangles(int level) {
         if (level == 0) {
             for (int i = 0; i < faces.size(); i++) {
                 triangles.push_back(Triangle(vertices[faces[i].x], vertices[faces[i].y], vertices[faces[i].z], colors[faces[i].x],
-                                        colors[faces[i].y], colors[faces[i].z]));
+                                        colors[faces[i].y], colors[faces[i].z], i));
             }
-            return;
         }
-        std::vector<glm::vec4> vertices_copy;
-        std::vector<glm::uvec3> faces_copy;
-        std::vector<glm::vec4> colors_copy;
+        else {
+            std::vector<glm::vec4> vertices_copy;
+            std::vector<glm::uvec3> faces_copy;
+            std::vector<glm::vec4> colors_copy;
 
-        for (int i = 0; i < vertices.size(); i++) {
-            vertices_copy.push_back(vertices[i]);
-        }
-        for (int i = 0; i < faces.size(); i++) {
-            faces_copy.push_back(faces[i]);
-        }
-        for (int i = 0; i < colors.size(); i++) {
-            colors_copy.push_back(colors[i]);
-        }
-        vertices.clear();
-        faces.clear();
-        colors.clear();
-        for (int i = 0; i < faces_copy.size(); i++) {
+            for (int i = 0; i < vertices.size(); i++) {
+                vertices_copy.push_back(vertices[i]);
+            }
+            for (int i = 0; i < faces.size(); i++) {
+                faces_copy.push_back(faces[i]);
+            }
+            for (int i = 0; i < colors.size(); i++) {
+                colors_copy.push_back(colors[i]);
+            }
+            vertices.clear();
+            faces.clear();
+            colors.clear();
+            for (int i = 0; i < faces_copy.size(); i++) {
 //            glm::vec4 color = glm::vec4()
-            Triangle tri(vertices_copy[faces_copy[i].x], vertices_copy[faces_copy[i].y],
-                         vertices_copy[faces_copy[i].z], colors_copy[faces_copy[i].x], colors_copy[faces_copy[i].y], colors_copy[faces_copy[i].z]);
-            recursiveTris(level, tri);
+                Triangle tri(vertices_copy[faces_copy[i].x], vertices_copy[faces_copy[i].y],
+                             vertices_copy[faces_copy[i].z], colors_copy[faces_copy[i].x], colors_copy[faces_copy[i].y],
+                             colors_copy[faces_copy[i].z], -1);
+                recursiveTris(level, tri);
+            }
         }
-
     }
 
     void recursiveTris(int level, Triangle tri) {
@@ -196,19 +382,19 @@ public:
             vertices.push_back(tri.position[0]);
             vertices.push_back(mid.position[0]);
             vertices.push_back(mid.position[2]);
-            triangles.push_back(Triangle(tri.position[0], mid.position[0], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]));
+            triangles.push_back(Triangle(tri.position[0], mid.position[0], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], tri_size));
             vertices.push_back(tri.position[1]);
             vertices.push_back(mid.position[0]);
             vertices.push_back(mid.position[1]);
-            triangles.push_back(Triangle(tri.position[1], mid.position[0], mid.position[1], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]));
+            triangles.push_back(Triangle(tri.position[1], mid.position[0], mid.position[1], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], tri_size + 1));
             vertices.push_back(tri.position[2]);
             vertices.push_back(mid.position[1]);
             vertices.push_back(mid.position[2]);
-            triangles.push_back(Triangle(tri.position[2], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]));
+            triangles.push_back(Triangle(tri.position[2], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], tri_size + 2));
             vertices.push_back(mid.position[0]);
             vertices.push_back(mid.position[1]);
             vertices.push_back(mid.position[2]);
-            triangles.push_back(Triangle(mid.position[0], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]));
+            triangles.push_back(Triangle(mid.position[0], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], tri_size + 3));
 
 //            for (int i = 0; i < 4; i++) {
 //                triangles[triangles.size() - 4 + i].diffuse_constant = glm::vec4(1.0, 1.0, 1.0, 1.0);
@@ -227,10 +413,10 @@ public:
         }
 
         else {
-            Triangle tri1(tri.position[0], mid.position[0], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]);
-            Triangle tri2(tri.position[1], mid.position[0], mid.position[1], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]);
-            Triangle tri3(tri.position[2], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]);
-            Triangle tri4(mid.position[0], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2]);
+            Triangle tri1(tri.position[0], mid.position[0], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], -1);
+            Triangle tri2(tri.position[1], mid.position[0], mid.position[1], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], -1);
+            Triangle tri3(tri.position[2], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], -1);
+            Triangle tri4(mid.position[0], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], -1);
 
             recursiveTris(level - 1, tri1);
             recursiveTris(level - 1, tri2);
@@ -239,7 +425,18 @@ public:
         }
     }
 
-    void updateColors() {
+    void updateColors(int level) {
+        if (level == 0) {
+            for (int i = 0; i < triangles.size(); i++) {
+                colors[faces[i].x] = triangles[i].color;
+                colors[faces[i].y] = triangles[i].color;
+                colors[faces[i].z] = triangles[i].color;
+            }
+
+            return;
+        }
+
+
         int list_length = vertices.size();
         colors.clear();
         for (int i = 0; i < list_length; i++) {
@@ -267,17 +464,18 @@ public:
         for (int i = 0, k = 0; i < triangles.size(), k < numThreads; i += triangles_per_thread, k++) {
             int max = i + triangles_per_thread < triangles.size() ? i + triangles_per_thread : triangles.size();
             std::vector<Triangle> *t = &triangles;
+            kdTree* treeCopy = tree;
 //            auto *func = make_single_factor;
-            drawThreads[k] = new std::thread([t, max, i] {
+            drawThreads[k] = new std::thread([treeCopy, t, max, i] {
                 std::vector <Triangle> triangles = *t;
 //                std::cout << triangles.size() << std::endl;
 //                std::cout << "started thread" << std::endl;
                 for (int tri1_index = i; tri1_index < max; tri1_index++) {
                     auto tri1 = (*t)[tri1_index];
-                    for (int tri2_index = 0; tri2_index < triangles.size(); tri2_index++) {
+                    for (int tri2_index = 0; tri2_index < triangles.size(); tri2_index+=2) {
                         Triangle tri2 = (*t)[tri2_index];
                         float factor = make_single_factor(&tri1, &tri2);
-                        if (factor < .001) {
+                        if (factor < .0001) {
                             continue;
                         }
                         if (tri1_index == tri2_index) {
@@ -287,13 +485,16 @@ public:
                         glm::vec3 direction = glm::normalize(tri2.centroid() - tri1.centroid());
                         bool intersected = false;
                         float earliestT = glm::length(tri2.centroid() - tri1.centroid());
-                        for (int j = 0; j < triangles.size(); j++) {
-                            if (j == tri2_index || j == tri1_index) {
+                        std::vector<Triangle> possible_list;
+                        treeCopy->intersectedObjects(tri1.centroid(), direction, treeCopy->root, possible_list);
+//                        possible_list = triangles;
+                        for (int j = 0; j < possible_list.size(); j++) {
+                            if (possible_list[j].index == tri2_index || possible_list[j].index == tri1_index) {
                                 continue;
                             }
 
                             float possibleT;
-                            if (triangles[j].intersects(direction, tri1.centroid(), possibleT) &&
+                            if (possible_list[j].intersects(direction, tri1.centroid(), possibleT) &&
                                 possibleT < earliestT) {
                                 intersected = true;
                                 break;
@@ -384,17 +585,19 @@ public:
 
                 glm::vec3 lightDir = glm::normalize(centroid - lightSource.position);
 
+                std::vector<Triangle> possible_triangles;
+                tree->intersectedObjects(lightSource.position, lightDir, tree->root, possible_triangles);
                 bool intersected = false;
                 //Multiplying this with lightDir + lightSource gets the centroid
                 float earliestT = glm::length(centroid - lightSource.position);
-                for (int j = 0; j < triangles.size(); j++) {
+                for (int j = 0; j < possible_triangles.size(); j++) {
                     //If there is a single triangle blocking the light, then return true
-                    if (i == j) {
+                    if (i == possible_triangles[j].index) {
                         continue;
                     }
 
                     float possibleT;
-                    if (triangles[j].intersects(lightDir, lightSource.position, possibleT) && earliestT > possibleT) {
+                    if (possible_triangles[j].intersects(lightDir, lightSource.position, possibleT) && earliestT > possibleT) {
                         //The ray must intersect the triangle and must do so earlier than the triangle we are computing light for
                         intersected = true;
                         break;
@@ -482,7 +685,7 @@ public:
             auto index2 = loader.LoadedIndices[i + 1];
             auto index3 = loader.LoadedIndices[i + 2];
             faces.push_back(glm::vec3(index1, index2, index3));
-            Triangle tri(vertices[index1], vertices[index2], vertices[index3], colors[index1], colors[index2], colors[index3]);
+            Triangle tri(vertices[index1], vertices[index2], vertices[index3], colors[index1], colors[index2], colors[index3], faces.size() - 1);
         }
 
 
@@ -496,5 +699,7 @@ class RadiosityScene {
 
 
 };
+
+// Note: you can put kd-tree here
 
 #endif //GLSL_RADIOSITYSCENE_H

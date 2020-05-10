@@ -1,6 +1,6 @@
 SET(pwd ${CMAKE_CURRENT_LIST_DIR})
 
-SET(src "" texture_to_render.cpp RadiosityScene.h)
+SET(src "" texture_to_render.cpp RadiosityScene.h RadiosityScene.cpp)
 AUX_SOURCE_DIRECTORY(${pwd} src)
 add_executable(skinning ${src})
 message(STATUS "skinning added ${src}")

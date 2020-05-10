@@ -53,7 +53,7 @@
 //    // take the object's local bounding box, transform all 8 points on it,
 //    // and use those to find a new bounding box.
 //
-//    BoundingBox localBounds = ComputeLocalBoundingBox();
+//    kdBox localBounds = ComputeLocalBoundingBox();
 //
 //    glm::dvec3 min = localBounds.getMin();
 //    glm::dvec3 max = localBounds.getMax();

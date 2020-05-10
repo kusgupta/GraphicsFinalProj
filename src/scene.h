@@ -151,7 +151,7 @@
 //	virtual bool isTriMesh() const {return false;};
 //
 //	virtual bool hasBoundingBoxCapability() const;
-//	const BoundingBox& getBoundingBox() const { return bounds; }
+//	const kdBox& getBoundingBox() const { return bounds; }
 //	glm::dvec3 getNormal() { return glm::dvec3(1.0, 0.0, 0.0); }
 //
 //	virtual void ComputeBoundingBox();
@@ -159,7 +159,7 @@
 //	// default method for ComputeLocalBoundingBox returns a bogus bounding
 //	// box;
 //	// this should be overridden if hasBoundingBoxCapability() is true.
-//	virtual BoundingBox ComputeLocalBoundingBox() { return BoundingBox(); }
+//	virtual kdBox ComputeLocalBoundingBox() { return kdBox(); }
 //
 //	void setTransform(TransformNode* transform)
 //	{
@@ -183,7 +183,7 @@
 //	virtual void initializeBVH() { return; }
 //
 //protected:
-//	BoundingBox bounds;
+//	kdBox bounds;
 //	TransformNode* transform;
 //};
 //
@@ -267,7 +267,7 @@
 //	void glDraw(int quality, bool actualMaterials,
 //	            bool actualTextures) const;
 //
-//	const BoundingBox& bounds() const { return sceneBounds; }
+//	const kdBox& bounds() const { return sceneBounds; }
 //
 //	kdTree *tree;
 //	bool dof = false;
@@ -291,7 +291,7 @@
 //	// must fall within this bounding box.  Objects that don't have
 //	// hasBoundingBoxCapability()
 //	// are exempt from this requirement.
-//	BoundingBox sceneBounds;
+//	kdBox sceneBounds;
 //
 //
 //public:
