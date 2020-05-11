@@ -202,7 +202,7 @@ int main(int argc, char* argv[])
     Mesh mesh;
 
     objl::Loader loader;
-    loader.LoadFile("../../Test.obj");
+    loader.LoadFile("../../cornell_box_multimaterial.obj");
 
 
 
@@ -213,11 +213,12 @@ int main(int argc, char* argv[])
 //    add_box(500, 1, 0, box);
 //    add_box(100, 1, 1, box);
     box.loadScene(loader);
-    LightSource light1;
+    std::vector<LightSource> lights;
+//    LightSource light1;
 //    light1.position = glm::vec4(-400, -400, -400, 1);
-    light1.position = glm::vec4(100, 100, 100, 1);
-    light1.color = glm::vec4(1, 1, 1, 1);
-    light1.intensity = glm::vec4(1, 1, 1, 1);
+//    light1.position = glm::vec4(343.0, 548.0, 227.0, 1);
+//    light1.color = glm::vec4(1, 1, 1, 1);
+//    light1.intensity = glm::vec4(1, 1, 1, 1);
     /*
      * GUI object needs the mesh object for bone manipulation.
      */
@@ -226,6 +227,28 @@ int main(int argc, char* argv[])
     MatrixPointers mats; // Define MatrixPointers here for lambda to capture
 
 
+//    /*
+    LightSource light1;
+    LightSource light2;
+    LightSource light3;
+    LightSource light4;
+    light1.position = glm::vec4(343.0, 548.0, 227.0, 1);
+    light1.color = glm::vec4(1, 1, 1, 1);
+    light1.intensity = glm::vec4(1, 1, 1, 1);
+    light2.position = glm::vec4(343.0, 548.0, 332.0, 1);
+    light2.color = glm::vec4(1, 1, 1, 1);
+    light2.intensity = glm::vec4(1, 1, 1, 1);
+    light3.position = glm::vec4(213.0, 548.0, 332.0, 1);
+    light3.color = glm::vec4(1, 1, 1, 1);
+    light3.intensity = glm::vec4(1, 1, 1, 1);
+    light4.position = glm::vec4(213.0, 548.0, 227.0, 1);
+    light4.color = glm::vec4(1, 1, 1, 1);
+    light4.intensity = glm::vec4(1, 1, 1, 1);
+    lights.push_back(light1);
+    lights.push_back(light2);
+    lights.push_back(light3);
+    lights.push_back(light4);
+//     */
     GUI gui2 = *gui;
     // FIXME: add more lambdas for data_source if you want to use RenderPass.
     //        Otherwise, do whatever you like here
@@ -253,7 +276,7 @@ int main(int argc, char* argv[])
     std::cout << box.vertices.size() << std::endl;
     using namespace std::chrono;
     auto start = high_resolution_clock::now();
-    box.makeTriangles(0);
+    box.makeTriangles(1);
     box.tree = new kdTree(&(box.triangles));
     //Create bounding box
     box.box = box.tree->createMergedBoundingBox(&(box.triangles), 0, box.triangles.size());
@@ -277,10 +300,12 @@ int main(int argc, char* argv[])
 // member function on the duration object
 
     std::cout << duration.count() / 1000000 << std::endl;
-    for (int passes = 0; passes < 3; passes++) {
-        std::cout << "pass " << passes << std::endl;
+    for (int light_num; light_num < lights.size(); light_num++) {
+        for (int passes = 0; passes < 10; passes++) {
+            std::cout << "pass " << passes << std::endl;
 //        std::cout << "pass " << passes << std::endl;
-        box.calculate_light(light1);
+            box.calculate_light(lights[light_num], 4, true);
+        }
     }
 
     box.updateColors(1);

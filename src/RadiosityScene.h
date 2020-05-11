@@ -5,6 +5,7 @@
 
 #ifndef GLSL_RADIOSITYSCENE_H
 #define GLSL_RADIOSITYSCENE_H
+
 #include <cstdlib>
 #include <vector>
 #include <glm/glm.hpp>
@@ -25,6 +26,16 @@ public:
     bool used = false;
 };
 
+class AreaLight {
+public:
+    std::vector<LightSource> lights;
+
+    float computeArea() {
+//        float s1 = glm::length(lights[0] )
+    }
+};
+
+
 class Triangle {
 
 public:
@@ -37,10 +48,11 @@ public:
     glm::vec4 accum = glm::vec4(0.0, 0.0, 0.0, 0.0);
     glm::vec4 color = glm::vec4(0.0, 0.0, 0.0, 0.0);
 //    float *form_factors;
-    std::map<int, float>form_factors;
+    std::map<int, float> form_factors;
     kdBox box;
 
-    Triangle(glm::vec4 pos1, glm::vec4 pos2, glm::vec4 pos3, glm::vec4 color1, glm::vec4 color2, glm::vec4 color3, int face_index) {
+    Triangle(glm::vec4 pos1, glm::vec4 pos2, glm::vec4 pos3, glm::vec4 color1, glm::vec4 color2, glm::vec4 color3,
+             int face_index) {
         position[0] = pos1;
         position[1] = pos2;
         position[2] = pos3;
@@ -72,6 +84,12 @@ public:
         return box;
     }
 
+    float getArea() {
+        glm::vec3 s1 = position[0] - position[1];
+        glm::vec3 s2 = position[1] - position[2];
+        return glm::length(glm::cross(s1, s2)) / 2;
+    }
+
     Triangle mdptTri() {
         glm::vec4 m1 = (position[0] + position[1]) / 2.0f;
         glm::vec4 m2 = (position[1] + position[2]) / 2.0f;
@@ -92,7 +110,7 @@ public:
         return (position[0] + position[1] + position[2]) / 3.0f;
     }
 
-    bool intersects(glm::vec3 direction, glm::vec3 pos, float& t) {
+    bool intersects(glm::vec3 direction, glm::vec3 pos, float &t) {
         glm::vec3 n = normal();
 
         if (glm::dot(direction, n) == 0) {
@@ -152,13 +170,14 @@ public:
         */
     }
 };
+
 class kdTree {
 public:
     class Node {
     public:
         Node(Node *left, Node *right, kdBox *box,
-             std::vector<Triangle> *sceneObject): left(left), right(right),
-                                                  box(box), sceneObject(sceneObject){};
+             std::vector<Triangle> *sceneObject) : left(left), right(right),
+                                                   box(box), sceneObject(sceneObject) {};
 
         Node *left;
         Node *right;
@@ -170,11 +189,12 @@ public:
         }
 
     };
+
     Node *root;
     int num = 0;
     int scene = 0;
 
-    kdTree(std::vector<Triangle> *objects){
+    kdTree(std::vector<Triangle> *objects) {
         this->root = new Node(NULL, NULL, NULL, objects);
     };
 
@@ -206,8 +226,7 @@ public:
         if (curNode->box->intersect(position, direction, const_cast<double &>(z), const_cast<double &>(z))) {
             if (curNode->isLeaf()) {
                 v.push_back((*(curNode->sceneObject))[0]);
-            }
-            else {
+            } else {
                 intersectedObjects(position, direction, curNode->left, v);
                 intersectedObjects(position, direction, curNode->right, v);
             }
@@ -319,7 +338,7 @@ float make_single_factor(Triangle *tri1, Triangle *tri2) {
 
 
     glm::vec3 cDist = c2 - c1;
-    float distance = glm::length(cDist) / 12;
+    float distance = glm::length(cDist);
     cDist = glm::normalize(cDist);
     float angle1 = glm::acos(glm::dot(n1, cDist));
     float angle2 = glm::acos(glm::dot(n2, cDist));
@@ -342,11 +361,11 @@ public:
     void makeTriangles(int level) {
         if (level == 0) {
             for (int i = 0; i < faces.size(); i++) {
-                triangles.push_back(Triangle(vertices[faces[i].x], vertices[faces[i].y], vertices[faces[i].z], colors[faces[i].x],
-                                        colors[faces[i].y], colors[faces[i].z], i));
+                triangles.push_back(
+                        Triangle(vertices[faces[i].x], vertices[faces[i].y], vertices[faces[i].z], colors[faces[i].x],
+                                 colors[faces[i].y], colors[faces[i].z], i));
             }
-        }
-        else {
+        } else {
             std::vector<glm::vec4> vertices_copy;
             std::vector<glm::uvec3> faces_copy;
             std::vector<glm::vec4> colors_copy;
@@ -382,19 +401,23 @@ public:
             vertices.push_back(tri.position[0]);
             vertices.push_back(mid.position[0]);
             vertices.push_back(mid.position[2]);
-            triangles.push_back(Triangle(tri.position[0], mid.position[0], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], tri_size));
+            triangles.push_back(Triangle(tri.position[0], mid.position[0], mid.position[2], mid.vertex_color[0],
+                                         mid.vertex_color[1], mid.vertex_color[2], tri_size));
             vertices.push_back(tri.position[1]);
             vertices.push_back(mid.position[0]);
             vertices.push_back(mid.position[1]);
-            triangles.push_back(Triangle(tri.position[1], mid.position[0], mid.position[1], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], tri_size + 1));
+            triangles.push_back(Triangle(tri.position[1], mid.position[0], mid.position[1], mid.vertex_color[0],
+                                         mid.vertex_color[1], mid.vertex_color[2], tri_size + 1));
             vertices.push_back(tri.position[2]);
             vertices.push_back(mid.position[1]);
             vertices.push_back(mid.position[2]);
-            triangles.push_back(Triangle(tri.position[2], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], tri_size + 2));
+            triangles.push_back(Triangle(tri.position[2], mid.position[1], mid.position[2], mid.vertex_color[0],
+                                         mid.vertex_color[1], mid.vertex_color[2], tri_size + 2));
             vertices.push_back(mid.position[0]);
             vertices.push_back(mid.position[1]);
             vertices.push_back(mid.position[2]);
-            triangles.push_back(Triangle(mid.position[0], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], tri_size + 3));
+            triangles.push_back(Triangle(mid.position[0], mid.position[1], mid.position[2], mid.vertex_color[0],
+                                         mid.vertex_color[1], mid.vertex_color[2], tri_size + 3));
 
 //            for (int i = 0; i < 4; i++) {
 //                triangles[triangles.size() - 4 + i].diffuse_constant = glm::vec4(1.0, 1.0, 1.0, 1.0);
@@ -405,18 +428,20 @@ public:
 //                else
 //                    diffuse.push_back(glm::vec4(1.0, 0.0, 0.0, 1.0));
             }
-            faces.push_back(glm::vec3(size , size + 1, size + 2));
+            faces.push_back(glm::vec3(size, size + 1, size + 2));
             faces.push_back(glm::vec3(size + 3, size + 4, size + 5));
             faces.push_back(glm::vec3(size + 6, size + 7, size + 8));
             faces.push_back(glm::vec3(size + 9, size + 10, size + 11));
             return;
-        }
-
-        else {
-            Triangle tri1(tri.position[0], mid.position[0], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], -1);
-            Triangle tri2(tri.position[1], mid.position[0], mid.position[1], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], -1);
-            Triangle tri3(tri.position[2], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], -1);
-            Triangle tri4(mid.position[0], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1], mid.vertex_color[2], -1);
+        } else {
+            Triangle tri1(tri.position[0], mid.position[0], mid.position[2], mid.vertex_color[0], mid.vertex_color[1],
+                          mid.vertex_color[2], -1);
+            Triangle tri2(tri.position[1], mid.position[0], mid.position[1], mid.vertex_color[0], mid.vertex_color[1],
+                          mid.vertex_color[2], -1);
+            Triangle tri3(tri.position[2], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1],
+                          mid.vertex_color[2], -1);
+            Triangle tri4(mid.position[0], mid.position[1], mid.position[2], mid.vertex_color[0], mid.vertex_color[1],
+                          mid.vertex_color[2], -1);
 
             recursiveTris(level - 1, tri1);
             recursiveTris(level - 1, tri2);
@@ -464,18 +489,18 @@ public:
         for (int i = 0, k = 0; i < triangles.size(), k < numThreads; i += triangles_per_thread, k++) {
             int max = i + triangles_per_thread < triangles.size() ? i + triangles_per_thread : triangles.size();
             std::vector<Triangle> *t = &triangles;
-            kdTree* treeCopy = tree;
+            kdTree *treeCopy = tree;
 //            auto *func = make_single_factor;
             drawThreads[k] = new std::thread([treeCopy, t, max, i] {
-                std::vector <Triangle> triangles = *t;
+                std::vector<Triangle> triangles = *t;
 //                std::cout << triangles.size() << std::endl;
 //                std::cout << "started thread" << std::endl;
                 for (int tri1_index = i; tri1_index < max; tri1_index++) {
                     auto tri1 = (*t)[tri1_index];
-                    for (int tri2_index = 0; tri2_index < triangles.size(); tri2_index+=2) {
+                    for (int tri2_index = 0; tri2_index < triangles.size(); tri2_index += 1) {
                         Triangle tri2 = (*t)[tri2_index];
                         float factor = make_single_factor(&tri1, &tri2);
-                        if (factor < .0001) {
+                        if (factor < .00001) {
                             continue;
                         }
                         if (tri1_index == tri2_index) {
@@ -517,52 +542,12 @@ public:
     }
 
     float attenuation(float distance) {
-        float c = .10f;
+        float c = 1.5f;
         return 1 / (c + c * distance);// + c * distance * distance);
 //        return 1.0f;
     }
 
-    std::vector<Triangle> unobstructed_triangles(int tri1_index) {
-        return triangles;
-//        std::vector<int> unobstructed;
-//        std::vector<Triangle> rand_list;
-//
-//        auto tri1 = triangles[tri1_index];
-//        //TODO: DON'T USE RAND
-////        for (int i = 0; i < 100; i++) {
-////            int index = rand() % triangles.size();
-////            rand_list.push_back(triangles[index]);
-////        }
-//
-//        for (int i = 0; i < triangles.size(); i++) {
-//            Triangle tri2 = triangles[i];
-//            if (i == tri1_index) {
-//                continue;
-//            }
-//
-//            glm::vec3 direction = glm::normalize(tri2.centroid() - tri1.centroid());
-//            bool intersected = false;
-//            float earliestT = glm::length(tri2.centroid() - tri1.centroid());
-//            for (int j = 0; j < triangles.size(); j++) {
-//                if (j == i || j == tri1_index) {
-//                    continue;
-//                }
-//
-//                float possibleT;
-//                if (triangles[j].intersects(direction, tri1.centroid(), possibleT) && possibleT < earliestT){
-//                    intersected = true;
-//                    break;
-//                }
-//            }
-//
-//            if (!intersected) {
-//                unobstructed.push_back(i);
-//            }
-//        }
-//        return unobstructed;
-    }
-
-    void calculate_light(LightSource &lightSource) {
+    void calculate_light(LightSource &lightSource, int numThreads, bool direct) {
         //Leftover light is initially 0
         //Leftover accumulates as it gets light
         //Diffuse is the amount of light to diffuse currently
@@ -597,23 +582,33 @@ public:
                     }
 
                     float possibleT;
-                    if (possible_triangles[j].intersects(lightDir, lightSource.position, possibleT) && earliestT > possibleT) {
+                    if (possible_triangles[j].intersects(lightDir, lightSource.position, possibleT) &&
+                        earliestT > possibleT) {
                         //The ray must intersect the triangle and must do so earlier than the triangle we are computing light for
                         intersected = true;
                         break;
                     }
 
-
                 }
 
                 if (intersected) {
                     tri->diffuse_lighting = glm::vec4(0.0, 0.0, 0.0, 1);
-                }
-
-                else {
-                    float distance = glm::distance(lightSource.position, centroid) / 40;
-                    tri->diffuse_lighting = tri->diffuse_constant * attenuation(distance) * lightSource.intensity *
-                                            glm::abs(glm::dot(lightDir, normal));
+                } else {
+                    float distance;
+                    if (direct) {
+                        float distance = glm::distance(lightSource.position, centroid) / 40;
+                    } else {
+                        float distance = glm::distance(lightSource.position, centroid);
+//                        std::cout << "not direct" << std::endl;
+                    }
+                    if (direct) {
+                        tri->diffuse_lighting = tri->diffuse_constant * attenuation(distance) * lightSource.intensity *
+                                                glm::abs(glm::dot(lightDir, normal));
+                    } else {
+                        float area = 105 * 130 / 4;
+                        tri->diffuse_lighting = tri->diffuse_constant * attenuation(distance) * lightSource.intensity *
+                                                glm::abs(glm::dot(lightDir, normal)) * area;
+                    }
                 }
 
                 tri->color = tri->diffuse_lighting;
@@ -624,22 +619,39 @@ public:
             lightSource.used = true;
         } else {
 
-            for (int i = 0; i < triangles.size(); i++) {
-                Triangle *tri1 = &triangles[i];
-//                std::vector<Triangle> unobstructed = triangles;
-                // TODO: CHANGE TO USE INDICES NOT TRIANGLES
-                for (std::map<int, float>::iterator it = tri1->form_factors.begin(); it != tri1->form_factors.end(); it++) {
-                    if (it->first == i) {
-                        continue;
-                    }
+            int triangles_per_thread = triangles.size() / numThreads;
 
-                    Triangle tri2 = triangles[it->first];
-                    float form_factor = tri1->form_factors[it->first];
-                    tri1->accum += (form_factor * tri2.diffuse_lighting);
-                }
-
+            if (triangles.size() % numThreads != 0) {
+                numThreads++;
             }
 
+
+            std::thread *drawThreads[numThreads];
+            for (int i = 0, k = 0; i < triangles.size(), k < numThreads; i += triangles_per_thread, k++) {
+                int max = i + triangles_per_thread < triangles.size() ? i + triangles_per_thread : triangles.size();
+                std::vector<Triangle> *t = &triangles;
+                kdTree *treeCopy = tree;
+                drawThreads[k] = new std::thread([treeCopy, t, max, i] {
+                         for (int tri_index = i; tri_index < max; tri_index++) {
+                             Triangle *tri1 = &((*t)[tri_index]);
+                             for (std::map<int, float>::iterator it = tri1->form_factors.begin();
+                                  it != tri1->form_factors.end(); it++) {
+                                 if (it->first == tri_index) {
+                                     continue;
+                                 }
+
+                                 Triangle tri2 = ((*t)[it->first]);
+                                 float form_factor = tri1->form_factors[it->first];
+
+                                 tri1->accum += (form_factor * tri2.diffuse_lighting) * tri2.getArea();
+                             }
+                         }
+                     }
+                );
+            }
+            for (int l = 0; l < numThreads; l++) {
+                drawThreads[l]->join();
+            }
             for (int i = 0; i < triangles.size(); i++) {
                 Triangle tri = triangles[i];
                 triangles[i].diffuse_lighting = triangles[i].diffuse_constant * triangles[i].accum;
@@ -685,7 +697,8 @@ public:
             auto index2 = loader.LoadedIndices[i + 1];
             auto index3 = loader.LoadedIndices[i + 2];
             faces.push_back(glm::vec3(index1, index2, index3));
-            Triangle tri(vertices[index1], vertices[index2], vertices[index3], colors[index1], colors[index2], colors[index3], faces.size() - 1);
+            Triangle tri(vertices[index1], vertices[index2], vertices[index3], colors[index1], colors[index2],
+                         colors[index3], faces.size() - 1);
         }
 
 

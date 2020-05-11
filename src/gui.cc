@@ -186,22 +186,22 @@ void GUI::keyCallback(int key, int scancode, int action, int mods) {
 
     if (mods == 0 && captureWASDUPDOWN(key, action))
         return;
-    if (key == GLFW_KEY_LEFT || key == GLFW_KEY_RIGHT) {
-        float roll_speed;
-        if (key == GLFW_KEY_RIGHT)
-            roll_speed = -roll_speed_;
-        else
-            roll_speed = roll_speed_;
-        // FIXME: actually roll the bone here
-        Bone *curBone = mesh_->skeleton.bones[current_bone_];
-        glm::mat4 rollMat = glm::rotate(roll_speed, curBone->direction());
-
-        curBone->child->applyTransformations(curBone->child, curBone->parent, rollMat);
-
-
-        curBone->child->transformRecursive(curBone->child);
-        mesh_->skeleton.refreshCache(const_cast<Configuration *>(mesh_->getCurrentQ()));
-    } else if (key == GLFW_KEY_C && action != GLFW_RELEASE) {
+//    if (key == GLFW_KEY_LEFT || key == GLFW_KEY_RIGHT) {
+//        float roll_speed;
+//        if (key == GLFW_KEY_RIGHT)
+//            roll_speed = -roll_speed_;
+//        else
+//            roll_speed = roll_speed_;
+//        // FIXME: actually roll the bone here
+//        Bone *curBone = mesh_->skeleton.bones[current_bone_];
+//        glm::mat4 rollMat = glm::rotate(roll_speed, curBone->direction());
+//
+//        curBone->child->applyTransformations(curBone->child, curBone->parent, rollMat);
+//
+//
+//        curBone->child->transformRecursive(curBone->child);
+//        mesh_->skeleton.refreshCache(const_cast<Configuration *>(mesh_->getCurrentQ()));
+    if (key == GLFW_KEY_C && action != GLFW_RELEASE) {
         fps_mode_ = !fps_mode_;
     } else if (key == GLFW_KEY_LEFT_BRACKET && action == GLFW_RELEASE) {
         current_bone_--;
@@ -694,6 +694,10 @@ bool GUI::captureWASDUPDOWN(int key, int action) {
             eye_ += zoom_speed_ * look_;
         else
             camera_distance_ -= zoom_speed_;
+        std::cout << "CAM STuFF" << std::endl;
+        std::cout << getCamera() << std::endl;
+        std::cout << look_ << std::endl;
+        std::cout << up_ << std::endl;
         return true;
     } else if (key == GLFW_KEY_S) {
         if (fps_mode_)
@@ -725,7 +729,16 @@ bool GUI::captureWASDUPDOWN(int key, int action) {
         else
             center_ += pan_speed_ * up_;
         return true;
+    } else if (key == GLFW_KEY_LEFT) {
+            up_ = glm::rotate(up_, -.05f, look_);
+    } else if (key == GLFW_KEY_RIGHT) {
+        up_ = glm::rotate(up_, .05f, look_);
     }
+//    } else if (key == GLFW_KEY_UP) {
+//        eye_ += pan_speed_ * up_;
+//    } else if (key == GLFW_KEY_DOWN) {
+//
+//    }
     return false;
 }
 
