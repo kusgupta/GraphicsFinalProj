@@ -1,0 +1,7 @@
+/Users/kushangupta/Documents/GraphicsFinalProj/build/CMakeFiles/rebuild_cache.dir
+/Users/kushangupta/Documents/GraphicsFinalProj/build/CMakeFiles/edit_cache.dir
+/Users/kushangupta/Documents/GraphicsFinalProj/build/CMakeFiles/pmdreader.dir
+/Users/kushangupta/Documents/GraphicsFinalProj/build/CMakeFiles/utgraphicsutil.dir
+/Users/kushangupta/Documents/GraphicsFinalProj/build/src/CMakeFiles/rebuild_cache.dir
+/Users/kushangupta/Documents/GraphicsFinalProj/build/src/CMakeFiles/edit_cache.dir
+/Users/kushangupta/Documents/GraphicsFinalProj/build/src/CMakeFiles/skinning.dir

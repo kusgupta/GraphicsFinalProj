@@ -11,6 +11,7 @@
 #include <glm/glm.hpp>
 #include <thread>
 #include <map>
+#include <algorithm>
 #include "OBJ_Loader.h"
 //#include "kdTree.h"
 #include "bbox.h"
@@ -76,7 +77,11 @@ public:
             }
         }
 
+//        std::cout << "Positions: " << glm::to_string(position[0]) << " " << glm::to_string(position[1]) << " " << glm::to_string(position[2]) << std::endl;
+//        std::cout << "Min: " << glm::to_string(min_box) << " Max: " << glm::to_string(max_box) << std::endl;
         kdBox tempbox(min_box, max_box);
+
+
         box = tempbox;
     }
 
@@ -139,35 +144,7 @@ public:
 
         return true;
 
-        /*
-        glm::vec3 a_coords = position[0];
-        glm::vec3 b_coords = position[1];
-        glm::vec3 c_coords = position[2];
 
-
-
-        glm::vec3 vab = (b_coords - a_coords);
-        glm::vec3 vbc = (c_coords - b_coords);
-        glm::vec3 vca = (a_coords - c_coords);
-
-        glm::vec3 n = glm::cross(vab, -vca);
-        double denominator = glm::dot(direction, n);
-        double t = glm::dot(a_coords - glm::vec3(pos), n)/denominator;
-        if( t <= .0001 ) {
-            return false;
-        }
-
-        glm::vec3 p = pos + t * direction;
-        glm::vec3 pa = (p - a_coords);
-        glm::vec3 pb = (p - b_coords);
-        glm::vec3 pc = (p - c_coords);
-
-
-        bool doesIntersect = glm::dot(glm::cross(vab, pa),n) >= 0;
-        doesIntersect = doesIntersect && (glm::dot(glm::cross(vbc, pb),n) >= 0);
-        doesIntersect = doesIntersect && (glm::dot(glm::cross(vca, pc),n) >= 0);
-        return doesIntersect;
-        */
     }
 };
 
@@ -193,6 +170,7 @@ public:
     Node *root;
     int num = 0;
     int scene = 0;
+    int count = 0;
 
     kdTree(std::vector<Triangle> *objects) {
         this->root = new Node(NULL, NULL, NULL, objects);
@@ -222,6 +200,7 @@ public:
     }
 
     void intersectedObjects(glm::vec3 position, glm::vec3 direction, kdTree::Node *curNode, std::vector<Triangle> &v) {
+        count++;
         const double z = 0.0;
         if (curNode->box->intersect(position, direction, const_cast<double &>(z), const_cast<double &>(z))) {
             if (curNode->isLeaf()) {
@@ -231,6 +210,8 @@ public:
                 intersectedObjects(position, direction, curNode->right, v);
             }
         }
+
+
     }
 
     void buildTree(kdBox box) {
@@ -238,7 +219,7 @@ public:
         subBuildTree(root, 0);
     }
 
-    kdTree subBuildTree(kdTree::Node *parent, int depth) {
+    void subBuildTree(kdTree::Node *parent, int depth) {
 
         std::vector<Triangle> *objects = parent->sceneObject;
 
@@ -258,7 +239,7 @@ public:
             kdBox *rightXHalf = createMergedBoundingBox(sortedXObjects, sortedXObjects->size() / 2,
                                                         sortedXObjects->size());
             double sumOfX = leftXHalf->area() + rightXHalf->area();
-            //double sumOfX = *sortedXObjects[size - 1]->getBoundingBox().getMax[0] - *sortedXObjects[0]->getBoundingBox().getMin[0];
+            //double sumOfX = (*sortedXObjects)[size - 1].getBoundingBox().getMin()[0] - (*sortedXObjects)[0].getBoundingBox().getMin()[0];
 
             // Y DIMENSION
             std::vector<Triangle> *sortedYObjects = copyVector(objects);
@@ -272,6 +253,7 @@ public:
             kdBox *rightYHalf = createMergedBoundingBox(sortedYObjects, sortedYObjects->size() / 2,
                                                         sortedYObjects->size());
             double sumOfY = leftYHalf->area() + rightYHalf->area();
+            //double sumOfY = (*sortedYObjects)[size - 1].getBoundingBox().getMin()[1] - (*sortedYObjects)[0].getBoundingBox().getMin()[1];
 
             // Z DIMENSION
             std::vector<Triangle> *sortedZObjects = copyVector(objects);
@@ -285,6 +267,7 @@ public:
             kdBox *rightZHalf = createMergedBoundingBox(sortedZObjects, sortedZObjects->size() / 2,
                                                         sortedZObjects->size());
             double sumOfZ = leftZHalf->area() + rightZHalf->area();
+            //double sumOfZ = (*sortedZObjects)[size - 1].getBoundingBox().getMin()[2] - (*sortedZObjects)[0].getBoundingBox().getMin()[2];
 
             // Pick best dimension
             kdBox *bestLeft;
@@ -478,11 +461,15 @@ public:
     }
 
     void pre_process(int numThreads) {
+
+
         int triangles_per_thread = triangles.size() / numThreads;
 
         if (triangles.size() % numThreads != 0) {
             numThreads++;
         }
+
+
 
 
         std::thread *drawThreads[numThreads];
@@ -529,6 +516,8 @@ public:
                         if (!intersected) {
                             (*t)[tri1_index].form_factors[tri2_index] = factor;
                         }
+
+
                     }
                 }
             });
@@ -538,12 +527,14 @@ public:
             drawThreads[l]->join();
         }
 
+        //tree->count = 0;
+
 
     }
 
     float attenuation(float distance) {
         float c = 1.5f;
-        return 1 / (c + c * distance);// + c * distance * distance);
+        return 1 / (c + c * distance + c * distance * distance);
 //        return 1.0f;
     }
 
@@ -553,67 +544,102 @@ public:
         //Diffuse is the amount of light to diffuse currently
         //Vertices will contain the accumulated light
         if (!lightSource.used) {
-            for (int i = 0; i < triangles.size(); i++) {
-                //For each triangle
-                Triangle *tri = &triangles[i];
-                glm::vec3 normal = tri->normal();
+            int triangles_per_thread = triangles.size() / numThreads;
 
-                //Calculates centroid and light direction
-                glm::vec4 centroid(0.0, 0.0, 0.0, 0.0);
-
-                for (int i = 0; i < 3; i++) {
-                    centroid += tri->position[i];
-                }
-
-                centroid /= 3.0;
+            if (triangles.size() % numThreads != 0) {
+                numThreads++;
+            }
 
 
-                glm::vec3 lightDir = glm::normalize(centroid - lightSource.position);
+            std::thread *drawThreads[numThreads];
+            for (int i = 0, k = 0; i < triangles.size(), k < numThreads; i += triangles_per_thread, k++) {
+                int max = i + triangles_per_thread < triangles.size() ? i + triangles_per_thread : triangles.size();
+                std::vector<Triangle> *t = &triangles;
+                kdTree *treeCopy = tree;
+                drawThreads[k] = new std::thread([treeCopy, t, max, i, &lightSource, direct] {
+                    for (int i = 0; i < (*t).size(); i++) {
+                        //For each triangle
+                        Triangle *tri = &((*t)[i]);
+                        Triangle md = tri->mdptTri();
+                        glm::vec3 normal = tri->normal();
 
-                std::vector<Triangle> possible_triangles;
-                tree->intersectedObjects(lightSource.position, lightDir, tree->root, possible_triangles);
-                bool intersected = false;
-                //Multiplying this with lightDir + lightSource gets the centroid
-                float earliestT = glm::length(centroid - lightSource.position);
-                for (int j = 0; j < possible_triangles.size(); j++) {
-                    //If there is a single triangle blocking the light, then return true
-                    if (i == possible_triangles[j].index) {
-                        continue;
+                        //Calculates centroid of the 4 sub-triangles
+                        glm::vec4 samples[4];
+                        samples[0] = glm::vec4(tri->centroid(), 1.0);
+                        samples[1] = (tri->position[0] + md.position[0] + md.position[2]) / 3.0;
+                        samples[2] = (tri->position[1] + md.position[0] + md.position[1]) / 3.0;
+                        samples[3] = (tri->position[2] + md.position[1] + md.position[2]) / 3.0;
+
+                        float visibilityFactor = 0.0;
+                        //For each sub-centroid, calculates light direction and sees if it intersects any triangles
+                        for (int k = 0; k < 4; k++) {
+                            glm::vec3 lightDir = glm::normalize(samples[k] - lightSource.position);
+
+                            std::vector<Triangle> possible_triangles;
+                            treeCopy->intersectedObjects(lightSource.position, lightDir, treeCopy->root, possible_triangles);
+                            bool intersected = false;
+                            //Multiplying this with lightDir + lightSource gets the centroid
+                            float earliestT = glm::length(samples[k] - lightSource.position);
+                            for (int j = 0; j < possible_triangles.size(); j++) {
+                                //If there is a single triangle blocking the light, then return true
+                                if (i == possible_triangles[j].index) {
+                                    continue;
+                                }
+
+                                float possibleT;
+                                if (possible_triangles[j].intersects(lightDir, lightSource.position, possibleT) &&
+                                    earliestT > possibleT) {
+                                    //The ray must intersect the triangle and must do so earlier than the triangle we are computing light for
+                                    intersected = true;
+                                    break;
+                                }
+
+                            }
+
+                            if (!intersected) {
+                                visibilityFactor += 0.25;
+                            }
+
+                            /*
+                            std::cout << "Triangles size: " << possible_triangles.size() << std::endl;
+                            std::cout << tree->count << std::endl;
+                            tree->count = 0;
+                            */
+                        }
+
+
+                        glm::vec4 centroid = glm::vec4(tri->centroid(), 1.0);
+                        glm::vec3 lightDir = glm::normalize(centroid - lightSource.position);
+                        float distance = 0.0;
+
+                        if (direct) {
+                            float distance = glm::distance(lightSource.position, centroid);
+                        } else {
+                            float distance = glm::distance(lightSource.position, centroid);
+                            //                        std::cout << "not direct" << std::endl;
+                        }
+                        float c = 1.5f;
+                        float atten = 1 / (c + c * distance + c * distance * distance);
+                        if (direct) {
+                            tri->diffuse_lighting =
+                                    tri->diffuse_constant * atten * lightSource.intensity *
+                                    glm::abs(glm::dot(lightDir, normal)) * visibilityFactor;
+                        } else {
+                            float area = 105 * 130 / 4;
+                            tri->diffuse_lighting =
+                                    tri->diffuse_constant * atten * lightSource.intensity *
+                                    glm::abs(glm::dot(lightDir, normal)) * area * visibilityFactor;
+                        }
+
+
+                        tri->color = tri->diffuse_lighting;
+
+                        //                tri->color = glm::vec4(1.0f,1.0f, 1.0f, 1.0f);
                     }
-
-                    float possibleT;
-                    if (possible_triangles[j].intersects(lightDir, lightSource.position, possibleT) &&
-                        earliestT > possibleT) {
-                        //The ray must intersect the triangle and must do so earlier than the triangle we are computing light for
-                        intersected = true;
-                        break;
-                    }
-
-                }
-
-                if (intersected) {
-                    tri->diffuse_lighting = glm::vec4(0.0, 0.0, 0.0, 1);
-                } else {
-                    float distance;
-                    if (direct) {
-                        float distance = glm::distance(lightSource.position, centroid) / 40;
-                    } else {
-                        float distance = glm::distance(lightSource.position, centroid);
-//                        std::cout << "not direct" << std::endl;
-                    }
-                    if (direct) {
-                        tri->diffuse_lighting = tri->diffuse_constant * attenuation(distance) * lightSource.intensity *
-                                                glm::abs(glm::dot(lightDir, normal));
-                    } else {
-                        float area = 105 * 130 / 4;
-                        tri->diffuse_lighting = tri->diffuse_constant * attenuation(distance) * lightSource.intensity *
-                                                glm::abs(glm::dot(lightDir, normal)) * area;
-                    }
-                }
-
-                tri->color = tri->diffuse_lighting;
-
-//                tri->color = glm::vec4(1.0f,1.0f, 1.0f, 1.0f);
+                });
+            }
+            for (int l = 0; l < numThreads; l++) {
+                drawThreads[l]->join();
             }
 
             lightSource.used = true;
@@ -632,21 +658,21 @@ public:
                 std::vector<Triangle> *t = &triangles;
                 kdTree *treeCopy = tree;
                 drawThreads[k] = new std::thread([treeCopy, t, max, i] {
-                         for (int tri_index = i; tri_index < max; tri_index++) {
-                             Triangle *tri1 = &((*t)[tri_index]);
-                             for (std::map<int, float>::iterator it = tri1->form_factors.begin();
-                                  it != tri1->form_factors.end(); it++) {
-                                 if (it->first == tri_index) {
-                                     continue;
-                                 }
+                                                     for (int tri_index = i; tri_index < max; tri_index++) {
+                                                         Triangle *tri1 = &((*t)[tri_index]);
+                                                         for (std::map<int, float>::iterator it = tri1->form_factors.begin();
+                                                              it != tri1->form_factors.end(); it++) {
+                                                             if (it->first == tri_index) {
+                                                                 continue;
+                                                             }
 
-                                 Triangle tri2 = ((*t)[it->first]);
-                                 float form_factor = tri1->form_factors[it->first];
+                                                             Triangle tri2 = ((*t)[it->first]);
+                                                             float form_factor = tri1->form_factors[it->first];
 
-                                 tri1->accum += (form_factor * tri2.diffuse_lighting) * tri2.getArea();
-                             }
-                         }
-                     }
+                                                             tri1->accum += (form_factor * tri2.diffuse_lighting) * tri2.getArea();
+                                                         }
+                                                     }
+                                                 }
                 );
             }
             for (int l = 0; l < numThreads; l++) {
@@ -655,7 +681,31 @@ public:
             for (int i = 0; i < triangles.size(); i++) {
                 Triangle tri = triangles[i];
                 triangles[i].diffuse_lighting = triangles[i].diffuse_constant * triangles[i].accum;
-                triangles[i].color += triangles[i].diffuse_lighting;
+                if (triangles[i].diffuse_lighting.x > 1) {
+                    triangles[i].color.x = 1;
+                    triangles[i].diffuse_lighting.x = 1;
+                } else {
+                    triangles[i].color.x += triangles[i].diffuse_lighting.x;
+                }
+                if (triangles[i].diffuse_lighting.y > 1) {
+                    triangles[i].color.y = 1;
+                    triangles[i].diffuse_lighting.y = 1;
+                } else {
+                    triangles[i].color.y += triangles[i].diffuse_lighting.y;
+                }
+                if (triangles[i].diffuse_lighting.z > 1) {
+                    triangles[i].color.z = 1;
+                    triangles[i].diffuse_lighting.z = 1;
+                } else {
+                    triangles[i].color.z += triangles[i].diffuse_lighting.z;
+                }
+                if (triangles[i].diffuse_lighting.w > 1) {
+                    triangles[i].color.w = 1;
+                    triangles[i].diffuse_lighting.w = 1;
+                } else {
+                    triangles[i].color.w += triangles[i].diffuse_lighting.w;
+                }
+//                triangles[i].color += triangles[i].diffuse_lighting;
                 triangles[i].accum = glm::vec4(0.0, 0.0, 0.0, 0.0);
             }
         }

@@ -132,14 +132,14 @@ SceneObject make_box(float size) {
     obj.faces.push_back(glm::vec3(2, 6, 4));
 
 
-    obj.colors.push_back(glm::vec4(1.0, 0.0, 0.0, 1.0));
-    obj.colors.push_back(glm::vec4(0, 1.0, 0.0, 1.0));
-    obj.colors.push_back(glm::vec4(0, 0.0, 1.0, 1.0));
-    obj.colors.push_back(glm::vec4(0, 0.0, 0.0, 1.0));
-    obj.colors.push_back(glm::vec4(1.0, 1.0, 0.0, 1.0));
-    obj.colors.push_back(glm::vec4(1.0, 0.0, 1.0, 1.0));
     obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
-    obj.colors.push_back(glm::vec4(0.0, 1.0, 1.0, 1.0));
+    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
+    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
+    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
+    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
+    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
+    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
+    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
 
     return obj;
 }
@@ -210,15 +210,15 @@ int main(int argc, char* argv[])
 
 //    SceneObject box = make_box(500.0);
     SceneObject box;
-//    add_box(500, 1, 0, box);
-//    add_box(100, 1, 1, box);
+    //add_box(500, 1, 0, box);
+    //add_box(100, 1, 1, box);
     box.loadScene(loader);
     std::vector<LightSource> lights;
 //    LightSource light1;
 //    light1.position = glm::vec4(-400, -400, -400, 1);
-//    light1.position = glm::vec4(343.0, 548.0, 227.0, 1);
 //    light1.color = glm::vec4(1, 1, 1, 1);
 //    light1.intensity = glm::vec4(1, 1, 1, 1);
+//    lights.push_back(light1);
     /*
      * GUI object needs the mesh object for bone manipulation.
      */
@@ -226,7 +226,7 @@ int main(int argc, char* argv[])
 //    mesh.skeleton.refreshCache(const_cast<Configuration *>(mesh.getCurrentQ()));
     MatrixPointers mats; // Define MatrixPointers here for lambda to capture
 
-
+//    /*
 //    /*
     LightSource light1;
     LightSource light2;
@@ -248,7 +248,8 @@ int main(int argc, char* argv[])
     lights.push_back(light2);
     lights.push_back(light3);
     lights.push_back(light4);
-//     */
+//    */
+    //     */
     GUI gui2 = *gui;
     // FIXME: add more lambdas for data_source if you want to use RenderPass.
     //        Otherwise, do whatever you like here
@@ -276,16 +277,16 @@ int main(int argc, char* argv[])
     std::cout << box.vertices.size() << std::endl;
     using namespace std::chrono;
     auto start = high_resolution_clock::now();
-    box.makeTriangles(1);
+    box.makeTriangles(3);
     box.tree = new kdTree(&(box.triangles));
     //Create bounding box
     box.box = box.tree->createMergedBoundingBox(&(box.triangles), 0, box.triangles.size());
     box.tree->buildTree(*(box.box));
     std::cout << "L" << std::endl;
-    std::cout << box.vertices.size() << std::endl;
+    //std::cout << box.vertices.size() << std::endl;
     std::cout << box.triangles.size() << std::endl;
-    std::cout << box.faces.size() << std::endl;
-    std:: cout << box.colors.size() << std::endl;
+    //std::cout << box.faces.size() << std::endl;
+    //std:: cout << box.colors.size() << std::endl;
     std::cout << "L" << std::endl;
 //    std::cout << box.triangles.size() << std::endl;
 //    box.make_form_factors_threads(8);
@@ -300,22 +301,54 @@ int main(int argc, char* argv[])
 // member function on the duration object
 
     std::cout << duration.count() / 1000000 << std::endl;
-    for (int light_num; light_num < lights.size(); light_num++) {
-        for (int passes = 0; passes < 10; passes++) {
+    for (int light_num = 0; light_num < lights.size(); light_num++) {
+//        float color_avg_prev = 0;
+        for (int passes = 0; passes < 5; passes++) {
             std::cout << "pass " << passes << std::endl;
 //        std::cout << "pass " << passes << std::endl;
             box.calculate_light(lights[light_num], 4, true);
+//                for (int i =0 ; i < box.triangles.size(); i++) {
+//                    max_light = glm::max(box.triangles[i].diffuse_lighting, max_light);
+//                }
+//            std::cout << glm::to_string(max_light) << std::endl;
+            start = stop;
+            stop = high_resolution_clock::now();
+
+            duration = duration_cast<microseconds>(stop - start);
+            std::cout << duration.count() / 1000000 << std::endl;
+//            glm::vec3 residual_light = glm::vec3(0, 0, 0);
+//            float residual_light = 0;
+//            for (int i = 0; i < box.triangles.size(); i++) {
+//                residual_light = glm::max(glm::vec3(box.triangles[i].diffuse_lighting).y, residual_light);// box.colors[i].x + box.colors[i].y + box.colors[i].z;
+//                std::cout << glm::to_string(residual_light) << std::endl;
+//            }
+//            if (residual_light < .1) {
+//                break;
+//                std::cout << "BROKEN" << std::endl;
+//            }
+//            color_avg /= box.colors.size();
+//            if (color_avg_prev == 0) {
+//                color_avg_prev = color_avg;
+//            } else {
+//                if (color_avg - color_avg_prev <= .001) {
+//                    break;
+//                }
+//                color_avg_prev = color_avg;
+//            }
+//            color_avg = 0;
         }
+
+
     }
 
-    box.updateColors(1);
+    box.updateColors(3);
     for (int i = 0; i < box.triangles.size(); i++) {
         Triangle tri1 = box.triangles[i];
-        std::cout << box.triangles[i].form_factors.size() << std::endl;
-        if (!(box.triangles[i].color.x > 0 && box.triangles[i].color.y > 0 && box.triangles[i].color.z > 0))
-            std::cout << "ERROR" << std::endl;
+        //std::cout << box.triangles[i].form_factors.size() << std::endl;
+        //if (!(box.triangles[i].color.x > 0 && box.triangles[i].color.y > 0 && box.triangles[i].color.z > 0))
+        //std::cout << "ERROR" << std::endl;
     }
-    std::cout << "DONE" << std::endl;
+    //std::cout << "DONE" << std::endl;
 
     // Object render pass
     RenderDataInput object_pass_input;
@@ -339,6 +372,13 @@ int main(int argc, char* argv[])
 
     while (!glfwWindowShouldClose(window)) {
         // Setup some basic window stuff.
+        //start = stop;
+        //stop = high_resolution_clock::now();
+
+        //duration = duration_cast<microseconds>(stop - start);
+        //std::cout << duration.count() / 100000.0 << std::endl;
+
+
         glfwGetFramebufferSize(window, &window_width, &window_height);
         glViewport(0, 0, main_view_width, main_view_height);
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
