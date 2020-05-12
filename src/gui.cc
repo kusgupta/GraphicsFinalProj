@@ -694,10 +694,6 @@ bool GUI::captureWASDUPDOWN(int key, int action) {
             eye_ += zoom_speed_ * look_;
         else
             camera_distance_ -= zoom_speed_;
-        std::cout << "CAM STuFF" << std::endl;
-        std::cout << getCamera() << std::endl;
-        std::cout << look_ << std::endl;
-        std::cout << up_ << std::endl;
         return true;
     } else if (key == GLFW_KEY_S) {
         if (fps_mode_)
