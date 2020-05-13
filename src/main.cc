@@ -189,6 +189,7 @@ int main(int argc, char* argv[])
 
 
         box.makeTriangles(tess_level);
+        std::cout << "Num faces: " << box.faces.size() << std::endl;
         box.tree = new kdTree(&(box.triangles));
         //Create bounding box
         box.box = box.tree->createMergedBoundingBox(&(box.triangles), 0, box.triangles.size());
@@ -226,7 +227,6 @@ int main(int argc, char* argv[])
     std::function<float()> radius_data = [&cylinder_rad]() {
         return cylinder_rad;
     };
-
     auto std_model = std::make_shared<ShaderUniform<const glm::mat4 *>>("model", model_data);
 //    auto floor_model = make_uniform("model", identity_mat);
     auto std_view = make_uniform("view", view_data);
