@@ -1,17 +1,47 @@
-Our mannequin extra credit includes a creative scene, requiring the mesh Haku_Yowane.pmd, and running the 
-Creative_scene.json file. It shows Haku Yowane trying to walk but falling like a drunk. Best viewed from the front.
+On my honor, I, Kushan Gupta, completed the ECIS survey.
+On my honor, I, Andrew Li, completed the ECIS survey.
 
-Additionally, if you click ctrl-a, you can see a gui dialog box pop up and type in the file.json you would like 
-to save your animation as.
+Radiosity.pdf is our presentation.
+Graphics Writeup.pdf is our writeup.
 
-We also implemented export as movie; however, the frames slide up, something we likely think is a GPU issue since we
-asked other teams about the implementation, and have implemented very similarly. We saw a similar gpu dependent issue 
-while I ran on my AMD chip on OSX regarding multi-sampling, which is why we think it's gpu dependent. In order to create
-an MP4 movie, click ctrl-m, allow the animation to play through, and open output.mp4. This requires the ffmpeg library to work on 
-the build computer and it must be a Mac. Uncomment the chunk of code on line 629 to run it, and uncomment lines 741, 742, and 747.
+Our code is run by:
 
-We also implemented anti-aliasing for the main view and anti-aliasing for the preview. Once implemented, the edges of the 
-mesh figure become more smooth.
+1) Creating folder build
+2) cmake .. within build
+3) make -j8
+4) cd bin
+5) ./skinning + arguments
+    There are 2 required arguments and 1 additional argument
+    arg1 = tesselation level
+    arg2 = .obj file
+    arg3(optional) = num threads(default 4)
+    Example:
+    
+    In bin folder, ./skinning 2 cornell_box_multimaterial.obj 2
+    
+Additionally, obj files must be at the root directory level, at the same level as CMakeLists.txt
 
-Loading from json causes previews to be incorrectly shown, but the animation is loaded properly, and previews can be 
-updated manually via space bar as needed. 
+In order to edit light positions beyond the given default cornell box light positions, you must edit the code from lines
+173 to 188, following the code example given for the cornell box. Light positions for the beacon file are centered around
+or at the point (-6.0, 548.0, 375.0).
+
+We don't suggest a level higher than 2 if running on a quad core i7 Macbook pro level machine, or if on gdc computers,
+level 3 with 8 threads minimum(this one will still take 30 minutes).
+
+To move around, use WASD + arrow keys
+
+The png files in the root directory are our resulting images.
+
+CornellL1: Level 1 tessellation, takes 1 second to run, soft shadows and light bleed present but very tessellated. 
+           Form factors less than .00005 culled. Faces = 576.
+CornellL2: Level 2 tessellation, takes 2 minutes to run, soft shadows and light bleed present and less tessellated.
+           Form factors less than .00005 culled. Faces = 2304.
+CornellL3: Level 3 tessellation, takes 2 minutes to run, soft shadows and light bleed present and much less tessellation.
+           Form factors less than .00005 culled. Faces = 9216
+CornellL2LessCulling: Level 2 tesselation, takes 1.5 hours to run, much softer shadows and more light bleed, could look
+                      better with more tuning but increases runtime exponentially.
+           Form factors less than .000005 culled. Faces = 2304.
+BeaconL1:  Level 1 tesselation, took 3.5 hours to run on GCP 16 core Haswell machine. Mostly as a check out of curiosity,
+           this is a heavily modified beacon scene found online that had 8500 faces, but significantly more form factors
+           on average than the cornell box with equivalent number of faces.
+           Form Factors less than .00005 culled. Faces = 8224.

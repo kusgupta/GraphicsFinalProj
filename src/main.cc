@@ -99,98 +99,9 @@ GLFWwindow* init_glefw()
     return ret;
 }
 
-SceneObject make_box(float size) {
-    SceneObject obj;
-
-    obj.vertices.push_back(glm::vec4(-size, -size, -size, 1));
-    obj.vertices.push_back(glm::vec4(-size, -size, size, 1));
-    obj.vertices.push_back(glm::vec4(size, size, -size, 1));
-    obj.vertices.push_back(glm::vec4(size, size, size, 1));
-    obj.vertices.push_back(glm::vec4(-size, size, -size, 1));
-    obj.vertices.push_back(glm::vec4(-size, size, size, 1));
-    obj.vertices.push_back(glm::vec4(size, -size, -size, 1));
-    obj.vertices.push_back(glm::vec4(size, -size, size, 1));
-
-
-    for (int i = 0; i < obj.vertices.size(); i++) {
-        obj.vertices[i].x /= 1;
-        obj.vertices[i].y /= 1;
-        obj.vertices[i].z /= 1;
-    }
-
-    obj.faces.push_back(glm::vec3(0, 1, 4));
-    obj.faces.push_back(glm::vec3(5, 1, 4));
-    obj.faces.push_back(glm::vec3(4, 2, 5));
-    obj.faces.push_back(glm::vec3(3, 5, 2));
-    obj.faces.push_back(glm::vec3(2, 6, 3));
-    obj.faces.push_back(glm::vec3(7, 3, 6));
-    obj.faces.push_back(glm::vec3(0, 6, 1));
-    obj.faces.push_back(glm::vec3(7, 1, 6));
-    obj.faces.push_back(glm::vec3(1, 5, 7));
-    obj.faces.push_back(glm::vec3(3, 7, 5));
-    obj.faces.push_back(glm::vec3(0, 4, 6));
-    obj.faces.push_back(glm::vec3(2, 6, 4));
-
-
-    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
-    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
-    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
-    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
-    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
-    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
-    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
-    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
-
-    return obj;
-}
-
-void add_box(float size, float scale, int box_num, SceneObject &obj) {
-    obj.vertices.push_back(glm::vec4(-size, -size, -size, 1));
-    obj.vertices.push_back(glm::vec4(-size, -size, size, 1));
-    obj.vertices.push_back(glm::vec4(size, size, -size, 1));
-    obj.vertices.push_back(glm::vec4(size, size, size, 1));
-    obj.vertices.push_back(glm::vec4(-size, size, -size, 1));
-    obj.vertices.push_back(glm::vec4(-size, size, size, 1));
-    obj.vertices.push_back(glm::vec4(size, -size, -size, 1));
-    obj.vertices.push_back(glm::vec4(size, -size, size, 1));
-
-
-    for (int i = 0; i < obj.vertices.size(); i++) {
-        obj.vertices[i].x /= scale;
-        obj.vertices[i].y /= scale;
-        obj.vertices[i].z /= scale;
-    }
-
-    int num_faces = box_num * 8;
-    obj.faces.push_back(glm::vec3(0 + num_faces, 1 + num_faces, 4 + num_faces));
-    obj.faces.push_back(glm::vec3(5 + num_faces, 1 + num_faces, 4 + num_faces));
-    obj.faces.push_back(glm::vec3(4 + num_faces, 2 + num_faces, 5 + num_faces));
-    obj.faces.push_back(glm::vec3(3 + num_faces, 5 + num_faces, 2 + num_faces));
-    obj.faces.push_back(glm::vec3(2 + num_faces, 6 + num_faces, 3 + num_faces));
-    obj.faces.push_back(glm::vec3(7 + num_faces, 3 + num_faces, 6 + num_faces));
-    obj.faces.push_back(glm::vec3(0 + num_faces, 6 + num_faces, 1 + num_faces));
-    obj.faces.push_back(glm::vec3(7 + num_faces, 1 + num_faces, 6 + num_faces));
-    obj.faces.push_back(glm::vec3(1 + num_faces, 5 + num_faces, 7 + num_faces));
-    obj.faces.push_back(glm::vec3(3 + num_faces, 7 + num_faces, 5 + num_faces));
-    obj.faces.push_back(glm::vec3(0 + num_faces, 4 + num_faces, 6 + num_faces));
-    obj.faces.push_back(glm::vec3(2 + num_faces, 6 + num_faces, 4 + num_faces));
-
-
-    obj.colors.push_back(glm::vec4(1.0, 0.0, 0.0, 1.0));
-    obj.colors.push_back(glm::vec4(0, 1.0, 0.0, 1.0));
-    obj.colors.push_back(glm::vec4(0, 0.0, 1.0, 1.0));
-    obj.colors.push_back(glm::vec4(0, 0.0, 0.0, 1.0));
-    obj.colors.push_back(glm::vec4(1.0, 1.0, 0.0, 1.0));
-    obj.colors.push_back(glm::vec4(1.0, 0.0, 1.0, 1.0));
-    obj.colors.push_back(glm::vec4(1.0, 1.0, 1.0, 1.0));
-    obj.colors.push_back(glm::vec4(0.0, 1.0, 1.0, 1.0));
-
-//    return obj;
-}
-
 void readColors(std::vector<glm::vec4>& vertices, std::vector<glm::vec4>& colors, std::vector<glm::uvec3>& faces) {
     std::ifstream fin;
-    fin.open("../../geometrydata");
+    fin.open("../../beacon rendered");
 
     int vertexSize = 0, faceSize = 0;
     fin >> vertexSize >> faceSize;
@@ -226,13 +137,6 @@ void readColors(std::vector<glm::vec4>& vertices, std::vector<glm::vec4>& colors
 
 int main(int argc, char* argv[])
 {
-//	if (argc < 2) {
-//		std::cerr << "Input model file is missing" << std::endl;
-//		std::cerr << "Usage: " << argv[0] << " <PMD file>" << std::endl;
-//		return -1;
-//	}
-
-//    std::cout << argv[0] << std::endl;
     int tess_level = std::stoi(argv[1]);
     char* obj_name = argv[2];
 
@@ -261,25 +165,11 @@ int main(int argc, char* argv[])
         loader.LoadFile(std::string("../../") + obj_name);
 
 
-        std::chrono::time_point<std::chrono::steady_clock> previous = mesh.clock->now();
 
-//    SceneObject box = make_box(500.0);
-        //add_box(500, 1, 0, box);
-        //add_box(100, 1, 1, box);
         box.loadScene(loader);
+        std::cout << "Pre-Processing" << std::endl;
         std::vector<LightSource> lights;
-//    LightSource light1;
-//    light1.position = glm::vec4(-400, -400, -400, 1);
-//    light1.color = glm::vec4(1, 1, 1, 1);
-//    light1.intensity = glm::vec4(1, 1, 1, 1);
-//    lights.push_back(light1);
-        /*
-         * GUI object needs the mesh object for bone manipulation.
-         */
-//    mesh.skeleton.refreshCache(const_cast<Configuration *>(mesh.getCurrentQ()));
 
-//    /*
-//    /*
         LightSource light1;
         LightSource light2;
         LightSource light3;
@@ -296,47 +186,22 @@ int main(int argc, char* argv[])
         lights.push_back(light2);
         lights.push_back(light3);
         lights.push_back(light4);
-//    */
-        //     */
 
 
-//	auto diffuse = std::make_shared<ShaderUniform<const glm::vec3*>>("diffuse", diffuse)
-        std::cout << box.vertices.size() << std::endl;
-        using namespace std::chrono;
-        auto start = high_resolution_clock::now();
         box.makeTriangles(tess_level);
+        std::cout << "Num faces: " << box.faces.size() << std::endl;
         box.tree = new kdTree(&(box.triangles));
         //Create bounding box
         box.box = box.tree->createMergedBoundingBox(&(box.triangles), 0, box.triangles.size());
         box.tree->buildTree(*(box.box));
-        std::cout << "L" << std::endl;
-        //std::cout << box.vertices.size() << std::endl;
-        std::cout << box.triangles.size() << std::endl;
-        //std::cout << box.faces.size() << std::endl;
-        //std:: cout << box.colors.size() << std::endl;
-        std::cout << "L" << std::endl;
-//    std::cout << box.triangles.size() << std::endl;
-//    box.make_form_factors_threads(8);
         box.pre_process(4);
-        std::cout << box.triangles[1].form_factors.size() << std::endl;
-
-        std::cout << "Made form factors" << std::endl;
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
 
 // To get the value of duration use the count()
 // member function on the duration object
 
-        std::cout << duration.count() / 1000000 << std::endl;
         for (int light_num = 0; light_num < lights.size(); light_num++) {
-            for (int passes = 0; passes < 5; passes++) {
-                std::cout << "pass " << passes << std::endl;
+            for (int passes = 0; passes < 6; passes++) {
                 box.calculate_light(lights[light_num], 4, true);
-                start = stop;
-                stop = high_resolution_clock::now();
-
-                duration = duration_cast<microseconds>(stop - start);
-                std::cout << duration.count() / 1000000 << std::endl;
             }
 
 
@@ -362,7 +227,6 @@ int main(int argc, char* argv[])
     std::function<float()> radius_data = [&cylinder_rad]() {
         return cylinder_rad;
     };
-
     auto std_model = std::make_shared<ShaderUniform<const glm::mat4 *>>("model", model_data);
 //    auto floor_model = make_uniform("model", identity_mat);
     auto std_view = make_uniform("view", view_data);
@@ -380,24 +244,16 @@ int main(int argc, char* argv[])
                            {std_view, std_proj},
                            { "fragment_color" }
     );
+    std::cout << "Rendering" << std::endl;
 //each triangle emits 1/num_triangles light, curtri = sum(light emitted per triangle, up to 1)
 
     float aspect = 0.0f;
-    std::cout << "center = " << mesh.getCenter() << "\n";
 
     bool draw_objects = true;
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     while (!glfwWindowShouldClose(window)) {
-        // Setup some basic window stuff.
-        //start = stop;
-        //stop = high_resolution_clock::now();
-
-        //duration = duration_cast<microseconds>(stop - start);
-        //std::cout << duration.count() / 100000.0 << std::endl;
-
-
         glfwGetFramebufferSize(window, &window_width, &window_height);
         glViewport(0, 0, main_view_width, main_view_height);
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -425,9 +281,6 @@ int main(int argc, char* argv[])
                                           box.faces.size() * 3,
                                           GL_UNSIGNED_INT, 0));
         }
-
-
-
         // Poll and swap.
         // FIXME: Draw previews here, note you need to call glViewport
 
