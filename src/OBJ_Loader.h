@@ -686,7 +686,7 @@ namespace objl
 			file.close();
 
 			// Set Materials for each Mesh
-			for (int i = 0; i < MeshMatNames.size(); i++)
+			for (int i = 0; i < LoadedMeshes.size(); i++)
 			{
 				std::string matname = MeshMatNames[i];
 
@@ -737,7 +737,11 @@ namespace objl
 			bool noNormal = false;
 
 			// For every given vertex do this
-			for (int i = 0; i < int(sface.size()); i++)
+			int size = int(sface.size());
+			if (sface[sface.size() - 1] == "\r") {
+			    size -= 1;
+			}
+			for (int i = 0; i < size; i++)
 			{
 				// See What type the vertex is.
 				int vtype;

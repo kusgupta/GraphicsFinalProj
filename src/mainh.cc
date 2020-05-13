@@ -68,6 +68,28 @@ const char* object_fragment_shader =
 
 // FIXME: Add more shaders here.
 
+void printToFile(const char* oFile, std::vector<glm::vec4> vertices, std::vector<glm::vec4> colors, std::vector<glm::uvec3> triangles) {
+	std::ofstream fout;
+	fout.open(oFile);
+	fout << vertices.size() << " " << triangles.size() << std::endl;
+
+	for (int i = 0; i < vertices.size(); i++) {
+		fout << vertices[i][0] << " " << vertices[i][1] << " " << vertices[i][2] << std::endl;
+	}
+
+	for (int i = 0; i < colors.size(); i++) {
+		fout << colors[i][0] << " " << colors[i][1] << " " << colors[i][2] << std::endl;
+	}
+
+	for (int i = 0; i < triangles.size(); i++) {
+		fout << triangles[i][0] << " " << triangles[i][1] << " " << triangles[i][2] << std::endl;
+	}
+
+
+	fout.close();	
+
+}
+
 void ErrorCallback(int error, const char* description) {
     std::cerr << "GLFW Error: " << description << "\n";
 }
@@ -188,42 +210,6 @@ void add_box(float size, float scale, int box_num, SceneObject &obj) {
 //    return obj;
 }
 
-void readColors(std::vector<glm::vec4>& vertices, std::vector<glm::vec4>& colors, std::vector<glm::uvec3>& faces) {
-    std::ifstream fin;
-    fin.open("../../geometrydata");
-
-    int vertexSize = 0, faceSize = 0;
-    fin >> vertexSize >> faceSize;
-
-    for (int i = 0; i < vertexSize; i++) {
-        glm::vec4 vertex;
-        fin >> vertex.x >> vertex.y >> vertex.z;
-        vertex.w = 1.0;
-
-        vertices.push_back(vertex);
-    }
-
-    for (int i = 0; i < vertexSize; i++) {
-        glm::vec4 color;
-        fin >> color.x >> color.y >> color.z;
-        color.w = 1.0;
-
-        colors.push_back(color);
-    }
-
-    for (int i = 0; i < faceSize; i++) {
-        glm::uvec3 face;
-        fin >> face.x >> face.y >> face.z;
-
-        faces.push_back(face);
-    }
-
-    fin.close();
-}
-
-
-
-
 int main(int argc, char* argv[])
 {
 //	if (argc < 2) {
@@ -232,143 +218,167 @@ int main(int argc, char* argv[])
 //		return -1;
 //	}
 
-//    std::cout << argv[0] << std::endl;
-    int tess_level = std::stoi(argv[1]);
-    char* obj_name = argv[2];
-
-    int threadCount = 4;
-
-    if (argc >= 4) {
-        threadCount = std::stoi(argv[3]);
-    }
-
-
-    GLFWwindow *window = init_glefw();
-    gui = new GUI(window, main_view_width, main_view_height, preview_height);
+    //GLFWwindow *window = init_glefw();
+    //gui = new GUI(window, main_view_width, main_view_height, preview_height);
 
     Mesh mesh;
-    bool loadColorsFromFile = false;
 
-    std::ifstream file;
-    SceneObject box;
-    if (loadColorsFromFile) {
-        box.vertices.clear();
-        box.colors.clear();
-        box.faces.clear();
-        readColors(box.vertices, box.colors, box.faces);
-    } else {
-        objl::Loader loader;
-        loader.LoadFile(std::string("../../") + obj_name);
+    objl::Loader loader;
+    loader.LoadFile("../../cornell_box_multimaterial.obj");
+
+    std::cout << "Loading successful" << std::endl;
 
 
-        std::chrono::time_point<std::chrono::steady_clock> previous = mesh.clock->now();
+    std::chrono::time_point<std::chrono::steady_clock> previous = mesh.clock->now();
 
 //    SceneObject box = make_box(500.0);
-        //add_box(500, 1, 0, box);
-        //add_box(100, 1, 1, box);
-        box.loadScene(loader);
-        std::vector<LightSource> lights;
+    SceneObject box;
+    //add_box(500, 1, 0, box);
+    //add_box(100, 1, 1, box);
+    box.loadScene(loader);
+    std::vector<LightSource> lights;
 //    LightSource light1;
 //    light1.position = glm::vec4(-400, -400, -400, 1);
 //    light1.color = glm::vec4(1, 1, 1, 1);
 //    light1.intensity = glm::vec4(1, 1, 1, 1);
 //    lights.push_back(light1);
-        /*
-         * GUI object needs the mesh object for bone manipulation.
-         */
+    /*
+     * GUI object needs the mesh object for bone manipulation.
+     */
+    //gui->assignMesh(&mesh);
 //    mesh.skeleton.refreshCache(const_cast<Configuration *>(mesh.getCurrentQ()));
-
-//    /*
-//    /*
-        LightSource light1;
-        LightSource light2;
-        LightSource light3;
-        LightSource light4;
-        light1.position = glm::vec4(343.0, 548.0, 227.0, 1);
-        light1.intensity = glm::vec4(1, 1, 1, 1);
-        light2.position = glm::vec4(343.0, 548.0, 332.0, 1);
-        light2.intensity = glm::vec4(1, 1, 1, 1);
-        light3.position = glm::vec4(213.0, 548.0, 332.0, 1);
-        light3.intensity = glm::vec4(1, 1, 1, 1);
-        light4.position = glm::vec4(213.0, 548.0, 227.0, 1);
-        light4.intensity = glm::vec4(1, 1, 1, 1);
-        lights.push_back(light1);
-        lights.push_back(light2);
-        lights.push_back(light3);
-        lights.push_back(light4);
-//    */
-        //     */
-
-
-//	auto diffuse = std::make_shared<ShaderUniform<const glm::vec3*>>("diffuse", diffuse)
-        std::cout << box.vertices.size() << std::endl;
-        using namespace std::chrono;
-        auto start = high_resolution_clock::now();
-        box.makeTriangles(tess_level);
-        box.tree = new kdTree(&(box.triangles));
-        //Create bounding box
-        box.box = box.tree->createMergedBoundingBox(&(box.triangles), 0, box.triangles.size());
-        box.tree->buildTree(*(box.box));
-        std::cout << "L" << std::endl;
-        //std::cout << box.vertices.size() << std::endl;
-        std::cout << box.triangles.size() << std::endl;
-        //std::cout << box.faces.size() << std::endl;
-        //std:: cout << box.colors.size() << std::endl;
-        std::cout << "L" << std::endl;
-//    std::cout << box.triangles.size() << std::endl;
-//    box.make_form_factors_threads(8);
-        box.pre_process(4);
-        std::cout << box.triangles[1].form_factors.size() << std::endl;
-
-        std::cout << "Made form factors" << std::endl;
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-
-// To get the value of duration use the count()
-// member function on the duration object
-
-        std::cout << duration.count() / 1000000 << std::endl;
-        for (int light_num = 0; light_num < lights.size(); light_num++) {
-            for (int passes = 0; passes < 5; passes++) {
-                std::cout << "pass " << passes << std::endl;
-                box.calculate_light(lights[light_num], 4, true);
-                start = stop;
-                stop = high_resolution_clock::now();
-
-                duration = duration_cast<microseconds>(stop - start);
-                std::cout << duration.count() / 1000000 << std::endl;
-            }
-
-
-        }
-
-        box.updateColors(1);
-    }
-    gui->assignMesh(&mesh);
     MatrixPointers mats; // Define MatrixPointers here for lambda to capture
 
+//    /*
+//    /*
+    LightSource light1;
+    LightSource light2;
+    LightSource light3;
+    LightSource light4;
+    light1.position = glm::vec4(343.0, 548.0, 227.0, 1);
+    light1.color = glm::vec4(1, 1, 1, 1);
+    light1.intensity = glm::vec4(1, 1, 1, 1);
+    light2.position = glm::vec4(343.0, 548.0, 332.0, 1);
+    light2.color = glm::vec4(1, 1, 1, 1);
+    light2.intensity = glm::vec4(1, 1, 1, 1);
+    light3.position = glm::vec4(213.0, 548.0, 332.0, 1);
+    light3.color = glm::vec4(1, 1, 1, 1);
+    light3.intensity = glm::vec4(1, 1, 1, 1);
+    light4.position = glm::vec4(213.0, 548.0, 227.0, 1);
+    light4.color = glm::vec4(1, 1, 1, 1);
+    light4.intensity = glm::vec4(1, 1, 1, 1);
+    lights.push_back(light1);
+    lights.push_back(light2);
+    lights.push_back(light3);
+    lights.push_back(light4);
+
+    /*
     GUI gui2 = *gui;
     // FIXME: add more lambdas for data_source if you want to use RenderPass.
     //        Otherwise, do whatever you like here
-    std::function<const glm::mat4 *()> model_data = [&mats]() {
+    std::function<const glm::mat4*()> model_data = [&mats]() {
         return mats.model;
     };
 
     std::function<glm::mat4()> view_data = [&mats]() { return *mats.view; };
     std::function<glm::mat4()> proj_data = [&mats]() { return *mats.projection; };
 //    std::function<glm::mat4()> identity_mat = [](){ return glm::mat4(1.0f); };
-    std::function<glm::vec3()> cam_data = [&gui2]() { return gui->getCamera(); };
+    std::function<glm::vec3()> cam_data = [&gui2](){ return gui->getCamera(); };
     float cylinder_rad = kCylinderRadius;
-    std::function<float()> radius_data = [&cylinder_rad]() {
+    std::function<float()> radius_data = [&cylinder_rad] () {
         return cylinder_rad;
     };
 
-    auto std_model = std::make_shared<ShaderUniform<const glm::mat4 *>>("model", model_data);
+    auto std_model = std::make_shared<ShaderUniform<const glm::mat4*>>("model", model_data);
 //    auto floor_model = make_uniform("model", identity_mat);
     auto std_view = make_uniform("view", view_data);
     auto std_camera = make_uniform("camera_position", cam_data);
     auto std_proj = make_uniform("projection", proj_data);
     auto std_radius = make_uniform("radius", radius_data);
+
+    */
+
+
+//	auto diffuse = std::make_shared<ShaderUniform<const glm::vec3*>>("diffuse", diffuse)
+    std::cout << box.vertices.size() << std::endl;
+    using namespace std::chrono;
+    auto start = high_resolution_clock::now();
+    box.makeTriangles(3);
+    box.tree = new kdTree(&(box.triangles));
+    //Create bounding box
+    box.box = box.tree->createMergedBoundingBox(&(box.triangles), 0, box.triangles.size());
+    box.tree->buildTree(*(box.box));
+    std::cout << "L" << std::endl;
+    //std::cout << box.vertices.size() << std::endl;
+    std::cout << box.triangles.size() << std::endl;
+    //std::cout << box.faces.size() << std::endl;
+    //std:: cout << box.colors.size() << std::endl;
+    std::cout << "L" << std::endl;
+//    std::cout << box.triangles.size() << std::endl;
+//    box.make_form_factors_threads(8);
+    box.pre_process(8);
+    std::cout << box.triangles[1].form_factors.size() << std::endl;
+
+    std::cout << "Made form factors" << std::endl;
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+
+// To get the value of duration use the count()
+// member function on the duration object
+
+    std::cout << duration.count() / 1000000 << std::endl;
+    for (int light_num = 0; light_num < lights.size(); light_num++) {
+//        float color_avg_prev = 0;
+        for (int passes = 0; passes < 5; passes++) {
+            std::cout << "pass " << passes << std::endl;
+//        std::cout << "pass " << passes << std::endl;
+            box.calculate_light(lights[light_num], 8, true);
+//                for (int i =0 ; i < box.triangles.size(); i++) {
+//                    max_light = glm::max(box.triangles[i].diffuse_lighting, max_light);
+//                }
+//            std::cout << glm::to_string(max_light) << std::endl;
+            start = stop;
+            stop = high_resolution_clock::now();
+
+            duration = duration_cast<microseconds>(stop - start);
+            std::cout << duration.count() / 1000000 << std::endl;
+//            glm::vec3 residual_light = glm::vec3(0, 0, 0);
+//            float residual_light = 0;
+//            for (int i = 0; i < box.triangles.size(); i++) {
+//                residual_light = glm::max(glm::vec3(box.triangles[i].diffuse_lighting).y, residual_light);// box.colors[i].x + box.colors[i].y + box.colors[i].z;
+//                std::cout << glm::to_string(residual_light) << std::endl;
+//            }
+//            if (residual_light < .1) {
+//                break;
+//                std::cout << "BROKEN" << std::endl;
+//            }
+//            color_avg /= box.colors.size();
+//            if (color_avg_prev == 0) {
+//                color_avg_prev = color_avg;
+//            } else {
+//                if (color_avg - color_avg_prev <= .001) {
+//                    break;
+//                }
+//                color_avg_prev = color_avg;
+//            }
+//            color_avg = 0;
+        }
+
+
+    }
+
+    box.updateColors(3);
+    for (int i = 0; i < box.triangles.size(); i++) {
+        Triangle tri1 = box.triangles[i];
+        //std::cout << box.triangles[i].form_factors.size() << std::endl;
+        //if (!(box.triangles[i].color.x > 0 && box.triangles[i].color.y > 0 && box.triangles[i].color.z > 0))
+        //std::cout << "ERROR" << std::endl;
+    }
+
+    printToFile("geometrydata", box.vertices, box.colors, box.faces);
+    //std::cout << "DONE" << std::endl;
+
+    /*
     // Object render pass
     RenderDataInput object_pass_input;
     object_pass_input.assign(0, "vertex_position", box.vertices.data(), box.vertices.size(), 4, GL_FLOAT);
@@ -389,6 +399,7 @@ int main(int argc, char* argv[])
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    
     while (!glfwWindowShouldClose(window)) {
         // Setup some basic window stuff.
         //start = stop;
@@ -440,4 +451,5 @@ int main(int argc, char* argv[])
     glfwDestroyWindow(window);
     glfwTerminate();
     exit(EXIT_SUCCESS);
+    */
 }
